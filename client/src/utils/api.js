@@ -1,11 +1,16 @@
 import axios from "axios";
 import { getToken, logout } from "../utils/auth";
 
+/* 🔥 PRODUCTION FIX: 
+   Localhost ko hata kar Render ki backend link set kar di hai.
+   Ab frontend seedha internet wale server se baat karega.
+*/
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://hp-backend-ec7x.onrender.com/api",
 });
 
 /* ===== REQUEST INTERCEPTOR ===== */
+// Har request ke sath token bhejne ke liye
 api.interceptors.request.use(
   (config) => {
     const token = getToken();
@@ -18,13 +23,14 @@ api.interceptors.request.use(
 );
 
 /* ===== RESPONSE INTERCEPTOR ===== */
+// Global error handling: Agar token expire ho jaye toh logout kar do
 api.interceptors.response.use(
   (res) => res,
   (error) => {
-    // 🔥 PRO FIX: Agar 401 (Unauthorized/Expired Token) aaya toh seedha bahar!
+    // 401 ka matlab hai session khatam ya unauthorized access
     if (error.response?.status === 401) {
       logout();
-      // User ko turant login pe bhej do taaki wo broken page par na atke
+      // User ko login page pe redirect karna zaroori hai
       window.location.href = "/login?expired=true"; 
     }
     return Promise.reject(error);

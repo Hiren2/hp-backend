@@ -23,11 +23,16 @@ const app = express();
 // 🔥 Render/Production Fix: Trust proxy for secure cookies/headers
 app.set("trust proxy", 1);
 
-// 🔥 CORS FIXED: Vercel link ko explicitly allow kiya hai
+// 🔥 CORS FIXED: Tune domain badla tha, isliye yahan naya domain add kar diya hai
 app.use(cors({
-  origin: ["https://hp-frontend-blush.vercel.app", "http://localhost:3000"],
+  origin: [
+    "https://hpsolutions.vercel.app",        // Tera naya professional domain
+    "https://hp-frontend-blush.vercel.app",  // Backup ke liye purana domain
+    "http://localhost:3000"                  // Local testing ke liye
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.use(express.json());
