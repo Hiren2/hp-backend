@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { MessageCircle, X, Send, Sparkles } from 'lucide-react';
+import api from '../utils/api'; // 🔥 Naya import add kiya
 
 const Chatbot = () => {
     // 🛡️ STRICT ROLE CHECK: Sirf 'user' ko bot dikhega
@@ -30,7 +31,7 @@ const Chatbot = () => {
             { text: `${greeting}, ${name}! 👋 I am ServiceBot AI.`, isBot: true },
             { text: "Which language are you comfortable with?", isBot: true, isLangSelect: true }
         ]);
-    }, [userRole]);
+    }, [userRole, storedUser.name]);
 
     useEffect(() => { 
         chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); 
@@ -53,10 +54,9 @@ const Chatbot = () => {
         setIsTyping(true);
 
         try {
-            const token = localStorage.getItem("token");
-            const response = await axios.post("http://localhost:5000/api/support/chat", 
-                { message: msgText, language: currentLang },
-                { headers: { Authorization: `Bearer ${token}` } }
+            // 🔥 FIXED: Localhost ki jagah apna api instance use kiya
+            const response = await api.post("/support/chat", 
+                { message: msgText, language: currentLang }
             );
             
             setTimeout(() => {

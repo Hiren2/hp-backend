@@ -43,8 +43,8 @@ exports.handleSupportChat = async (req, res) => {
         3. Keep the response to max 2-3 sentences.
         4. Use ONLY English alphabets (Latin Script).`;
 
-        // 4. GOOGLE API URL
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+        // 4. GOOGLE API URL (🔥 Updated to 1.5 Flash for better stability)
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
         // 5. Direct API Hit
         const response = await fetch(url, {
@@ -60,7 +60,7 @@ exports.handleSupportChat = async (req, res) => {
         // 6. Error Handling from Google
         if (!response.ok) {
             console.error("🔥 GOOGLE API ERROR DETAILS:", data);
-            return res.status(200).json({ reply: `🚨 GOOGLE API ERROR: ${data.error?.message || 'Unknown'}` });
+            return res.status(200).json({ reply: `🚨 AI Connection Error. Please try again.` });
         }
 
         // 7. Success Reply

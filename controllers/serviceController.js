@@ -87,7 +87,10 @@ exports.createService = async (req, res) => {
     let imagePath = req.body.image;
 
     if (req.file) {
-      imagePath = `http://localhost:5000/uploads/${req.file.filename}`;
+      // 🔥 DYNAMIC URL FIX: Localhost hatakar request host use kiya hai
+      const protocol = req.protocol;
+      const host = req.get("host");
+      imagePath = `${protocol}://${host}/uploads/${req.file.filename}`;
     }
 
     const service = await Service.create({
@@ -120,7 +123,10 @@ exports.updateService = async (req, res) => {
     let updateData = { ...req.body };
 
     if (req.file) {
-      updateData.image = `http://localhost:5000/uploads/${req.file.filename}`;
+      // 🔥 DYNAMIC URL FIX: Localhost hatakar request host use kiya hai
+      const protocol = req.protocol;
+      const host = req.get("host");
+      updateData.image = `${protocol}://${host}/uploads/${req.file.filename}`;
     }
 
     const service = await Service.findByIdAndUpdate(
