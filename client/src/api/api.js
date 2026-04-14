@@ -5,7 +5,8 @@ import { getToken, clearAuth } from "../utils/auth";
 let isLoggingOut = false;
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  // 🔥 THE MAGIC LINK: Ab tera Frontend is live server se baat karega
+  baseURL: "https://hp-backend-ec7x.onrender.com/api", 
 });
 
 /* ================= REQUEST ================= */
