@@ -7,68 +7,79 @@ require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
 const orderRoutes = require("./routes/orderRoutes");
-
-// 🔥 RBAC Roles
 const adminRoutes = require("./routes/adminRoutes");
 const managerRoutes = require("./routes/managerRoutes");
 const superAdminRoutes = require("./routes/superAdminRoutes");
-
 const reviewRoutes = require("./routes/reviewRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const publicRoutes = require("./routes/publicRoutes");
-
-// 🤖 NEW: AI Support Route Import
 const supportRoutes = require("./routes/supportRoutes");
-
-// 🎟️ NEW: Coupon Route Import (Enterprise Feature)
 const couponRoutes = require("./routes/couponRoutes");
 
 const app = express();
 
 /* ================= MIDDLEWARE ================= */
-app.use(cors());
+
+// 🔥 Render/Production Fix: Trust proxy for secure cookies/headers
+app.set("trust proxy", 1);
+
+// 🔥 CORS FIXED: Vercel link ko explicitly allow kiya hai
+app.use(cors({
+  origin: ["https://hp-frontend-blush.vercel.app", "http://localhost:3000"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
 /* ================= DATABASE ================= */
+mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected successfully"))
+  .then(() => console.log("✅ MongoDB Atlas connected successfully"))
   .catch((err) => console.error("❌ MongoDB connection error:", err.message));
 
 /* ================= API ROUTES ================= */
 
+// Standard Auth Routes
 app.use("/api/auth", authRoutes); 
-app.use("/api", authRoutes); // Wishlist fix
 
+// Services & Orders
 app.use("/api/services", serviceRoutes);
 app.use("/api/orders", orderRoutes);
 
-// 🔥 ROLE-SPECIFIC ROUTES
+// 🔥 ROLE-SPECIFIC ROUTES (RBAC)
 app.use("/api/admin", adminRoutes);
 app.use("/api/manager", managerRoutes);       
 app.use("/api/superadmin", superAdminRoutes); 
 
+// Features
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/public", publicRoutes);
-
-// 🤖 NEW: AI Support Route Mounted
 app.use("/api/support", supportRoutes);
-
-// 🎟️ NEW: Coupon Route Mounted
 app.use("/api/coupons", couponRoutes);
 
 /* ================= HEALTH CHECK ================= */
-app.get("/", (req, res) => res.send("H&P Solutions API with AI Support & Coupons Running 🚀"));
+app.get("/", (req, res) => {
+  res.json({ 
+    status: "Running", 
+    message: "H&P Solutions API is Live 🚀",
+    database: mongoose.connection.readyState === 1 ? "Connected" : "Disconnected"
+  });
+});
 
 /* ================= ERROR HANDLER ================= */
 app.use((err, req, res, next) => {
   console.error("🔥 SERVER ERROR:", err.stack);
-  res.status(500).json({ message: "Internal Server Error" });
+  res.status(500).json({ 
+    message: "Internal Server Error",
+    error: process.env.NODE_ENV === 'development' ? err.message : {} 
+  });
 });
 
 /* ================= SERVER START ================= */
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server active on port ${PORT}`);
 });
