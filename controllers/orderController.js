@@ -40,7 +40,8 @@ const getCatchyTitle = (action) => {
     ORDER_SHIPPED: "On the Way 🚚",
     ORDER_DELIVERED: "Service Completed 📦",
     ORDER_REJECTED: "Order Update ❌",
-    NEW_ORDER_ALERT: "Action Required: New Order 📥"
+    NEW_ORDER_ALERT: "Action Required: New Order 📥",
+    PAYMENT_SUCCESS: "Payment Received 💳"
   };
   return titles[action] || "Notification Update";
 };
@@ -202,14 +203,14 @@ const createOrder = async (req, res) => {
     const order = await Order.create({
       user: req.user._id,
       service: serviceId,
-      status: "Pending",
+      status: "Pending", // Always pending on creation
       paymentMethod: paymentMethod || "Online", 
       paymentStatus: "Pending", 
       priority: priority || "Medium",
       address,
       couponCode: couponCode || null,
       discountValue: discount,
-      taxAmount: taxAmount,           // 🔥 Exact Tax Saved
+      taxAmount: taxAmount,          // 🔥 Exact Tax Saved
       deliveryCharge: deliveryCharge, // 🔥 Exact Delivery Saved
       totalAmount: totalAmount        // 🔥 Exact Final Price Saved
     });
@@ -296,6 +297,7 @@ const updateOrderStatus = async (req, res) => {
 
     await order.save({ validateBeforeSave: false });
 
+    // 🔥 REAL RBAC FLOW: Manager approves, THEN lifecycle starts
     if (status === "Approved") {
       await createNotification(
         order.user,
@@ -450,21 +452,22 @@ const capturePayment = async (req, res) => {
     if (!order) return res.status(404).json({ message: "Order not found" });
 
     if (status === "success") {
+      // 🔥 THE FIX IS HERE 🔥
       order.paymentStatus = "Paid";
       order.transactionId = "TXN_" + Math.random().toString(36).substr(2, 9).toUpperCase();
       
-      order.status = "Approved"; 
+      order.status = "Pending"; // User ka order manager ke liye pending hi rahega
       await order.save({ validateBeforeSave: false });
 
       await createNotification(
-        order.user, "user", "ORDER_APPROVED", 
-        "💳 Payment Successful! Your order has been approved and moved to processing.", 
+        order.user, "user", "PAYMENT_SUCCESS", 
+        "💳 Payment Successful! Your order has been placed and is waiting for manager approval.", 
         order._id
       );
+      
+      // Removed startOrderLifecycle(order) from here. It will run only when Manager approves.
 
-      startOrderLifecycle(order);
-
-      res.json({ message: "Payment Captured", order });
+      res.json({ message: "Payment Captured & Order Pending Approval", order });
     } else {
       order.paymentStatus = "Failed";
       await order.save({ validateBeforeSave: false });

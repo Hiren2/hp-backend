@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
-import api from "../utils/api"; // 🔥 Ensure this path points to your API instance
+import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
 import Toast from "../components/Toast";
@@ -48,7 +48,10 @@ export default function Checkout() {
     fetchCheckoutData();
   }, []);
 
+  // 🔥 3D CARD ANIMATION STATE
   const [cardDetails, setCardDetails] = useState({ number: "", expiry: "", cvv: "", name: "" });
+  const [isFlipped, setIsFlipped] = useState(false); // Ye state CVV focus hone par true hogi
+  
   const [showGateway, setShowGateway] = useState(false);
   const [gatewayState, setGatewayState] = useState("loading");
 
@@ -168,7 +171,6 @@ export default function Checkout() {
     showToast("Coupon removed", "success");
   };
 
-  // 🔥 UPDATED: UPI VERIFICATION WITH STRICT ADDRESS CHECK
   const handleVerifyUpi = () => {
     if (!isAddressValid) {
       showToast("Pehle delivery details (Address) fill karo! 🏠", "error");
@@ -371,37 +373,125 @@ export default function Checkout() {
 
               {method === "card" && (
                 <div className="mt-8 p-6 bg-slate-50/50 rounded-2xl border border-slate-200 animate-fadeIn">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-slate-700">Enter Card Details</h3>
-                    <div className="flex gap-2">
-                      <div className="w-8 h-5 bg-blue-600 rounded flex items-center justify-center text-[8px] text-white font-bold italic">VISA</div>
-                      <div className="w-8 h-5 bg-orange-500 rounded flex items-center justify-center text-[8px] text-white font-bold">MC</div>
+                  
+                  {/* 🔥 INTERACTIVE 3D CREDIT CARD START 🔥 */}
+                  <div className="relative w-full max-w-[340px] h-[200px] mx-auto mb-8" style={{ perspective: '1000px' }}>
+                    <div 
+                      className="w-full h-full relative transition-transform duration-700 ease-in-out shadow-2xl rounded-2xl" 
+                      style={{ 
+                        transformStyle: 'preserve-3d', 
+                        transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' 
+                      }}
+                    >
+                      {/* FRONT OF CARD */}
+                      <div 
+                        className="absolute w-full h-full bg-gradient-to-tr from-slate-800 via-slate-900 to-indigo-950 rounded-2xl text-white p-6 flex flex-col justify-between" 
+                        style={{ backfaceVisibility: 'hidden' }}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="w-12 h-9 bg-yellow-600/60 rounded-md overflow-hidden relative">
+                            <div className="absolute top-0 left-0 w-full h-full border border-yellow-400/30 rounded-md grid grid-cols-2 gap-px p-px">
+                              <div className="bg-yellow-400/20 rounded-tl-sm"></div>
+                              <div className="bg-yellow-400/20 rounded-tr-sm"></div>
+                              <div className="bg-yellow-400/20 rounded-bl-sm"></div>
+                              <div className="bg-yellow-400/20 rounded-br-sm"></div>
+                            </div>
+                          </div>
+                          <span className="font-bold italic text-slate-300">H&P Bank</span>
+                        </div>
+                        <div>
+                          <p className="font-mono text-xl tracking-widest text-slate-100 mb-2">
+                            {cardDetails.number || "•••• •••• •••• ••••"}
+                          </p>
+                          <div className="flex justify-between text-xs font-mono uppercase text-slate-400">
+                            <div className="flex flex-col">
+                              <span className="text-[8px] tracking-widest">Card Holder</span>
+                              <span className="text-slate-200 font-semibold truncate max-w-[150px]">
+                                {cardDetails.name || "YOUR NAME"}
+                              </span>
+                            </div>
+                            <div className="flex flex-col text-right">
+                              <span className="text-[8px] tracking-widest">Expires</span>
+                              <span className="text-slate-200 font-semibold">
+                                {cardDetails.expiry || "MM/YY"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* BACK OF CARD */}
+                      <div 
+                        className="absolute w-full h-full bg-gradient-to-tr from-slate-800 via-slate-900 to-indigo-950 rounded-2xl flex flex-col pt-6" 
+                        style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                      >
+                        <div className="w-full h-10 bg-black/80 mb-4"></div>
+                        <div className="px-6">
+                          <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1 text-right">CVV / CVC</p>
+                          <div className="w-full h-10 bg-white rounded-md flex items-center justify-end px-3">
+                            <span className="text-black font-mono font-bold">{cardDetails.cvv || "•••"}</span>
+                          </div>
+                          <p className="text-[6px] text-slate-500 mt-4 leading-tight text-center">
+                            This card is issued by H&P Solutions. Use of this card is subject to the terms and conditions.
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                  {/* 🔥 INTERACTIVE 3D CREDIT CARD END 🔥 */}
+
                   <div className="space-y-4">
                     <div className="space-y-1.5">
                       <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Card Number</label>
                       <div className="relative group">
                         <CreditCard className="absolute left-3 top-3.5 text-slate-400" size={16} />
-                        <input type="text" value={cardDetails.number} onChange={handleCardNumberChange} placeholder="0000 0000 0000 0000" className="w-full bg-white border border-slate-200 pl-10 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-semibold tracking-widest" />
+                        <input 
+                          type="text" 
+                          value={cardDetails.number} 
+                          onChange={handleCardNumberChange} 
+                          placeholder="0000 0000 0000 0000" 
+                          className="w-full bg-white border border-slate-200 pl-10 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-semibold tracking-widest" 
+                        />
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Expiry Date</label>
-                        <input type="text" value={cardDetails.expiry} onChange={handleExpiryChange} placeholder="MM/YY" className="w-full bg-white border border-slate-200 px-4 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-semibold tracking-widest text-center" />
+                        <input 
+                          type="text" 
+                          value={cardDetails.expiry} 
+                          onChange={handleExpiryChange} 
+                          placeholder="MM/YY" 
+                          className="w-full bg-white border border-slate-200 px-4 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-semibold tracking-widest text-center" 
+                        />
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">CVV</label>
                         <div className="relative group">
                           <Lock className="absolute right-3 top-3.5 text-slate-400" size={16} />
-                          <input type="password" maxLength="3" value={cardDetails.cvv} onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value.replace(/\D/g, "") })} placeholder="•••" className="w-full bg-white border border-slate-200 pl-4 pr-10 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-semibold tracking-widest text-center" />
+                          <input 
+                            type="password" 
+                            maxLength="3" 
+                            value={cardDetails.cvv} 
+                            onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value.replace(/\D/g, "") })} 
+                            // 🔥 YAHAN ONFOCUS AND ONBLUR LAGAYA HAI ANIMATION KE LIYE
+                            onFocus={() => setIsFlipped(true)}
+                            onBlur={() => setIsFlipped(false)}
+                            placeholder="•••" 
+                            className="w-full bg-white border border-slate-200 pl-4 pr-10 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-semibold tracking-widest text-center" 
+                          />
                         </div>
                       </div>
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Name on Card</label>
-                      <input type="text" value={cardDetails.name} onChange={handleCardNameChange} placeholder="e.g. JOHN DOE" className="w-full bg-white border border-slate-200 px-4 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-semibold" />
+                      <input 
+                        type="text" 
+                        value={cardDetails.name} 
+                        onChange={handleCardNameChange} 
+                        placeholder="e.g. JOHN DOE" 
+                        className="w-full bg-white border border-slate-200 px-4 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-semibold" 
+                      />
                     </div>
                   </div>
                 </div>
