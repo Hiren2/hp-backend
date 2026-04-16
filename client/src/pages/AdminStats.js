@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../api/api";
+import api from "../utils/api"; // 🔥 Ensure correct import path
 import Toast from "../components/Toast";
 import useToast from "../components/useToast";
 import { CSVLink } from "react-csv"; 
@@ -9,7 +9,7 @@ import {
 } from "recharts";
 
 import {
-  Users, Layers, Package, Activity, TrendingUp, ShieldAlert, Download, TicketPercent, Plus, Trash2, Edit // 🔥 Edit Icon Added
+  Users, Layers, Package, Activity, TrendingUp, ShieldAlert, Download, TicketPercent, Plus, Trash2, Edit
 } from "lucide-react";
 
 const COLORS = ["#f59e0b", "#10b981", "#f43f5e"]; 
@@ -22,7 +22,7 @@ export default function AdminStats() {
   const [coupons, setCoupons] = useState([]);
   const [newCoupon, setNewCoupon] = useState({ code: "", title: "", desc: "", type: "percent", value: "", maxDiscount: 10000, applicableCategory: "All" });
   const [isAddingCoupon, setIsAddingCoupon] = useState(false);
-  const [editingId, setEditingId] = useState(null); // 🔥 Tracks if we are editing an existing coupon
+  const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -47,7 +47,6 @@ export default function AdminStats() {
     fetchCoupons();
   }, []);
 
-  // 🔥 MERGED FUNCTION: HANDLES BOTH ADD AND UPDATE
   const handleAddOrUpdateCoupon = async (e) => {
     e.preventDefault();
     if (newCoupon.type === "fixed" && Number(newCoupon.value) > 10000) {
@@ -64,25 +63,21 @@ export default function AdminStats() {
       };
 
       if (editingId) {
-        // 🔥 UPDATE EXISTING COUPON
         const res = await api.put(`/coupons/${editingId}`, payload);
         setCoupons(coupons.map(c => c._id === editingId ? res.data : c));
         showToast("Coupon updated successfully! 🛠️", "success");
       } else {
-        // 🔥 CREATE NEW COUPON
         const res = await api.post("/coupons", payload);
         setCoupons([...coupons, res.data]);
         showToast("Coupon added & live successfully! 🎉", "success");
       }
 
-      // Reset Form
       resetCouponForm();
     } catch (error) {
       showToast(error.response?.data?.message || "Failed to save coupon", "error");
     }
   };
 
-  // 🔥 EDIT CLICK HANDLER
   const handleEditClick = (coupon) => {
     setNewCoupon({
       code: coupon.code,
@@ -95,7 +90,6 @@ export default function AdminStats() {
     });
     setEditingId(coupon._id);
     setIsAddingCoupon(true);
-    // Scroll to the form
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   };
 
@@ -136,11 +130,15 @@ export default function AdminStats() {
     { name: "Rejected", value: rejectedTotal },
   ];
 
-  const revenueData = stats.revenueTrend || [
-    { name: "Mon", revenue: 12000 }, { name: "Tue", revenue: 19000 }, { name: "Wed", revenue: 15000 },
-    { name: "Thu", revenue: 28000 }, { name: "Fri", revenue: 22000 }, { name: "Sat", revenue: 35000 },
-    { name: "Sun", revenue: 42000 },
-  ];
+  // 🔥 THE FIX: Using REAL backend revenue data instead of hardcoded numbers!
+  // Fallback to empty array if backend doesn't send it to prevent crashes
+  const revenueData = stats.revenueTrend && stats.revenueTrend.length > 0 
+    ? stats.revenueTrend 
+    : [
+        { name: "Mon", revenue: 0 }, { name: "Tue", revenue: 0 }, { name: "Wed", revenue: 0 },
+        { name: "Thu", revenue: 0 }, { name: "Fri", revenue: 0 }, { name: "Sat", revenue: 0 },
+        { name: "Sun", revenue: 0 },
+      ];
 
   const csvReportData = [
     { Metric: "--- CORE METRICS ---", Value: "" },
@@ -253,6 +251,7 @@ export default function AdminStats() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#cbd5e1" strokeOpacity={0.2} />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }} dy={10} />
+                {/* 🔥 REALISTIC FORMATTING FOR RUPEES */}
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }} tickFormatter={(val) => `₹${val/1000}k`} />
                 <Tooltip cursor={{ stroke: '#6366f1', strokeWidth: 1, strokeDasharray: '4 4' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', fontSize: '14px', backgroundColor: '#1e293b', color: '#f8fafc' }} itemStyle={{ fontWeight: 'bold', color: '#818cf8' }} formatter={(value) => [`₹${value}`, "Revenue"]} />
                 <Area type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />

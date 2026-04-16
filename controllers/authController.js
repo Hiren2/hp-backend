@@ -4,7 +4,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 /* ================= 🔥 HELPER: CALCULATE AGE & GET AVATAR ================= */
-// Ye function DOB se age nikalega aur uske hisaab se avatar dega
 const getSmartAvatar = (name, dob) => {
   try {
     const birthDate = new Date(dob);
@@ -12,28 +11,25 @@ const getSmartAvatar = (name, dob) => {
     let age = today.getFullYear() - birthDate.getFullYear();
     const m = today.getMonth() - birthDate.getMonth();
     
-    // Agar is saal b'day nahi aaya, toh 1 saal kam karo
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
 
-    let style = "avataaars"; // Default for Adults (18 - 45)
+    let style = "avataaars"; 
 
     if (age < 18) {
-      style = "adventurer"; // Funky for kids/teens
+      style = "adventurer"; 
     } else if (age > 45) {
-      style = "bottts-neutral"; // Clean/Neutral for seniors
+      style = "bottts-neutral"; 
     }
 
     return `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(name)}`;
   } catch (err) {
-    // Agar DOB format galat hai toh default de do
     return `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`;
   }
 };
 
 /* ================= REGISTER ================= */
-
 const register = async (req, res) => {
   try {
     let { name, email, password, dob } = req.body;
@@ -52,7 +48,6 @@ const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    /* 🔥 NEW: Assigning Smart Avatar Based on DOB */
     const smartImage = getSmartAvatar(name, dob);
 
     const user = await User.create({
@@ -60,10 +55,9 @@ const register = async (req, res) => {
       email,
       password: hashedPassword,
       dob,
-      image: smartImage, // Save the dynamic image
+      image: smartImage, 
     });
 
-    /* 🔍 audit log */
     await AuditLog.create({
       actor: user._id,
       actorRole: user.role,
@@ -80,7 +74,7 @@ const register = async (req, res) => {
         name,
         email,
         role: user.role,
-        image: user.image, // Bhejo frontend pe
+        image: user.image, 
       },
     });
   } catch (err) {
@@ -90,7 +84,6 @@ const register = async (req, res) => {
 };
 
 /* ================= LOGIN ================= */
-
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -103,7 +96,6 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid login" });
     }
 
-    /* 🔒 account status check */
     if (user.accountStatus === "suspended") {
       return res.status(403).json({
         message: "Account suspended. Contact administrator.",
@@ -113,7 +105,6 @@ const login = async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {
-      /* 🔍 failed login audit */
       await AuditLog.create({
         actor: user._id,
         actorRole: user.role,
@@ -126,10 +117,8 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid login" });
     }
 
-    /* 🔄 update last login */
     user.lastLogin = new Date();
 
-    /* 🔥 LOGIC FOR OLD USERS: Agar purane user ke paas image nahi hai toh de do */
     if (!user.image) {
       user.image = getSmartAvatar(user.name, user.dob);
     }
@@ -142,7 +131,6 @@ const login = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    /* 🔍 login audit */
     await AuditLog.create({
       actor: user._id,
       actorRole: user.role,
@@ -159,7 +147,7 @@ const login = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        image: user.image, // 🔥 Bhejo frontend pe
+        image: user.image, 
       },
     });
   } catch (err) {
@@ -169,7 +157,6 @@ const login = async (req, res) => {
 };
 
 /* ================= DOB VERIFY ================= */
-
 const verifyDob = async (req, res) => {
   try {
     const { email, dob } = req.body;
@@ -192,7 +179,6 @@ const verifyDob = async (req, res) => {
 };
 
 /* ================= RESET PASSWORD ================= */
-
 const resetPasswordWithDob = async (req, res) => {
   try {
     const { email, newPassword } = req.body;
@@ -206,7 +192,6 @@ const resetPasswordWithDob = async (req, res) => {
 
     await user.save();
 
-    /* 🔍 audit log */
     await AuditLog.create({
       actor: user._id,
       actorRole: user.role,
@@ -225,7 +210,7 @@ const resetPasswordWithDob = async (req, res) => {
   }
 };
 
-/* ================= 🔥 GET WISHLIST ================= */
+/* ================= GET WISHLIST ================= */
 const getWishlist = async (req, res) => {
   try {
     if (!req.user) return res.status(401).json({ message: "Not authenticated" });
@@ -240,7 +225,7 @@ const getWishlist = async (req, res) => {
   }
 };
 
-/* ================= 🔥 TOGGLE WISHLIST ================= */
+/* ================= TOGGLE WISHLIST ================= */
 const toggleWishlist = async (req, res) => {
   try {
     if (!req.user) return res.status(401).json({ message: "Not authenticated" });
@@ -251,14 +236,11 @@ const toggleWishlist = async (req, res) => {
     const user = await User.findById(req.user._id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Check if service is already in wishlist
     const isLiked = user.wishlist.includes(serviceId);
 
     if (isLiked) {
-      // Remove it
       user.wishlist = user.wishlist.filter(id => id.toString() !== serviceId.toString());
     } else {
-      // Add it
       user.wishlist.push(serviceId);
     }
 
@@ -275,11 +257,43 @@ const toggleWishlist = async (req, res) => {
   }
 };
 
+/* ================= 🔥 UPDATE PROFILE (THE LOGOUT FIX) ================= */
+const updateProfile = async (req, res) => {
+  try {
+    if (!req.user) return res.status(401).json({ message: "Not authenticated" });
+    
+    const { name, image } = req.body;
+    const user = await User.findById(req.user._id);
+    
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (name) user.name = name;
+    if (image) user.image = image;
+
+    await user.save({ validateBeforeSave: false });
+
+    res.json({ 
+      message: "Profile updated successfully in DB", 
+      user: { 
+        id: user._id, 
+        name: user.name, 
+        email: user.email, 
+        role: user.role, 
+        image: user.image 
+      } 
+    });
+  } catch (err) {
+    console.error("UPDATE PROFILE ERROR:", err);
+    res.status(500).json({ message: "Failed to update profile in database" });
+  }
+};
+
 module.exports = {
   register,
   login,
   verifyDob,
   resetPasswordWithDob,
-  getWishlist,     // 🔥 Naya export
-  toggleWishlist   // 🔥 Naya export
+  getWishlist,     
+  toggleWishlist,
+  updateProfile // 🔥 Exported
 };

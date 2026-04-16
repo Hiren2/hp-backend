@@ -5,8 +5,9 @@ const {
   login, 
   verifyDob, 
   resetPasswordWithDob,
-  getWishlist,    // 🔥 Ensure this is imported
-  toggleWishlist  // 🔥 Ensure this is imported
+  getWishlist,    
+  toggleWishlist,
+  updateProfile // 🔥 Ye naya controller import kiya
 } = require("../controllers/authController");
 const { authenticate } = require("../middleware/authMiddleware");
 
@@ -15,8 +16,11 @@ router.post("/login", login);
 router.post("/verify-dob", verifyDob);
 router.post("/reset-password", resetPasswordWithDob);
 
-// 🔥 WISHLIST ROUTES (These were missing in your screenshot)
+// 🔥 WISHLIST ROUTES
 router.get("/wishlist", authenticate, getWishlist);
 router.put("/wishlist/toggle", authenticate, toggleWishlist);
+
+// 🔥 PROFILE UPDATE ROUTE (The Fix)
+router.put("/profile", authenticate, updateProfile);
 
 module.exports = router;
