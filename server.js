@@ -35,7 +35,11 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-app.use(express.json());
+// 🔥 THE ULTIMATE FIX FOR PROFILE PICTURE (Ghajini Bug Solved)
+// Ye limit 50mb karne se ab Base64 images easily accept ho jayengi aur DB me save hongi!
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
 app.use("/uploads", express.static("uploads"));
 
 /* ================= DATABASE ================= */
