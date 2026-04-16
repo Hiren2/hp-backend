@@ -45,7 +45,7 @@ const getSmartResponse = (intent, lang, name, latestOrder) => {
     // ================= 1. ENGLISH RESPONSES =================
     if (l === "english") {
         switch (intent) {
-            case "LANG_ACK": return `Great! I will speak with you in English, ${name}. How can I assist your enterprise today?`;
+            case "LANG_ACK": return `You are comfortable with English. Got you. Now if you have any queries, feel free to ask us.`;
             case "GREETING": return `Hello ${name}! 👋 Welcome to H&P Solutions Support. What can I do for you today?`;
             case "ORDER_STATUS": 
                 if (latestOrder) return `I checked your records. Your most recent order is **'${oName}'** and its current status is: **${oStatus}**. You can track this in your 'My Orders' dashboard.`;
@@ -59,10 +59,10 @@ const getSmartResponse = (intent, lang, name, latestOrder) => {
         }
     }
 
-    // ================= 2. HINDI (हिंदी) RESPONSES (Handles Hinglish input) =================
+    // ================= 2. HINDI (हिंदी) RESPONSES =================
     if (l === "hindi") {
         switch (intent) {
-            case "LANG_ACK": return `बहुत बढ़िया! मैं आपसे हिंदी में बात करूँगा, ${name}। आज मैं आपकी क्या मदद कर सकता हूँ?`;
+            case "LANG_ACK": return `आप हिंदी भाषा के साथ सहज हैं। समझ गया। अब यदि आपके कोई प्रश्न हैं, तो बेझिझक हमसे पूछें।`;
             case "GREETING": return `नमस्ते ${name}! 👋 H&P Solutions सपोर्ट में आपका स्वागत है। मैं आपकी कैसे सहायता कर सकता हूँ?`;
             case "ORDER_STATUS": 
                 if (latestOrder) return `मैंने आपका रिकॉर्ड चेक किया है। आपका पिछला आर्डर **'${oName}'** था, और उसका स्टेटस अभी **${oStatus}** है। पूरी जानकारी के लिए अपना 'My Orders' डैशबोर्ड देखें।`;
@@ -76,10 +76,10 @@ const getSmartResponse = (intent, lang, name, latestOrder) => {
         }
     }
 
-    // ================= 3. GUJARATI (ગુજરાતી) RESPONSES (Handles Gujlish input) =================
+    // ================= 3. GUJARATI (ગુજરાતી) RESPONSES =================
     if (l === "gujarati") {
         switch (intent) {
-            case "LANG_ACK": return `સરસ! હું તમારી સાથે ગુજરાતીમાં વાત કરીશ, ${name}. આજે હું તમારી શું મદદ કરી શકું?`;
+            case "LANG_ACK": return `તમે ગુજરાતી ભાષા સાથે આરામદાયક છો. સમજી ગયો. હવે જો તમને કોઈ પ્રશ્ન હોય, તો નિઃસંકોચ અમને પૂછો.`;
             case "GREETING": return `નમસ્તે ${name}! 👋 H&P Solutions સપોર્ટમાં તમારું સ્વાગત છે. બોલો, હું તમારી કેવી રીતે મદદ કરી શકું?`;
             case "ORDER_STATUS": 
                 if (latestOrder) return `મેં તમારો રેકોર્ડ ચેક કર્યો છે. તમારો છેલ્લો ઓર્ડર **'${oName}'** હતો, અને તેનું સ્ટેટસ અત્યારે **${oStatus}** છે. વધુ માહિતી માટે 'My Orders' પેજ જુઓ.`;
@@ -95,7 +95,6 @@ const getSmartResponse = (intent, lang, name, latestOrder) => {
 
     return "Thank you for reaching out. Please contact 8050480504 for further assistance.";
 };
-
 
 exports.handleSupportChat = async (req, res) => {
     try {

@@ -38,23 +38,20 @@ const Chatbot = () => {
         return null;
     }
 
-    // 🔥 ENHANCED HANDLER FOR SEAMLESS NLP INTEGRATION
-    const handleSend = async (manualMsg = null, langChoice = null, hiddenIntent = false) => {
+    const handleSend = async (manualMsg = null, langChoice = null) => {
         const msgText = manualMsg || input;
         if (!msgText.trim() && !langChoice) return;
 
         const currentLang = langChoice || selectedLang || "English";
         
-        // If user is selecting a language, set it
         if (langChoice) setSelectedLang(langChoice);
 
-        // Display user message
+        // Display user message neatly
         setMessages(prev => [...prev, { text: msgText, isBot: false }]);
         setInput('');
         setIsTyping(true);
 
         try {
-            // We pass the exact message to our advanced backend NLP
             const response = await api.post("/support/chat", { 
                 message: msgText, 
                 language: currentLang 
@@ -91,14 +88,14 @@ const Chatbot = () => {
                         {messages.map((m, i) => (
                             <div key={i} className={`${m.isBot ? 'text-left' : 'text-right'}`}>
                                 <div className={`inline-block p-3.5 rounded-2xl text-[14px] shadow-sm max-w-[85%] ${m.isBot ? 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none border dark:border-slate-700' : 'bg-blue-600 text-white rounded-tr-none'}`}>
-                                    {/* Using dangerouslySetInnerHTML to parse the bold tags we sent from backend */}
                                     <span dangerouslySetInnerHTML={{__html: m.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}} />
                                 </div>
                                 {m.isLangSelect && !selectedLang && (
                                     <div className="flex gap-2 mt-3 flex-wrap">
-                                        <button onClick={() => handleSend("I prefer English", "English")} className="bg-white border-2 border-blue-500 text-blue-600 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-blue-600 hover:text-white transition-all">English</button>
-                                        <button onClick={() => handleSend("मुझे हिंदी पसंद है (Hindi)", "Hindi")} className="bg-white border-2 border-blue-500 text-blue-600 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-blue-600 hover:text-white transition-all">हिंदी</button>
-                                        <button onClick={() => handleSend("મને ગુજરાતી ગમે છે (Gujarati)", "Gujarati")} className="bg-white border-2 border-blue-500 text-blue-600 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-blue-600 hover:text-white transition-all">ગુજરાતી</button>
+                                        {/* 🔥 EXTREMELY CLEAN BUTTONS */}
+                                        <button onClick={() => handleSend("English", "English")} className="bg-white border-2 border-blue-500 text-blue-600 px-5 py-1.5 rounded-full text-xs font-bold hover:bg-blue-600 hover:text-white transition-all">English</button>
+                                        <button onClick={() => handleSend("Hindi", "Hindi")} className="bg-white border-2 border-blue-500 text-blue-600 px-5 py-1.5 rounded-full text-xs font-bold hover:bg-blue-600 hover:text-white transition-all">Hindi</button>
+                                        <button onClick={() => handleSend("Gujarati", "Gujarati")} className="bg-white border-2 border-blue-500 text-blue-600 px-5 py-1.5 rounded-full text-xs font-bold hover:bg-blue-600 hover:text-white transition-all">Gujarati</button>
                                     </div>
                                 )}
                             </div>

@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { getUser } from "../utils/auth";
-import api from "../utils/api"; // 🔥 Import api to sync with DB
+import api from "../utils/api"; 
 import Toast from "../components/Toast";
 import useToast from "../components/useToast";
 
 import { 
-  Camera, 
   Save, 
   UserCircle, 
   Mail, 
@@ -23,45 +22,77 @@ export default function Profile() {
   const [name, setName] = useState(user?.name || "");
   const [image, setImage] = useState(user?.image || "");
   const [imageError, setImageError] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  // 🔥 10 Premium AI AVATAR OPTIONS (DiceBear API)
+  // 🔥 10 Premium AI AVATAR OPTIONS
   const avatarSeeds = ["Felix", "Aneka", "Midnight", "Jack", "Luna", "Oliver", "Milo", "Leo", "Bella", "Zoe"];
   const avatars = avatarSeeds.map(seed => `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`);
 
-  // Fallback initial agar image fail ho jaye
   const initial = user?.name?.charAt(0)?.toUpperCase() || "U";
 
-  // --- 📂 LOCAL STORAGE / PC UPLOAD OPTION ---
+  // CLIENT-SIDE IMAGE COMPRESSION FOR PC UPLOAD
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setImage(reader.result); // Base64 format for local preview
-      setImageError(false); 
-    };
     reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 300; 
+        const MAX_HEIGHT = 300;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+        setImage(compressedBase64); 
+        setImageError(false); 
+      };
+    };
   };
 
+  // 🔥 STRICT DB SYNC ENGINE
   const saveProfile = async () => {
+    setIsSaving(true);
     try {
-      // 🔥 FIX: Pehle Backend ko update karne ki koshish karega
-      // Agar tere paas /auth/profile route nahi bhi hai, toh bhi error handle ho jayega aur app nahi tutegi
-      await api.put("/auth/profile", { name, image });
+      // 1. Force backend to update the database FIRST
+      const res = await api.put("/auth/profile", { name, image });
       
-      const updated = { ...user, name, image };
-      localStorage.setItem("user", JSON.stringify(updated));
-      showToast("Profile Updated Successfully 🚀", "success");
+      // 2. Extract the fresh data directly from Database response
+      const updatedUserDB = res.data.user; 
+      
+      // 3. Update local storage with REAL database truth
+      localStorage.setItem("user", JSON.stringify(updatedUserDB));
+      
+      showToast("Profile Updated Successfully! 🚀", "success");
       window.dispatchEvent(new Event('userProfileUpdated'));
 
     } catch (err) {
-      // Agar backend route nahi mila, toh safe fallback use karega
-      console.warn("Backend route not found, updating locally only.");
-      const updated = { ...user, name, image };
-      localStorage.setItem("user", JSON.stringify(updated));
-      showToast("Profile Updated 🚀", "success");
-      window.dispatchEvent(new Event('userProfileUpdated'));
+      console.error("🔥 DB SYNC ERROR:", err);
+      showToast("Failed to update profile. Please try again.", "error");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -70,7 +101,7 @@ export default function Profile() {
     if (r === 'superadmin') return 'bg-slate-900 text-amber-400 border-slate-700';
     if (r === 'admin') return 'bg-blue-100 text-blue-700 border-blue-200';
     if (r === 'manager') return 'bg-purple-100 text-purple-700 border-purple-200';
-    return 'bg-emerald-100 text-emerald-700 border-emerald-200'; // Default User
+    return 'bg-emerald-100 text-emerald-700 border-emerald-200'; 
   };
 
   return (
@@ -81,17 +112,14 @@ export default function Profile() {
 
         <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.04)] border border-slate-100 dark:border-slate-800 overflow-hidden transition-colors duration-300">
           
-          {/* 🔥 COVER BANNER */}
           <div className="h-40 sm:h-48 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 relative">
             <div className="absolute inset-0 bg-white/10 mix-blend-overlay"></div>
           </div>
 
           <div className="px-6 sm:px-10 pb-10">
             
-            {/* 🔥 PROFILE HEADER (Overlapping Picture) */}
             <div className="flex flex-col sm:flex-row sm:items-end gap-6 -mt-16 sm:-mt-20 mb-8 relative z-10">
               
-              {/* Avatar Upload Container */}
               <div className="relative group w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-white dark:bg-slate-800 p-1.5 shadow-xl border border-slate-100 dark:border-slate-700 mx-auto sm:mx-0 shrink-0">
                 
                 {image && !imageError ? (
@@ -107,7 +135,6 @@ export default function Profile() {
                   </div>
                 )}
                 
-                {/* 📂 CHOOSE FROM PC OPTION */}
                 <input
                   type="file"
                   onChange={handleImage}
@@ -122,7 +149,6 @@ export default function Profile() {
                 </div>
               </div>
 
-              {/* User Info & Role Badge */}
               <div className="flex-1 text-center sm:text-left pb-2">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-1">
                   <h2 className="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight capitalize">
@@ -140,7 +166,6 @@ export default function Profile() {
               </div>
             </div>
 
-            {/* 🔥 NEW: AI AVATAR SELECTION GRID */}
             <div className="mb-10 bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-6 border border-slate-100 dark:border-slate-800 transition-all">
               <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                 <ImageIcon size={16} /> Choose an AI Avatar
@@ -162,15 +187,12 @@ export default function Profile() {
               <p className="text-[10px] text-slate-400 mt-4 italic">* You can either select an AI avatar above or click the profile circle to upload from your PC.</p>
             </div>
 
-            {/* 🔥 PROFILE FORM */}
             <div className="bg-slate-50/50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 sm:p-8">
               <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-6 flex items-center gap-2 pb-4 border-b border-slate-200 dark:border-slate-700">
                 <UserCircle size={20} className="text-indigo-600" /> Account Information
               </h3>
 
               <div className="grid md:grid-cols-2 gap-6">
-                
-                {/* Full Name Input */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider ml-1">Full Name</label>
                   <div className="relative group">
@@ -184,7 +206,6 @@ export default function Profile() {
                   </div>
                 </div>
 
-                {/* Email Input (Disabled) */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider ml-1">Email Address</label>
                   <div className="relative">
@@ -197,16 +218,15 @@ export default function Profile() {
                   </div>
                   <p className="text-[10px] text-slate-400 ml-1 font-medium mt-1 italic">Email is verified and cannot be changed.</p>
                 </div>
-
               </div>
 
-              {/* Save Button */}
               <div className="mt-8 flex justify-end">
                 <button
                   onClick={saveProfile}
-                  className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 shadow-md shadow-blue-500/25 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto justify-center"
+                  disabled={isSaving}
+                  className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 shadow-md shadow-blue-500/25 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Save size={18} /> Save Changes
+                  <Save size={18} /> {isSaving ? "Saving to DB..." : "Save Changes"}
                 </button>
               </div>
 
