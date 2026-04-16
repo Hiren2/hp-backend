@@ -60,7 +60,7 @@ export default function Profile() {
       console.warn("Backend route not found, updating locally only.");
       const updated = { ...user, name, image };
       localStorage.setItem("user", JSON.stringify(updated));
-      showToast("Profile Updated Locally 🚀", "success");
+      showToast("Profile Updated 🚀", "success");
       window.dispatchEvent(new Event('userProfileUpdated'));
     }
   };
