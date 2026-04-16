@@ -188,7 +188,7 @@ export default function Services() {
                     Flash <span className="text-purple-400">Sale</span> Live
                   </h2>
                   <p className="text-purple-100 font-medium text-sm sm:text-base max-w-md">
-                    Use code <strong>SERV5</strong> at checkout to get an instant 5% discount on all installation services.
+                    Use code <strong>SERV5</strong> at checkout to get an instant 5% discount on all services.
                   </p>
                 </div>
               </div>

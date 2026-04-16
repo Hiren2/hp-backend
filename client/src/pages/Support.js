@@ -27,7 +27,7 @@ const Support = () => {
         { 
             icon: <MapPin className="text-red-600" />, 
             title: "Our Office", 
-            detail: "Jamnagar, Gujarat", 
+            detail: "Ahmedabad, Gujarat", 
             sub: "Main Business Hub" 
         }
     ];

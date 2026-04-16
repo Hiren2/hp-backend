@@ -193,7 +193,7 @@ export default function Home() {
             <div className="max-w-2xl">
               <h2 className="text-sm font-bold text-blue-400 tracking-widest uppercase mb-2">Trusted By Enterprises</h2>
               <h3 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-                What Our Indian Clients Say
+                What Our Clients Say
               </h3>
             </div>
             <div className="flex items-center gap-1 bg-white/10 border border-white/20 px-4 py-2 rounded-xl">

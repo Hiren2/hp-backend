@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 import { MessageCircle, X, Send, Sparkles } from 'lucide-react';
-import api from '../utils/api'; // 🔥 Naya import add kiya
+import api from '../utils/api'; 
 
 const Chatbot = () => {
-    // 🛡️ STRICT ROLE CHECK: Sirf 'user' ko bot dikhega
     const storedUser = JSON.parse(localStorage.getItem("user")) || {};
     const rawRole = storedUser.role || "guest";
     const userRole = String(rawRole).toLowerCase().trim();
@@ -17,7 +15,6 @@ const Chatbot = () => {
     const chatEndRef = useRef(null);
 
     useEffect(() => {
-        // Agar user nahi hai, toh messages initialize karne ki zaroorat nahi
         if (userRole !== "user") return;
 
         const hour = new Date().getHours();
@@ -25,11 +22,11 @@ const Chatbot = () => {
         if (hour >= 5 && hour < 12) greeting = "Good Morning";
         else if (hour >= 12 && hour < 17) greeting = "Good Afternoon";
 
-        const name = storedUser.name || "Dost";
+        const name = storedUser.name || "User";
 
         setMessages([
             { text: `${greeting}, ${name}! 👋 I am ServiceBot AI.`, isBot: true },
-            { text: "Which language are you comfortable with?", isBot: true, isLangSelect: true }
+            { text: "Which language are you comfortable with? (English, Hindi, Gujarati)", isBot: true, isLangSelect: true }
         ]);
     }, [userRole, storedUser.name]);
 
@@ -37,7 +34,6 @@ const Chatbot = () => {
         chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); 
     }, [messages, isTyping]);
 
-    // 🛑 BLOCKER: Agar user role 'user' nahi hai, toh poora component gayab
     if (userRole !== "user") {
         return null;
     }
@@ -54,19 +50,17 @@ const Chatbot = () => {
         setIsTyping(true);
 
         try {
-            // 🔥 FIXED: Localhost ki jagah apna api instance use kiya
             const response = await api.post("/support/chat", 
                 { message: msgText, language: currentLang }
             );
             
-            setTimeout(() => {
-                setMessages(prev => [...prev, { text: response.data.reply, isBot: true }]);
-                setIsTyping(false);
-            }, 600);
+            // Artificial delay removed here because backend handles it now
+            setMessages(prev => [...prev, { text: response.data.reply, isBot: true }]);
+            setIsTyping(false);
         } catch (err) {
             console.error("Chat Error:", err);
             setIsTyping(false);
-            setMessages(prev => [...prev, { text: "Server connection error. Please refresh.", isBot: true }]);
+            setMessages(prev => [...prev, { text: "Network error. Please try again.", isBot: true }]);
         }
     };
 
@@ -92,7 +86,8 @@ const Chatbot = () => {
                         {messages.map((m, i) => (
                             <div key={i} className={`${m.isBot ? 'text-left' : 'text-right'}`}>
                                 <div className={`inline-block p-3.5 rounded-2xl text-[14px] shadow-sm max-w-[85%] ${m.isBot ? 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none border dark:border-slate-700' : 'bg-blue-600 text-white rounded-tr-none'}`}>
-                                    {m.text}
+                                    {/* Using dangerouslySetInnerHTML to parse the bold tags we sent from backend */}
+                                    <span dangerouslySetInnerHTML={{__html: m.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}} />
                                 </div>
                                 {m.isLangSelect && !selectedLang && (
                                     <div className="flex gap-2 mt-3 flex-wrap">
@@ -114,7 +109,7 @@ const Chatbot = () => {
                     </div>
 
                     <div className="p-4 bg-white dark:bg-slate-900 border-t dark:border-slate-800 flex items-center gap-3">
-                        <input value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} className="flex-1 bg-slate-100 dark:bg-slate-800 p-3 rounded-xl outline-none text-sm dark:text-white focus:ring-2 focus:ring-blue-200" placeholder="Ask me anything..." />
+                        <input value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} className="flex-1 bg-slate-100 dark:bg-slate-800 p-3 rounded-xl outline-none text-sm dark:text-white focus:ring-2 focus:ring-blue-200" placeholder="Type here..." />
                         <button onClick={() => handleSend()} className="bg-blue-600 hover:bg-blue-700 p-3 text-white rounded-xl shadow-lg"><Send size={18} /></button>
                     </div>
                 </div>
