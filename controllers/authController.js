@@ -263,15 +263,19 @@ const updateProfile = async (req, res) => {
     if (!req.user) return res.status(401).json({ message: "Not authenticated" });
     
     const { name, image } = req.body;
+    // Find the exact user by ID
     const user = await User.findById(req.user._id);
     
     if (!user) return res.status(404).json({ message: "User not found" });
 
+    // Update the values
     if (name) user.name = name;
     if (image) user.image = image;
 
-    await user.save({ validateBeforeSave: false });
+    // Await the save
+    await user.save();
 
+    // Return the updated data to the frontend so it syncs perfectly
     res.json({ 
       message: "Profile updated successfully in DB", 
       user: { 
@@ -295,5 +299,5 @@ module.exports = {
   resetPasswordWithDob,
   getWishlist,     
   toggleWishlist,
-  updateProfile // 🔥 Exported
+  updateProfile
 };

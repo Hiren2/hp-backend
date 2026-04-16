@@ -5,12 +5,8 @@ const AuditLog = require("../models/AuditLog");
 const Notification = require("../models/Notification"); 
 
 /* ================= HELPER: CREATE SMART NOTIFICATION ================= */
-
 const createNotification = async (userId, role, action, message, orderId) => {
   try {
-    // 🔥 FIX: AuditLog yahan se hata diya hai. Order updates ab Audit Logs mein kachra nahi karenge.
-    // Sirf Notifications table mein jayenge.
-
     await Notification.create({
       user: userId,
       title: getCatchyTitle(action),
@@ -19,7 +15,6 @@ const createNotification = async (userId, role, action, message, orderId) => {
       orderId: orderId,
       isRead: false
     });
-
   } catch (err) {
     console.error("🔥 NOTIFICATION SYSTEM ERROR:", err.message);
   }
@@ -40,15 +35,15 @@ const getCatchyTitle = (action) => {
 };
 
 /* ================= 🔥 BACKGROUND SYSTEMS (AUTO DELIVERY) ================= */
-
 const fixOldShippedOrders = async () => {
   try {
-    const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000);
+    // 🔥 Changed from 3 Hours to 2 Minutes for Presentation
+    const twoMinsAgo = new Date(Date.now() - 2 * 60 * 1000); 
 
     const updated = await Order.updateMany(
       {
         status: "Shipped",
-        updatedAt: { $lte: threeHoursAgo },
+        updatedAt: { $lte: twoMinsAgo },
       },
       {
         status: "Completed",
@@ -63,18 +58,19 @@ const fixOldShippedOrders = async () => {
 };
 
 const startAutoDeliveryChecker = () => {
+  // 🔥 Checks every 20 seconds instead of 5 minutes
   setInterval(async () => {
     try {
       const orders = await Order.find({ status: "Shipped" });
 
       for (const o of orders) {
-        const hoursPassed = (Date.now() - new Date(o.updatedAt)) / (1000 * 60 * 60);
-        const randomHours = 2 + Math.random(); 
-
-        if (hoursPassed >= randomHours) {
+        const timePassedMs = Date.now() - new Date(o.updatedAt).getTime();
+        
+        // If order has been shipped for more than 20 seconds, deliver it!
+        if (timePassedMs >= 20000) { 
           o.status = "Completed";
           o.completedAt = new Date();
-          o.resolutionTime = Math.round((o.completedAt - o.createdAt) / (1000 * 60 * 60));
+          o.resolutionTime = Math.round((o.completedAt - o.createdAt) / 1000); // Saving in seconds for demo
 
           await o.save({ validateBeforeSave: false });
 
@@ -92,13 +88,12 @@ const startAutoDeliveryChecker = () => {
     } catch (err) {
       console.error("AUTO DELIVERY ERROR:", err.message);
     }
-  }, 300000); 
+  }, 20000); 
 };
 
-/* ================= AUTO ORDER LIFECYCLE (THE STEPS) ================= */
-
+/* ================= AUTO ORDER LIFECYCLE (FAST PRESENTATION MODE) ================= */
 const startOrderLifecycle = (order) => {
-  // STEP 1: PROCESSING (After 2 Mins)
+  // STEP 1: PROCESSING (After 5 Seconds)
   setTimeout(async () => {
     try {
       const o = await Order.findById(order._id);
@@ -117,9 +112,9 @@ const startOrderLifecycle = (order) => {
     } catch (err) {
       console.error("PROCESSING ERROR:", err.message);
     }
-  }, 2 * 60 * 1000);
+  }, 5000); // 🔥 5 Seconds
 
-  // STEP 2: SHIPPED (After 5 Mins)
+  // STEP 2: SHIPPED (After 12 Seconds)
   setTimeout(async () => {
     try {
       const o = await Order.findById(order._id);
@@ -138,11 +133,9 @@ const startOrderLifecycle = (order) => {
     } catch (err) {
       console.error("SHIPPED ERROR:", err.message);
     }
-  }, 5 * 60 * 1000);
+  }, 12000); // 🔥 12 Seconds
 
-  // STEP 3: FINAL DELIVERY (Random 2–3 Hours)
-  const randomHours = 2 + Math.random(); 
-
+  // STEP 3: FINAL DELIVERY (After 20 Seconds)
   setTimeout(async () => {
     try {
       const o = await Order.findById(order._id);
@@ -150,7 +143,7 @@ const startOrderLifecycle = (order) => {
 
       o.status = "Completed";
       o.completedAt = new Date();
-      o.resolutionTime = Math.round((o.completedAt - o.createdAt) / (1000 * 60 * 60));
+      o.resolutionTime = Math.round((o.completedAt - o.createdAt) / 1000);
 
       await o.save({ validateBeforeSave: false });
 
@@ -164,11 +157,10 @@ const startOrderLifecycle = (order) => {
     } catch (err) {
       console.error("DELIVERY ERROR:", err.message);
     }
-  }, randomHours * 60 * 60 * 1000); 
+  }, 20000); // 🔥 20 Seconds
 };
 
 /* ================= CREATE ORDER (🔥 EXACT FINANCIAL CALCULATIONS 🔥) ================= */
-
 const createOrder = async (req, res) => {
   try {
     const { serviceId, priority, address, paymentMethod, couponCode, discountValue } = req.body;
@@ -178,7 +170,6 @@ const createOrder = async (req, res) => {
       return res.status(400).json({ message: "Complete address is required" });
     }
 
-    // 1. Service detail fetch karo taaki exact DB calculations ho sake
     const service = await Service.findById(serviceId);
     if (!service) return res.status(404).json({ message: "Service not found" });
 
@@ -186,26 +177,24 @@ const createOrder = async (req, res) => {
     const discount = Number(discountValue) || 0;
     const discountedPrice = Math.max(0, basePrice - discount);
     
-    // 2. Taxes aur Delivery calculate karo
     const taxAmount = Math.round(discountedPrice * 0.18);
     const deliveryCharge = discountedPrice === 0 ? 0 : (discountedPrice > 1000 ? 0 : 49);
     
-    // 3. Final Net Amount
     const totalAmount = discountedPrice + taxAmount + deliveryCharge;
 
     const order = await Order.create({
       user: req.user._id,
       service: serviceId,
-      status: "Pending", // Always pending on creation
+      status: "Pending", 
       paymentMethod: paymentMethod || "Online", 
       paymentStatus: "Pending", 
       priority: priority || "Medium",
       address,
       couponCode: couponCode || null,
       discountValue: discount,
-      taxAmount: taxAmount,          // 🔥 Exact Tax Saved
-      deliveryCharge: deliveryCharge, // 🔥 Exact Delivery Saved
-      totalAmount: totalAmount        // 🔥 Exact Final Price Saved
+      taxAmount: taxAmount,          
+      deliveryCharge: deliveryCharge, 
+      totalAmount: totalAmount        
     });
 
     await User.findByIdAndUpdate(req.user._id, { $inc: { totalOrders: 1 } });
@@ -239,7 +228,6 @@ const createOrder = async (req, res) => {
 };
 
 /* ================= USER ORDERS ================= */
-
 const getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user._id })
@@ -254,7 +242,6 @@ const getMyOrders = async (req, res) => {
 };
 
 /* ================= ADMIN / MANAGER ORDERS ================= */
-
 const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
@@ -271,7 +258,6 @@ const getAllOrders = async (req, res) => {
 };
 
 /* ================= UPDATE ORDER STATUS ================= */
-
 const updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -290,7 +276,6 @@ const updateOrderStatus = async (req, res) => {
 
     await order.save({ validateBeforeSave: false });
 
-    // 🔥 REAL RBAC FLOW: Manager approves, THEN lifecycle starts
     if (status === "Approved") {
       await createNotification(
         order.user,
@@ -299,6 +284,7 @@ const updateOrderStatus = async (req, res) => {
         "✅ Great news! Your order has been approved. We are preparing to start the service.",
         order._id
       );
+      // 🔥 Trigger the ultra-fast presentation lifecycle
       startOrderLifecycle(order);
     }
 
@@ -321,7 +307,6 @@ const updateOrderStatus = async (req, res) => {
 };
 
 /* ================= DELETE ORDER ================= */
-
 const deleteMyOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -342,7 +327,6 @@ const deleteMyOrder = async (req, res) => {
 };
 
 /* ================= MANAGER STATS ================= */
-
 const getManagerStats = async (req, res) => {
   try {
     const stats = await Promise.all([
@@ -370,7 +354,6 @@ const getManagerStats = async (req, res) => {
 };
 
 /* ================= ADMIN STATS ================= */
-
 const getAdminStats = async (req, res) => {
   try {
     const [totalUsers, totalServices, totalOrders] = await Promise.all([
@@ -416,7 +399,6 @@ const getAdminStats = async (req, res) => {
     ordersWithService.forEach(order => {
       const orderDateStr = new Date(order.createdAt).toDateString();
       const trendItem = revenueTrend.find(item => item.dateString === orderDateStr);
-      // 🔥 Using totalAmount for revenue analytics instead of base price!
       const revAmount = order.totalAmount !== undefined ? order.totalAmount : (order.service ? order.service.price : 0);
       
       if (trendItem && revAmount) {
@@ -448,7 +430,7 @@ const capturePayment = async (req, res) => {
       order.paymentStatus = "Paid";
       order.transactionId = "TXN_" + Math.random().toString(36).substr(2, 9).toUpperCase();
       
-      order.status = "Pending"; // User ka order manager ke liye pending hi rahega
+      order.status = "Pending"; 
       await order.save({ validateBeforeSave: false });
 
       await createNotification(
