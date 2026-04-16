@@ -43,8 +43,8 @@ exports.handleSupportChat = async (req, res) => {
         3. Keep the response to max 2-3 sentences.
         4. Use ONLY English alphabets (Latin Script).`;
 
-        // 🔥 THE ULTIMATE FIX: Using standard 'v1' API and the most stable 'gemini-1.5-flash' model
-        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        // 🔥 THE ULTIMATE FIX: Using 'v1beta' and the most stable 'gemini-pro' model
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
 
         // 5. Direct API Hit
         const response = await fetch(url, {
@@ -60,7 +60,7 @@ exports.handleSupportChat = async (req, res) => {
         // 6. Error Handling from Google
         if (!response.ok) {
             console.error("🔥 GOOGLE API ERROR DETAILS:", data);
-            return res.status(200).json({ reply: `🚨 AI System Error: ${data.error?.message || 'Connection Refused'}` });
+            return res.status(200).json({ reply: `🚨 AI System Error: Please check API key validity or region restrictions.` });
         }
 
         // 7. Success Reply

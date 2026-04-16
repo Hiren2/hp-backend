@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade, Pagination } from "swiper/modules";
@@ -18,13 +18,17 @@ import {
   X,
   Server,
   Code,
-  LineChart
+  LineChart,
+  UserCircle,
+  Key
 } from "lucide-react";
 
 export default function Home() {
+  const navigate = useNavigate();
   // 🔥 STATE FOR MODALS
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const [termsOpen, setTermsOpen] = useState(false);
+  const [demoOpen, setDemoOpen] = useState(false); // 🔥 NEW: Demo Gateway Modal State
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans overflow-x-hidden">
@@ -54,9 +58,10 @@ export default function Home() {
               <Link to="/login" className="hidden sm:block text-slate-600 font-bold hover:text-blue-600 transition-colors">
                 Sign In
               </Link>
-              <Link to="/register" className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-full font-bold transition-all shadow-md hover:shadow-xl transform hover:-translate-y-0.5">
+              {/* 🔥 CHANGED: Now opens the Demo Modal instead of going to register */}
+              <button onClick={() => setDemoOpen(true)} className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-full font-bold transition-all shadow-md hover:shadow-xl transform hover:-translate-y-0.5">
                 Explore Demo
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -94,9 +99,10 @@ export default function Home() {
                     H&P Solutions builds ready-to-serve, highly secure platforms. You demand it, we build it. The products inside are just a glimpse of what your future digital ecosystem could hold.
                   </p>
                   <div className="flex flex-wrap gap-4">
-                    <Link to="/register" className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 transition-all shadow-lg shadow-blue-500/25 hover:scale-105">
+                    {/* 🔥 CHANGED: Now opens the Demo Modal */}
+                    <button onClick={() => setDemoOpen(true)} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 transition-all shadow-lg shadow-blue-500/25 hover:scale-105">
                       View Live Demo <ArrowRight size={20} />
-                    </Link>
+                    </button>
                   </div>
                 </motion.div>
               </div>
@@ -124,8 +130,9 @@ export default function Home() {
                   <p className="text-xl text-emerald-100/80 mb-8 font-medium">
                     Experience advanced Role-Based Access Control, intelligent AI Chatbots, and automated workflows right out of the box. Your platform, engineered for the future.
                   </p>
+                  {/* Keep this as /register since it's for getting started/buying the product */}
                   <Link to="/register" className="bg-white text-emerald-900 hover:bg-emerald-50 px-8 py-4 rounded-full font-extrabold text-lg flex items-center gap-2 transition-all shadow-xl hover:scale-105 mx-auto w-max">
-                    Get Started
+                    Get Started Today
                   </Link>
                 </motion.div>
               </div>
@@ -292,11 +299,81 @@ export default function Home() {
         </Modal>
       )}
 
+      {/* 🔥 THE ULTIMATE MASTERSTROKE: DEMO ACCESS MODAL 🔥 */}
+      {demoOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white p-8 rounded-[2rem] shadow-2xl max-w-md w-full border border-slate-100 relative overflow-hidden"
+          >
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+            <button 
+              onClick={() => setDemoOpen(false)}
+              className="absolute top-6 right-6 text-slate-400 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition-colors"
+            >
+              <X size={18} />
+            </button>
+            
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-blue-100 shadow-sm">
+                <ShieldCheck size={32} />
+              </div>
+              <h2 className="font-extrabold text-2xl text-slate-800 mb-2">Access Live Demo</h2>
+              <p className="text-sm text-slate-500 font-medium">
+                To experience the full Role-Based Access Control (RBAC) architecture, please login using the test accounts below:
+              </p>
+            </div>
+            
+            <div className="space-y-3 mb-8">
+              {/* Super Admin Credentials */}
+              <div className="flex items-center gap-3 p-3 bg-slate-900 rounded-xl border border-slate-800">
+                <div className="bg-slate-800 p-2 rounded-lg text-amber-400"><Key size={16}/></div>
+                <div className="flex-1">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Super Admin</p>
+                  <p className="text-sm font-mono text-white">admin@hp.com / pass123</p>
+                </div>
+              </div>
+              
+              {/* Manager Credentials */}
+              <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-xl border border-purple-100">
+                <div className="bg-white p-2 rounded-lg text-purple-600 shadow-sm border border-purple-100"><UserCircle size={16}/></div>
+                <div className="flex-1">
+                  <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest">Manager Role</p>
+                  <p className="text-sm font-mono text-purple-900 font-bold">manager@hp.com / pass123</p>
+                </div>
+              </div>
+
+              {/* User Credentials */}
+              <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl border border-blue-100">
+                <div className="bg-white p-2 rounded-lg text-blue-600 shadow-sm border border-blue-100"><UserCircle size={16}/></div>
+                <div className="flex-1">
+                  <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Regular User</p>
+                  <p className="text-sm font-mono text-blue-900 font-bold">user@hp.com / pass123</p>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <button 
+                onClick={() => {
+                  setDemoOpen(false);
+                  navigate('/login');
+                }}
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3.5 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 hover:-translate-y-0.5"
+              >
+                Proceed to Login Dashboard <ArrowRight size={18} />
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
     </div>
   );
 }
 
-// 🔥 NEW: Category Card for "What We Offer" Section
+// 🔥 Category Card for "What We Offer" Section
 function CategoryCard({ icon, title, desc, delay }) {
   return (
     <motion.div 
