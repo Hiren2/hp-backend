@@ -38,29 +38,34 @@ const Chatbot = () => {
         return null;
     }
 
-    const handleSend = async (manualMsg = null, langChoice = null) => {
+    // 🔥 ENHANCED HANDLER FOR SEAMLESS NLP INTEGRATION
+    const handleSend = async (manualMsg = null, langChoice = null, hiddenIntent = false) => {
         const msgText = manualMsg || input;
         if (!msgText.trim() && !langChoice) return;
 
         const currentLang = langChoice || selectedLang || "English";
+        
+        // If user is selecting a language, set it
         if (langChoice) setSelectedLang(langChoice);
 
+        // Display user message
         setMessages(prev => [...prev, { text: msgText, isBot: false }]);
         setInput('');
         setIsTyping(true);
 
         try {
-            const response = await api.post("/support/chat", 
-                { message: msgText, language: currentLang }
-            );
+            // We pass the exact message to our advanced backend NLP
+            const response = await api.post("/support/chat", { 
+                message: msgText, 
+                language: currentLang 
+            });
             
-            // Artificial delay removed here because backend handles it now
             setMessages(prev => [...prev, { text: response.data.reply, isBot: true }]);
             setIsTyping(false);
         } catch (err) {
             console.error("Chat Error:", err);
             setIsTyping(false);
-            setMessages(prev => [...prev, { text: "Network error. Please try again.", isBot: true }]);
+            setMessages(prev => [...prev, { text: "Network anomaly detected. Please try again.", isBot: true }]);
         }
     };
 
@@ -91,9 +96,9 @@ const Chatbot = () => {
                                 </div>
                                 {m.isLangSelect && !selectedLang && (
                                     <div className="flex gap-2 mt-3 flex-wrap">
-                                        {['English', 'Hindi', 'Gujarati'].map(l => (
-                                            <button key={l} onClick={() => handleSend(`I prefer ${l}`, l)} className="bg-white dark:bg-slate-800 border-2 border-blue-500 text-blue-600 dark:text-blue-400 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-blue-600 hover:text-white transition-all">{l}</button>
-                                        ))}
+                                        <button onClick={() => handleSend("I prefer English", "English")} className="bg-white border-2 border-blue-500 text-blue-600 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-blue-600 hover:text-white transition-all">English</button>
+                                        <button onClick={() => handleSend("मुझे हिंदी पसंद है (Hindi)", "Hindi")} className="bg-white border-2 border-blue-500 text-blue-600 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-blue-600 hover:text-white transition-all">हिंदी</button>
+                                        <button onClick={() => handleSend("મને ગુજરાતી ગમે છે (Gujarati)", "Gujarati")} className="bg-white border-2 border-blue-500 text-blue-600 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-blue-600 hover:text-white transition-all">ગુજરાતી</button>
                                     </div>
                                 )}
                             </div>
@@ -109,7 +114,7 @@ const Chatbot = () => {
                     </div>
 
                     <div className="p-4 bg-white dark:bg-slate-900 border-t dark:border-slate-800 flex items-center gap-3">
-                        <input value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} className="flex-1 bg-slate-100 dark:bg-slate-800 p-3 rounded-xl outline-none text-sm dark:text-white focus:ring-2 focus:ring-blue-200" placeholder="Type here..." />
+                        <input value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} className="flex-1 bg-slate-100 dark:bg-slate-800 p-3 rounded-xl outline-none text-sm dark:text-white focus:ring-2 focus:ring-blue-200" placeholder="Type a message..." />
                         <button onClick={() => handleSend()} className="bg-blue-600 hover:bg-blue-700 p-3 text-white rounded-xl shadow-lg"><Send size={18} /></button>
                     </div>
                 </div>
