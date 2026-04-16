@@ -8,12 +8,10 @@ exports.handleSupportChat = async (req, res) => {
         const userId = req.user?._id || req.user?.id; 
         const apiKey = process.env.GEMINI_API_KEY;
 
-        // 1. API Key Check
         if (!apiKey) {
             return res.status(200).json({ reply: "🚨 ERROR: .env file mein GEMINI_API_KEY missing hai!" });
         }
 
-        // 2. Fetch User Orders for AI Context
         let orderContext = "No orders found.";
         if (userId) {
             const recentOrders = await Order.find({ user: userId }).populate("service").sort({ createdAt: -1 }).limit(3); 
@@ -25,28 +23,14 @@ exports.handleSupportChat = async (req, res) => {
             }
         }
 
-        // 3. THE MASTER PROMPT WITH CONTACT INFO
         const promptText = `You are ServiceBot, the official AI assistant for H&P ServiceHub.
-        
-        USER INFO:
-        - Name: ${userName}
-        - Language Preference: ${language || 'English'}
-        - Recent Orders: ${orderContext}
+        USER INFO: Name: ${userName}, Language: ${language || 'English'}, Recent Orders: ${orderContext}
+        CONTACT: Email: hp12@solution.in, Phone: 8050480504
+        STRICT INSTRUCTIONS: Reply intelligently to "${message}" in max 2-3 sentences. Use ONLY Latin script (English alphabets).`;
 
-        OFFICIAL CONTACT DETAILS:
-        - Email: hp12@solution.in
-        - Phone: 8050480504
-
-        STRICT INSTRUCTIONS:
-        1. If the user asks for contact information, email, phone number, or how to reach the owner/company, provide the details above.
-        2. Reply intelligently based on the user's msg: "${message}".
-        3. Keep the response to max 2-3 sentences.
-        4. Use ONLY English alphabets (Latin Script).`;
-
-        // 🔥 THE ULTIMATE FIX: Using 'v1beta' and the most stable 'gemini-pro' model
+        // 🔥 THE ULTIMATE FIX: gemini-pro is the most stable universally.
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
 
-        // 5. Direct API Hit
         const response = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -57,13 +41,11 @@ exports.handleSupportChat = async (req, res) => {
 
         const data = await response.json();
 
-        // 6. Error Handling from Google
         if (!response.ok) {
             console.error("🔥 GOOGLE API ERROR DETAILS:", data);
-            return res.status(200).json({ reply: `🚨 AI System Error: Please check API key validity or region restrictions.` });
+            return res.status(200).json({ reply: `🚨 AI Connection Error. Our servers are heavily loaded. Please contact 8050480504.` });
         }
 
-        // 7. Success Reply
         const aiReply = data.candidates[0].content.parts[0].text;
         res.status(200).json({ reply: aiReply });
 

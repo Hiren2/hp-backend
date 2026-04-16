@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade, Pagination } from "swiper/modules";
@@ -19,16 +19,20 @@ import {
   Server,
   Code,
   LineChart,
-  UserCircle,
-  Key
+  MessageSquareQuote
 } from "lucide-react";
 
 export default function Home() {
-  const navigate = useNavigate();
-  // 🔥 STATE FOR MODALS
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const [termsOpen, setTermsOpen] = useState(false);
-  const [demoOpen, setDemoOpen] = useState(false); // 🔥 NEW: Demo Gateway Modal State
+
+  // 🔥 SMART SCROLL LOGIC: Button pe click karte hi "What We Provide" pe le jayega
+  const scrollToExpertise = () => {
+    const section = document.getElementById("expertise-section");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans overflow-x-hidden">
@@ -38,7 +42,6 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center gap-3">
-              {/* 🔥 MODERN SVG MONOGRAM LOGO */}
               <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-lg rounded-full">
                 <circle cx="24" cy="24" r="24" fill="url(#paint0_linear)"/>
                 <path d="M14 14V34 M14 24H22 M22 14V34" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -58,9 +61,8 @@ export default function Home() {
               <Link to="/login" className="hidden sm:block text-slate-600 font-bold hover:text-blue-600 transition-colors">
                 Sign In
               </Link>
-              {/* 🔥 CHANGED: Now opens the Demo Modal instead of going to register */}
-              <button onClick={() => setDemoOpen(true)} className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-full font-bold transition-all shadow-md hover:shadow-xl transform hover:-translate-y-0.5">
-                Explore Demo
+              <button onClick={scrollToExpertise} className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-full font-bold transition-all shadow-md hover:shadow-xl transform hover:-translate-y-0.5">
+                Explore Platform
               </button>
             </div>
           </div>
@@ -96,12 +98,11 @@ export default function Home() {
                     Deploy Your Own <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">Enterprise Marketplace</span>
                   </h1>
                   <p className="text-lg text-slate-300 mb-8 font-medium max-w-xl leading-relaxed">
-                    H&P Solutions builds ready-to-serve, highly secure platforms. You demand it, we build it. The products inside are just a glimpse of what your future digital ecosystem could hold.
+                    H&P Solutions builds ready-to-serve, highly secure platforms. You demand it, we build it. Scroll down to see exactly what our platform ecosystem offers.
                   </p>
                   <div className="flex flex-wrap gap-4">
-                    {/* 🔥 CHANGED: Now opens the Demo Modal */}
-                    <button onClick={() => setDemoOpen(true)} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 transition-all shadow-lg shadow-blue-500/25 hover:scale-105">
-                      View Live Demo <ArrowRight size={20} />
+                    <button onClick={scrollToExpertise} className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 transition-all shadow-lg shadow-blue-500/25 hover:scale-105">
+                      View Our Solutions <ArrowRight size={20} />
                     </button>
                   </div>
                 </motion.div>
@@ -130,10 +131,9 @@ export default function Home() {
                   <p className="text-xl text-emerald-100/80 mb-8 font-medium">
                     Experience advanced Role-Based Access Control, intelligent AI Chatbots, and automated workflows right out of the box. Your platform, engineered for the future.
                   </p>
-                  {/* Keep this as /register since it's for getting started/buying the product */}
-                  <Link to="/register" className="bg-white text-emerald-900 hover:bg-emerald-50 px-8 py-4 rounded-full font-extrabold text-lg flex items-center gap-2 transition-all shadow-xl hover:scale-105 mx-auto w-max">
-                    Get Started Today
-                  </Link>
+                  <button onClick={scrollToExpertise} className="bg-white text-emerald-900 hover:bg-emerald-50 px-8 py-4 rounded-full font-extrabold text-lg flex items-center gap-2 transition-all shadow-xl hover:scale-105 mx-auto w-max">
+                    Discover Features
+                  </button>
                 </motion.div>
               </div>
             </div>
@@ -141,45 +141,92 @@ export default function Home() {
         </Swiper>
       </div>
 
-      {/* ================= WHAT WE OFFER SECTION (PaaS FOCUS) ================= */}
-      <div className="py-20 bg-slate-100 border-b border-slate-200">
+      {/* ================= WHAT WE OFFER SECTION ================= */}
+      {/* 🔥 ID 'expertise-section' IS USED FOR SMOOTH SCROLLING */}
+      <div id="expertise-section" className="py-20 bg-slate-100 border-b border-slate-200 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-14">
-            <h2 className="text-sm font-bold text-indigo-600 tracking-widest uppercase mb-2">Our Expertise</h2>
+            <h2 className="text-sm font-bold text-indigo-600 tracking-widest uppercase mb-2">Our Solutions</h2>
             <h3 className="text-3xl font-extrabold text-slate-800 sm:text-4xl">
-              Everything Your Business Needs
+              Everything We Provide In Our Platforms
             </h3>
             <p className="mt-4 text-lg text-slate-500 font-medium">
-              We specialize in creating robust, scalable, and white-label platforms tailored precisely to your client demands.
+              When you partner with H&P Solutions, you receive a full-stack, white-label ecosystem capable of handling these core operations:
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <CategoryCard 
               icon={<Code size={36} className="text-blue-500 group-hover:text-white transition-colors" />}
-              title="White-label Platforms"
-              desc="Custom e-commerce platforms ready to deploy. You demand it, we build it."
+              title="White-label E-Commerce"
+              desc="Sell physical products like Smart Devices and Hardware directly through a robust storefront."
               delay={0.1}
             />
             <CategoryCard 
               icon={<ShieldCheck size={36} className="text-emerald-500 group-hover:text-white transition-colors" />}
-              title="Enterprise RBAC"
-              desc="Secure architectures with distinct roles (SuperAdmin, Admin, Manager, User)."
+              title="Service Management"
+              desc="Book IT Maintenance, Cloud Deployments, and Software Installations seamlessly."
               delay={0.2}
             />
             <CategoryCard 
               icon={<Zap size={36} className="text-purple-500 group-hover:text-white transition-colors" />}
-              title="Smart Automation"
-              desc="Automated order lifecycles, dynamic QR payments, and AI bot integrations."
+              title="Enterprise RBAC"
+              desc="Secure architectures with distinct isolated roles (SuperAdmin, Admin, Manager, User)."
               delay={0.3}
             />
             <CategoryCard 
               icon={<LineChart size={36} className="text-rose-500 group-hover:text-white transition-colors" />}
               title="Live Telemetry"
-              desc="Real-time monitoring, financial analytics, and immutable audit logs."
+              desc="Real-time monitoring, financial analytics, and immutable audit logs for owners."
               delay={0.4}
             />
           </div>
+        </div>
+      </div>
+
+      {/* ================= 🔥 NEW: CLIENT REVIEWS / TESTIMONIALS 🔥 ================= */}
+      <div className="py-24 bg-slate-900 text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div className="max-w-2xl">
+              <h2 className="text-sm font-bold text-blue-400 tracking-widest uppercase mb-2">Trusted By Enterprises</h2>
+              <h3 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+                What Our Indian Clients Say
+              </h3>
+            </div>
+            <div className="flex items-center gap-1 bg-white/10 border border-white/20 px-4 py-2 rounded-xl">
+              <span className="font-extrabold text-2xl mr-2">4.9</span>
+              <Star size={20} fill="#FBBF24" className="text-yellow-400" />
+              <Star size={20} fill="#FBBF24" className="text-yellow-400" />
+              <Star size={20} fill="#FBBF24" className="text-yellow-400" />
+              <Star size={20} fill="#FBBF24" className="text-yellow-400" />
+              <Star size={20} fill="#FBBF24" className="text-yellow-400" />
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <ReviewCard 
+              name="Rahul Verma"
+              role="CTO, TechCorp India"
+              text="H&P Solutions completely transformed how we procure IT services. The automated workflows and the RBAC system are absolutely flawless."
+              delay={0.1}
+            />
+            <ReviewCard 
+              name="Sneha Desai"
+              role="Operations Head, Mumbai"
+              text="We needed a secure white-label platform for our inventory. H&P delivered exactly what we demanded. The live telemetry dashboard is a game-changer!"
+              delay={0.2}
+            />
+            <ReviewCard 
+              name="Amit Patel"
+              role="Managing Director, Gujarat"
+              text="The AI ServiceBot integration and dynamic UPI payment flows saved our support team hundreds of hours. Exceptional B2B platform development."
+              delay={0.3}
+            />
+          </div>
+
         </div>
       </div>
 
@@ -219,31 +266,17 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ================= TRUST SECTION ================= */}
+      {/* ================= TRUST/CTA SECTION ================= */}
       <div className="py-20 bg-slate-50 border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center justify-between text-white">
             <div className="max-w-xl mb-8 md:mb-0">
-              <h2 className="text-3xl font-extrabold mb-4">Ready to transform your operations?</h2>
-              <p className="text-blue-100 text-lg font-medium mb-6">Partner with H&P Solutions to launch a platform that scales with your ambition.</p>
-              <div className="flex gap-4 items-center">
-                <div className="flex -space-x-3">
-                  <div className="w-10 h-10 rounded-full border-2 border-indigo-500 bg-slate-300"></div>
-                  <div className="w-10 h-10 rounded-full border-2 border-indigo-500 bg-slate-400"></div>
-                  <div className="w-10 h-10 rounded-full border-2 border-indigo-500 bg-slate-500 flex items-center justify-center text-xs font-bold">+2k</div>
-                </div>
-                <div className="flex text-yellow-400">
-                  <Star size={16} fill="currentColor" />
-                  <Star size={16} fill="currentColor" />
-                  <Star size={16} fill="currentColor" />
-                  <Star size={16} fill="currentColor" />
-                  <Star size={16} fill="currentColor" />
-                </div>
-              </div>
+              <h2 className="text-3xl font-extrabold mb-4">Ready to scale your business operations?</h2>
+              <p className="text-blue-100 text-lg font-medium mb-6">Create an account to explore our dashboard and see the H&P Solutions ecosystem in action.</p>
             </div>
             <div>
               <Link to="/register" className="bg-white text-indigo-700 px-8 py-4 rounded-full font-extrabold text-lg transition-all shadow-xl hover:scale-105 hover:bg-slate-50 inline-block">
-                Start Your Journey
+                Create Free Account
               </Link>
             </div>
           </div>
@@ -254,7 +287,6 @@ export default function Home() {
       <footer className="bg-white border-t border-slate-200 pt-16 pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
-            {/* 🔥 FOOTER SMALL SVG LOGO */}
             <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-sm rounded-full">
               <circle cx="24" cy="24" r="24" fill="url(#paint0_linear_footer)"/>
               <path d="M14 14V34 M14 24H22 M22 14V34" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -299,81 +331,12 @@ export default function Home() {
         </Modal>
       )}
 
-      {/* 🔥 THE ULTIMATE MASTERSTROKE: DEMO ACCESS MODAL 🔥 */}
-      {demoOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white p-8 rounded-[2rem] shadow-2xl max-w-md w-full border border-slate-100 relative overflow-hidden"
-          >
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-            <button 
-              onClick={() => setDemoOpen(false)}
-              className="absolute top-6 right-6 text-slate-400 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition-colors"
-            >
-              <X size={18} />
-            </button>
-            
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-blue-100 shadow-sm">
-                <ShieldCheck size={32} />
-              </div>
-              <h2 className="font-extrabold text-2xl text-slate-800 mb-2">Access Live Demo</h2>
-              <p className="text-sm text-slate-500 font-medium">
-                To experience the full Role-Based Access Control (RBAC) architecture, please login using the test accounts below:
-              </p>
-            </div>
-            
-            <div className="space-y-3 mb-8">
-              {/* Super Admin Credentials */}
-              <div className="flex items-center gap-3 p-3 bg-slate-900 rounded-xl border border-slate-800">
-                <div className="bg-slate-800 p-2 rounded-lg text-amber-400"><Key size={16}/></div>
-                <div className="flex-1">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Super Admin</p>
-                  <p className="text-sm font-mono text-white">admin@hp.com / pass123</p>
-                </div>
-              </div>
-              
-              {/* Manager Credentials */}
-              <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-xl border border-purple-100">
-                <div className="bg-white p-2 rounded-lg text-purple-600 shadow-sm border border-purple-100"><UserCircle size={16}/></div>
-                <div className="flex-1">
-                  <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest">Manager Role</p>
-                  <p className="text-sm font-mono text-purple-900 font-bold">manager@hp.com / pass123</p>
-                </div>
-              </div>
-
-              {/* User Credentials */}
-              <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl border border-blue-100">
-                <div className="bg-white p-2 rounded-lg text-blue-600 shadow-sm border border-blue-100"><UserCircle size={16}/></div>
-                <div className="flex-1">
-                  <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Regular User</p>
-                  <p className="text-sm font-mono text-blue-900 font-bold">user@hp.com / pass123</p>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <button 
-                onClick={() => {
-                  setDemoOpen(false);
-                  navigate('/login');
-                }}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3.5 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 hover:-translate-y-0.5"
-              >
-                Proceed to Login Dashboard <ArrowRight size={18} />
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      )}
-
     </div>
   );
 }
 
-// 🔥 Category Card for "What We Offer" Section
+// 🔥 REUSABLE COMPONENTS
+
 function CategoryCard({ icon, title, desc, delay }) {
   return (
     <motion.div 
@@ -388,6 +351,36 @@ function CategoryCard({ icon, title, desc, delay }) {
       </div>
       <h3 className="text-xl font-extrabold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">{title}</h3>
       <p className="text-sm text-slate-500 font-medium leading-relaxed">{desc}</p>
+    </motion.div>
+  );
+}
+
+// 🔥 NEW: REVIEW CARD FOR INDIAN CLIENTS
+function ReviewCard({ name, role, text, delay }) {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay }}
+      viewport={{ once: true }}
+      className="bg-slate-800 border border-slate-700 p-8 rounded-3xl relative hover:bg-slate-800/80 transition-colors"
+    >
+      <MessageSquareQuote size={40} className="absolute top-6 right-6 text-slate-700 opacity-50" />
+      <div className="flex text-yellow-400 mb-4">
+        <Star size={16} fill="currentColor" /><Star size={16} fill="currentColor" />
+        <Star size={16} fill="currentColor" /><Star size={16} fill="currentColor" />
+        <Star size={16} fill="currentColor" />
+      </div>
+      <p className="text-slate-300 italic mb-6 leading-relaxed">"{text}"</p>
+      <div className="flex items-center gap-3">
+        <div className="w-12 h-12 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-full flex items-center justify-center text-white font-black text-lg shadow-inner">
+          {name.charAt(0)}
+        </div>
+        <div>
+          <h4 className="font-extrabold text-white">{name}</h4>
+          <p className="text-xs text-slate-400 font-medium">{role}</p>
+        </div>
+      </div>
     </motion.div>
   );
 }
