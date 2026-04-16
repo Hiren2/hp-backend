@@ -38,13 +38,13 @@ exports.handleSupportChat = async (req, res) => {
         - Phone: 8050480504
 
         STRICT INSTRUCTIONS:
-        1. If the user asks for contact information, email, phone number, or how to reach the owner/company, provide the details above (8050480504 / hp12@solution.in).
+        1. If the user asks for contact information, email, phone number, or how to reach the owner/company, provide the details above.
         2. Reply intelligently based on the user's msg: "${message}".
         3. Keep the response to max 2-3 sentences.
         4. Use ONLY English alphabets (Latin Script).`;
 
-        // 🔥 THE FIX IS HERE: Changed model to 'gemini-pro' which is universally supported
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+        // 🔥 THE ULTIMATE FIX: Using standard 'v1' API and the most stable 'gemini-1.5-flash' model
+        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
         // 5. Direct API Hit
         const response = await fetch(url, {
@@ -60,7 +60,7 @@ exports.handleSupportChat = async (req, res) => {
         // 6. Error Handling from Google
         if (!response.ok) {
             console.error("🔥 GOOGLE API ERROR DETAILS:", data);
-            return res.status(200).json({ reply: `🚨 Google API Error: ${data.error?.message || 'Unknown Error'}` });
+            return res.status(200).json({ reply: `🚨 AI System Error: ${data.error?.message || 'Connection Refused'}` });
         }
 
         // 7. Success Reply

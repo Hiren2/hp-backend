@@ -15,7 +15,10 @@ import {
   CheckCircle2, 
   Star,
   Zap,
-  X
+  X,
+  Server,
+  Code,
+  LineChart
 } from "lucide-react";
 
 export default function Home() {
@@ -31,12 +34,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center gap-3">
-              {/* 🔥 NEW MODERN SVG MONOGRAM LOGO */}
+              {/* 🔥 MODERN SVG MONOGRAM LOGO */}
               <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-lg rounded-full">
                 <circle cx="24" cy="24" r="24" fill="url(#paint0_linear)"/>
-                {/* H Letter Path */}
                 <path d="M14 14V34 M14 24H22 M22 14V34" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-                {/* P Letter Path */}
                 <path d="M28 34V14H33C35.7614 14 38 16.2386 38 19C38 21.7614 35.7614 24 33 24H28" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                 <defs>
                   <linearGradient id="paint0_linear" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
@@ -54,7 +55,7 @@ export default function Home() {
                 Sign In
               </Link>
               <Link to="/register" className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-full font-bold transition-all shadow-md hover:shadow-xl transform hover:-translate-y-0.5">
-                Get Started
+                Explore Demo
               </Link>
             </div>
           </div>
@@ -84,17 +85,17 @@ export default function Home() {
                   className="max-w-2xl text-white"
                 >
                   <span className="inline-block py-1 px-3 rounded-full bg-blue-500/20 text-blue-300 text-sm font-bold tracking-widest uppercase mb-4 border border-blue-500/30">
-                    Enterprise Grade Marketplace
+                    SaaS Platform Provider
                   </span>
                   <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
-                    Elevate Your Business with <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">Premium IT Services</span>
+                    Deploy Your Own <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">Enterprise Marketplace</span>
                   </h1>
                   <p className="text-lg text-slate-300 mb-8 font-medium max-w-xl leading-relaxed">
-                    Secure, scalable, and automated. Experience the next generation of professional service booking with advanced Role-Based Access Control.
+                    H&P Solutions builds ready-to-serve, highly secure platforms. You demand it, we build it. The products inside are just a glimpse of what your future digital ecosystem could hold.
                   </p>
                   <div className="flex flex-wrap gap-4">
                     <Link to="/register" className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 transition-all shadow-lg shadow-blue-500/25 hover:scale-105">
-                      Explore Services <ArrowRight size={20} />
+                      View Live Demo <ArrowRight size={20} />
                     </Link>
                   </div>
                 </motion.div>
@@ -102,7 +103,7 @@ export default function Home() {
             </div>
           </SwiperSlide>
 
-          {/* SLIDE 2: Promotional/Coupon Focus */}
+          {/* SLIDE 2: Tech & AI Focus */}
           <SwiperSlide>
             <div className="relative w-full h-full flex items-center bg-gradient-to-br from-emerald-900 via-teal-900 to-slate-900 overflow-hidden">
               <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl"></div>
@@ -118,13 +119,13 @@ export default function Home() {
                     <Zap size={40} className="text-emerald-400" />
                   </div>
                   <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
-                    Unlock Special Offers on <br/><span className="text-emerald-400">Premium Installations</span>
+                    Built-in <span className="text-emerald-400">Smart AI & Automation</span>
                   </h1>
                   <p className="text-xl text-emerald-100/80 mb-8 font-medium">
-                    Use code <span className="bg-white text-emerald-900 px-3 py-1 rounded-md font-black tracking-widest mx-1">SERV5</span> at checkout to get Flat 5% OFF on your first booking!
+                    Experience advanced Role-Based Access Control, intelligent AI Chatbots, and automated workflows right out of the box. Your platform, engineered for the future.
                   </p>
                   <Link to="/register" className="bg-white text-emerald-900 hover:bg-emerald-50 px-8 py-4 rounded-full font-extrabold text-lg flex items-center gap-2 transition-all shadow-xl hover:scale-105 mx-auto w-max">
-                    Claim Offer Now
+                    Get Started
                   </Link>
                 </motion.div>
               </div>
@@ -133,15 +134,58 @@ export default function Home() {
         </Swiper>
       </div>
 
-      {/* ================= FEATURES SECTION ================= */}
+      {/* ================= WHAT WE OFFER SECTION (PaaS FOCUS) ================= */}
+      <div className="py-20 bg-slate-100 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <h2 className="text-sm font-bold text-indigo-600 tracking-widest uppercase mb-2">Our Expertise</h2>
+            <h3 className="text-3xl font-extrabold text-slate-800 sm:text-4xl">
+              Everything Your Business Needs
+            </h3>
+            <p className="mt-4 text-lg text-slate-500 font-medium">
+              We specialize in creating robust, scalable, and white-label platforms tailored precisely to your client demands.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <CategoryCard 
+              icon={<Code size={36} className="text-blue-500 group-hover:text-white transition-colors" />}
+              title="White-label Platforms"
+              desc="Custom e-commerce platforms ready to deploy. You demand it, we build it."
+              delay={0.1}
+            />
+            <CategoryCard 
+              icon={<ShieldCheck size={36} className="text-emerald-500 group-hover:text-white transition-colors" />}
+              title="Enterprise RBAC"
+              desc="Secure architectures with distinct roles (SuperAdmin, Admin, Manager, User)."
+              delay={0.2}
+            />
+            <CategoryCard 
+              icon={<Zap size={36} className="text-purple-500 group-hover:text-white transition-colors" />}
+              title="Smart Automation"
+              desc="Automated order lifecycles, dynamic QR payments, and AI bot integrations."
+              delay={0.3}
+            />
+            <CategoryCard 
+              icon={<LineChart size={36} className="text-rose-500 group-hover:text-white transition-colors" />}
+              title="Live Telemetry"
+              desc="Real-time monitoring, financial analytics, and immutable audit logs."
+              delay={0.4}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* ================= FEATURES SECTION (The Tech Behind It) ================= */}
       <div className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight sm:text-4xl">
-              Why Choose H&P Solutions?
-            </h2>
+            <h2 className="text-sm font-bold text-blue-600 tracking-widest uppercase mb-2">The Architecture</h2>
+            <h3 className="text-3xl font-extrabold text-slate-800 tracking-tight sm:text-4xl">
+              Why Partner With H&P Solutions?
+            </h3>
             <p className="mt-4 text-lg text-slate-500 font-medium">
-              We don't just provide services; we provide a fully automated, secure, and transparent ecosystem for your business.
+              We don't just provide a service; we provide a fully automated, secure, and transparent IT ecosystem powered by advanced full-stack technology.
             </p>
           </div>
 
@@ -149,20 +193,20 @@ export default function Home() {
             <FeatureCard 
               delay={0.1}
               icon={<ShieldCheck size={32} className="text-blue-600" />}
-              title="Advanced RBAC Security"
-              desc="Strict 4-tier hierarchy (User, Manager, Admin, SuperAdmin) ensuring ultimate data privacy and authorized access only."
+              title="Advanced Security"
+              desc="Bank-level data protection and isolated authorization layers ensuring ultimate data privacy."
             />
             <FeatureCard 
               delay={0.2}
               icon={<Cpu size={32} className="text-indigo-600" />}
               title="Automated Workflows"
-              desc="From pending to shipped, experience our automated lifecycle engine that updates statuses and notifies you in real-time."
+              desc="Experience our background engine that updates statuses, triggers webhooks, and notifies users in real-time."
             />
             <FeatureCard 
               delay={0.3}
               icon={<Layers size={32} className="text-purple-600" />}
               title="Immutable Audit Logs"
-              desc="Enterprise-grade accountability. Every critical administrative action is securely tracked and monitored by Super Admins."
+              desc="Enterprise-grade accountability. Every critical administrative action is securely tracked and monitored."
             />
           </div>
         </div>
@@ -174,7 +218,7 @@ export default function Home() {
           <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center justify-between text-white">
             <div className="max-w-xl mb-8 md:mb-0">
               <h2 className="text-3xl font-extrabold mb-4">Ready to transform your operations?</h2>
-              <p className="text-blue-100 text-lg font-medium mb-6">Join thousands of enterprises already using our platform to scale their service procurement securely.</p>
+              <p className="text-blue-100 text-lg font-medium mb-6">Partner with H&P Solutions to launch a platform that scales with your ambition.</p>
               <div className="flex gap-4 items-center">
                 <div className="flex -space-x-3">
                   <div className="w-10 h-10 rounded-full border-2 border-indigo-500 bg-slate-300"></div>
@@ -192,7 +236,7 @@ export default function Home() {
             </div>
             <div>
               <Link to="/register" className="bg-white text-indigo-700 px-8 py-4 rounded-full font-extrabold text-lg transition-all shadow-xl hover:scale-105 hover:bg-slate-50 inline-block">
-                Create Free Account
+                Start Your Journey
               </Link>
             </div>
           </div>
@@ -219,7 +263,6 @@ export default function Home() {
           </div>
           <div className="flex gap-6 text-sm font-semibold text-slate-500">
             <Link to="/login" className="hover:text-blue-600 transition-colors">Admin Login</Link>
-            {/* 🔥 UPDATED: Modal Triggers */}
             <button onClick={() => setPrivacyOpen(true)} className="hover:text-blue-600 transition-colors">Privacy Policy</button>
             <button onClick={() => setTermsOpen(true)} className="hover:text-blue-600 transition-colors">Terms of Service</button>
           </div>
@@ -253,6 +296,25 @@ export default function Home() {
   );
 }
 
+// 🔥 NEW: Category Card for "What We Offer" Section
+function CategoryCard({ icon, title, desc, delay }) {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay }}
+      viewport={{ once: true }}
+      className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+    >
+      <div className="w-16 h-16 rounded-2xl bg-slate-50 group-hover:bg-indigo-600 flex items-center justify-center mb-5 transition-colors duration-300 border border-slate-100 group-hover:border-indigo-600">
+        {icon}
+      </div>
+      <h3 className="text-xl font-extrabold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">{title}</h3>
+      <p className="text-sm text-slate-500 font-medium leading-relaxed">{desc}</p>
+    </motion.div>
+  );
+}
+
 function FeatureCard({ icon, title, desc, delay }) {
   return (
     <motion.div 
@@ -278,7 +340,6 @@ function FeatureCard({ icon, title, desc, delay }) {
   );
 }
 
-// 🔥 NEW: Reusable Modal Component
 function Modal({ title, children, close }) {
   return (
     <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
