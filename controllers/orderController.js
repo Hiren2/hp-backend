@@ -8,15 +8,8 @@ const Notification = require("../models/Notification");
 
 const createNotification = async (userId, role, action, message, orderId) => {
   try {
-    await AuditLog.create({
-      actor: userId,
-      actorRole: role,
-      action,
-      target: "Order",
-      targetId: orderId,
-      meta: { message },
-      severity: "info",
-    });
+    // 🔥 FIX: AuditLog yahan se hata diya hai. Order updates ab Audit Logs mein kachra nahi karenge.
+    // Sirf Notifications table mein jayenge.
 
     await Notification.create({
       user: userId,
@@ -452,7 +445,6 @@ const capturePayment = async (req, res) => {
     if (!order) return res.status(404).json({ message: "Order not found" });
 
     if (status === "success") {
-      // 🔥 THE FIX IS HERE 🔥
       order.paymentStatus = "Paid";
       order.transactionId = "TXN_" + Math.random().toString(36).substr(2, 9).toUpperCase();
       
@@ -464,8 +456,6 @@ const capturePayment = async (req, res) => {
         "💳 Payment Successful! Your order has been placed and is waiting for manager approval.", 
         order._id
       );
-      
-      // Removed startOrderLifecycle(order) from here. It will run only when Manager approves.
 
       res.json({ message: "Payment Captured & Order Pending Approval", order });
     } else {

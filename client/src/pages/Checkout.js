@@ -173,7 +173,7 @@ export default function Checkout() {
 
   const handleVerifyUpi = () => {
     if (!isAddressValid) {
-      showToast("Pehle delivery details (Address) fill karo! 🏠", "error");
+      showToast("Please Fill out the delivery details (Address) first! 🏠", "error");
       return;
     }
     if (!upiId.includes('@') || upiId.length < 5) {
@@ -300,7 +300,7 @@ export default function Checkout() {
                             type="text" 
                             value={upiId} 
                             onChange={(e) => setUpiId(e.target.value.toLowerCase())} 
-                            placeholder="e.g. hiren@okicici" 
+                            placeholder="e.g. dev@okicici" 
                             className="flex-1 bg-white border border-slate-200 px-4 py-3.5 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-semibold"
                           />
                           <button 

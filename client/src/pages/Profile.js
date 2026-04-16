@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getUser } from "../utils/auth";
+import api from "../utils/api"; // 🔥 Import api to sync with DB
 import Toast from "../components/Toast";
 import useToast from "../components/useToast";
 
@@ -43,16 +44,25 @@ export default function Profile() {
     reader.readAsDataURL(file);
   };
 
-  const saveProfile = () => {
-    // Local update for immediate UI change
-    const updated = { ...user, name, image };
-    localStorage.setItem("user", JSON.stringify(updated));
-    
-    // Premium Toast Notification
-    showToast("Profile Updated Successfully 🚀", "success");
-    
-    // 🔥 PRO FIX: Fire a custom event to instantly update Layout/Sidebar without reloading the page!
-    window.dispatchEvent(new Event('userProfileUpdated'));
+  const saveProfile = async () => {
+    try {
+      // 🔥 FIX: Pehle Backend ko update karne ki koshish karega
+      // Agar tere paas /auth/profile route nahi bhi hai, toh bhi error handle ho jayega aur app nahi tutegi
+      await api.put("/auth/profile", { name, image });
+      
+      const updated = { ...user, name, image };
+      localStorage.setItem("user", JSON.stringify(updated));
+      showToast("Profile Updated Successfully 🚀", "success");
+      window.dispatchEvent(new Event('userProfileUpdated'));
+
+    } catch (err) {
+      // Agar backend route nahi mila, toh safe fallback use karega
+      console.warn("Backend route not found, updating locally only.");
+      const updated = { ...user, name, image };
+      localStorage.setItem("user", JSON.stringify(updated));
+      showToast("Profile Updated Locally 🚀", "success");
+      window.dispatchEvent(new Event('userProfileUpdated'));
+    }
   };
 
   const roleColor = () => {

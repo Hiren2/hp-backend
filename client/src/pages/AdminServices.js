@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../api/api";
+import api from "../utils/api";
 import GlobalLoader from "../components/GlobalLoader";
 import EmptyState from "../components/EmptyState";
 import Toast from "../components/Toast";
@@ -16,7 +16,8 @@ import {
   Tag,
   DollarSign,
   AlignLeft,
-  Settings
+  Settings,
+  Link as LinkIcon
 } from "lucide-react";
 
 export default function AdminServices() {
@@ -30,7 +31,11 @@ export default function AdminServices() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null);
+  
+  // 🔥 IMAGE FIX: Added imageUrl state for permanent links
+  const [image, setImage] = useState(null); 
+  const [imageUrl, setImageUrl] = useState(""); 
+  
   const [category, setCategory] = useState("");
 
   const [editingId, setEditingId] = useState(null);
@@ -39,6 +44,7 @@ export default function AdminServices() {
     price: "",
     description: "",
     image: null,
+    imageUrl: "", // Fixed edit state for URL
     category: ""
   });
 
@@ -79,7 +85,12 @@ export default function AdminServices() {
       formData.append("description", description);
       formData.append("category", category);
 
-      if (image) formData.append("image", image);
+      // 🔥 FIX: Backend ko URL bhej do directly agar diya hai, warna file
+      if (imageUrl) {
+          formData.append("image", imageUrl);
+      } else if (image) {
+          formData.append("image", image);
+      }
 
       await api.post("/services", formData);
 
@@ -87,6 +98,7 @@ export default function AdminServices() {
       setPrice("");
       setDescription("");
       setImage(null);
+      setImageUrl("");
       setCategory("");
       setShowForm(false);
 
@@ -100,11 +112,16 @@ export default function AdminServices() {
   /* ================= EDIT ================= */
   const startEdit = (s) => {
     setEditingId(s._id);
+    
+    // Check if the existing image is a URL or a file path
+    const isLink = s.image && s.image.startsWith("http") && !s.image.includes("localhost") && !s.image.includes("uploads");
+    
     setEditData({
       name: s.name,
       price: s.price,
       description: s.description || "",
       image: null,
+      imageUrl: isLink ? s.image : "", 
       category: s.category || ""
     });
   };
@@ -122,7 +139,9 @@ export default function AdminServices() {
       formData.append("description", editData.description);
       formData.append("category", editData.category);
 
-      if (editData.image) {
+      if (editData.imageUrl) {
+        formData.append("image", editData.imageUrl);
+      } else if (editData.image) {
         formData.append("image", editData.image);
       }
 
@@ -195,7 +214,7 @@ export default function AdminServices() {
           </div>
         </div>
 
-        {/* 📝 ADD NEW SERVICE FORM (Animated & Premium) */}
+        {/* 📝 ADD NEW SERVICE FORM */}
         {showForm && (
           <form onSubmit={addService} className="bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-[1.5rem] shadow-lg border border-slate-100 animate-fadeIn border-t-4 border-t-indigo-500">
             <h2 className="text-lg font-bold text-slate-800 mb-5 flex items-center gap-2">
@@ -228,11 +247,39 @@ export default function AdminServices() {
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-600 ml-1">Cover Image</label>
-                <div className="relative group">
-                  <ImageIcon size={16} className="absolute left-3.5 top-3 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
-                  <input type="file" onChange={(e)=>setImage(e.target.files[0])} className="w-full bg-slate-50 border border-slate-200 pl-10 pr-4 py-2 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100"/>
+              {/* 🔥 IMAGE UPLOAD OR URL (THE FIX) */}
+              <div className="space-y-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 ml-1 flex justify-between">
+                  <span>Cover Image</span>
+                  <span className="text-slate-400">Best approach: Use Image Link</span>
+                </label>
+                
+                <div className="flex flex-col gap-2 mt-1">
+                  <div className="relative group">
+                    <LinkIcon size={14} className="absolute left-3 top-2.5 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                    <input 
+                      type="url" 
+                      value={imageUrl} 
+                      onChange={(e) => { setImageUrl(e.target.value); setImage(null); }} 
+                      placeholder="Paste Image URL here (Recommended)" 
+                      className="w-full bg-white border border-slate-200 pl-9 pr-4 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-xs font-medium"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="h-px bg-slate-200 flex-1"></div>
+                    <span className="text-[10px] font-bold text-slate-400">OR</span>
+                    <div className="h-px bg-slate-200 flex-1"></div>
+                  </div>
+
+                  <div className="relative group">
+                    <ImageIcon size={14} className="absolute left-3 top-2.5 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                    <input 
+                      type="file" 
+                      onChange={(e) => { setImage(e.target.files[0]); setImageUrl(""); }} 
+                      className="w-full bg-white border border-slate-200 pl-9 pr-4 py-1.5 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-xs font-medium file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -284,7 +331,7 @@ export default function AdminServices() {
                 <div className="p-5 flex flex-col flex-1">
                   {editingId === s._id ? (
                     
-                    /* 🔥 INLINE EDIT FORM (Compact) */
+                    /* 🔥 INLINE EDIT FORM */
                     <div className="flex flex-col gap-3 animate-fadeIn">
                       <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-1">
                         <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">Editing Service</span>
@@ -292,7 +339,17 @@ export default function AdminServices() {
                       <input value={editData.name} onChange={(e)=>setEditData({...editData, name:e.target.value})} placeholder="Name" className="w-full bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-indigo-500/20 outline-none" />
                       <input value={editData.price} onChange={(e)=>setEditData({...editData, price:e.target.value})} placeholder="Price" type="number" className="w-full bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-indigo-500/20 outline-none" />
                       <input value={editData.category} onChange={(e)=>setEditData({...editData, category:e.target.value})} placeholder="Category" className="w-full bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-indigo-500/20 outline-none" />
-                      <input type="file" onChange={(e)=>setEditData({...editData, image:e.target.files[0]})} className="text-xs w-full file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-indigo-50 file:text-indigo-600" />
+                      
+                      {/* Edit Image Field */}
+                      <input 
+                        type="url" 
+                        value={editData.imageUrl} 
+                        onChange={(e)=>setEditData({...editData, imageUrl:e.target.value, image:null})} 
+                        placeholder="Paste Image URL" 
+                        className="w-full bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500/20 outline-none" 
+                      />
+                      <input type="file" onChange={(e)=>setEditData({...editData, image:e.target.files[0], imageUrl:""})} className="text-xs w-full file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:bg-indigo-50 file:text-indigo-600" />
+                      
                       <textarea value={editData.description} onChange={(e)=>setEditData({...editData, description:e.target.value})} placeholder="Description" rows="2" className="w-full bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none resize-none" />
                       
                       <div className="flex gap-2 mt-2">

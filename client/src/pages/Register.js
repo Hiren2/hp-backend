@@ -191,7 +191,7 @@ export default function Register() {
                 label="Full Name"
                 icon={User}
                 type="text"
-                placeholder="John Doe"
+                placeholder="Name"
                 value={form.name}
                 onChange={(v) => setForm({ ...form, name: v })}
               />
@@ -200,7 +200,7 @@ export default function Register() {
                 label="Email Address"
                 icon={Mail}
                 type="email"
-                placeholder="john@example.com"
+                placeholder="email@example.com"
                 value={form.email}
                 onChange={(v) => setForm({ ...form, email: v })}
               />

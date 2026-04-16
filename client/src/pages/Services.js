@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../api/api";
+import api from "../utils/api";
 import GlobalLoader from "../components/GlobalLoader";
 import EmptyState from "../components/EmptyState";
 import Toast from "../components/Toast";
@@ -14,7 +14,7 @@ import "swiper/css/effect-fade";
 import "swiper/css/pagination";
 
 import {
-  Star, ShoppingCart, Search, Filter, ArrowRight, CheckCircle, Heart, Zap, Users
+  Star, ShoppingCart, Search, Filter, CheckCircle, Heart, Zap, Users
 } from "lucide-react";
 
 export default function Services() {
@@ -29,14 +29,6 @@ export default function Services() {
   const { toast, showToast } = useToast();
   const { addToCart, cart } = useCart();
   const navigate = useNavigate();
-
-  const placeholderImages = [
-    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80",
-    "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80",
-    "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80",
-    "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80",
-    "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80"
-  ];
 
   useEffect(() => {
     fetchServices();
@@ -59,7 +51,6 @@ export default function Services() {
       data.sort((a, b) => b.price - a.price);
     }
     if (sort === "rating") {
-      // 🔥 USING THE NEW REAL RATING FOR SORTING
       data.sort((a, b) => (b.realAvgRating || 0) - (a.realAvgRating || 0));
     }
 
@@ -71,11 +62,6 @@ export default function Services() {
       const res = await api.get("/services");
       let data = res.data;
 
-      // ======================================================================
-      // 🔥 THE ULTIMATE BULLETPROOF FIX: FRONTEND RATING ENGINE
-      // Backend ko bypass karke hum khud har service ke review nikalenge
-      // jaise details page karta hai, isse 100% guarantee actual stars dikhenge!
-      // ======================================================================
       const servicesWithRealRatings = await Promise.all(
         data.map(async (service) => {
           try {
@@ -85,7 +71,6 @@ export default function Services() {
             if (reviews && reviews.length > 0) {
               const total = reviews.length;
               const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / total;
-              // Naye variables inject kar diye service object mein
               return { ...service, realAvgRating: avg, realTotalReviews: total };
             }
             return { ...service, realAvgRating: service.averageRating || 0, realTotalReviews: service.totalReviews || 0 };
@@ -251,9 +236,14 @@ export default function Services() {
             {filtered.map((service, index) => {
               const exists = cart.find((s) => s._id === service._id);
               const isWished = wishlist.includes(service._id); 
-              const imageSrc = service.image || placeholderImages[index % placeholderImages.length];
+              
+              // 🔥 SMART PLACEHOLDER LOGIC 🔥
+              // Agar photo nahi hai ya ud gayi hai, toh product ka naam generate hoke photo ban jayega
+              const encodedName = encodeURIComponent(service.name || "Product");
+              const smartPlaceholder = `https://placehold.co/600x400/f8fafc/334155?text=${encodedName}`;
+              
+              const imageSrc = service.image || smartPlaceholder;
 
-              // 🔥 USING THE CALCULATED VARIABLES
               const avgRating = service.realAvgRating || 0;
               const totalUsers = service.realTotalReviews || 0;
 
@@ -265,7 +255,7 @@ export default function Services() {
                   key={service._id}
                   className="bg-white dark:bg-slate-900 rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 dark:border-slate-800 hover:shadow-[0_12px_30px_rgb(0,0,0,0.08)] transition-all duration-300 overflow-hidden group flex flex-col"
                 >
-                  <div className="relative h-48 overflow-hidden bg-white flex items-center justify-center p-4 cursor-pointer" onClick={() => navigate(`/services/${service._id}`)}>
+                  <div className="relative h-48 overflow-hidden bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-4 cursor-pointer" onClick={() => navigate(`/services/${service._id}`)}>
                     
                     <button
                       onClick={(e) => {
@@ -283,10 +273,15 @@ export default function Services() {
                       />
                     </button>
 
+                    {/* 🔥 IMAGE WITH SMART ERROR FALLBACK */}
                     <img
                       src={imageSrc}
                       alt={service.name}
-                      className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                      onError={(e) => {
+                        e.target.onerror = null; 
+                        e.target.src = smartPlaceholder; // Error aane par naam wali photo aayegi
+                      }}
+                      className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700 ease-in-out mix-blend-multiply dark:mix-blend-normal"
                     />
                     
                     <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
@@ -311,7 +306,7 @@ export default function Services() {
                     </div>
                   </div>
 
-                  <div className="p-5 flex flex-col flex-1 bg-white dark:bg-slate-900 z-20 relative border-t border-slate-50">
+                  <div className="p-5 flex flex-col flex-1 bg-white dark:bg-slate-900 z-20 relative border-t border-slate-50 dark:border-slate-800">
                     <div className="flex-1 cursor-pointer" onClick={() => navigate(`/services/${service._id}`)}>
                       <h2 className="text-lg font-extrabold text-slate-800 dark:text-white group-hover:text-blue-600 transition-colors line-clamp-1 mb-1.5">
                         {service.name}
