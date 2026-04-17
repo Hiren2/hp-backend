@@ -88,7 +88,7 @@ const startAutoDeliveryChecker = () => {
   }, 20000); 
 };
 
-/* ================= AUTO ORDER LIFECYCLE (FAST PRESENTATION MODE) ================= */
+/* ================= AUTO ORDER LIFECYCLE ================= */
 const startOrderLifecycle = (order) => {
   setTimeout(async () => {
     try {
@@ -167,7 +167,7 @@ const createOrder = async (req, res) => {
     const service = await Service.findById(serviceId);
     if (!service) return res.status(404).json({ message: "Service not found" });
 
-    const basePrice = service.price || 0;
+    const basePrice = service.price || service.basePrice || 0;
     const discount = Number(discountValue) || 0;
     const discountedPrice = Math.max(0, basePrice - discount);
     
@@ -367,12 +367,11 @@ const getAdminStats = async (req, res) => {
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const todayOrders = await Order.countDocuments({ createdAt: { $gte: today } });
 
-    // Fetching ALL past orders
+    // 🔥 BULLETPROOF FIX: Only fetch orders that actually matter for revenue
     const ordersWithService = await Order.find({
-      status: { $ne: "Rejected" } 
-    }).populate("service", "price");
+      status: { $in: ["Approved", "Processing", "Shipped", "Completed"] } 
+    }).populate("service");
 
-    // Pre-fill the week days
     let revenueTrend = [
       { name: "Sun", revenue: 0 },
       { name: "Mon", revenue: 0 },
@@ -386,14 +385,18 @@ const getAdminStats = async (req, res) => {
     // Map ALL real historical orders to their respective day of the week
     ordersWithService.forEach(order => {
       const orderDay = new Date(order.createdAt).getDay(); 
-      const revAmount = order.totalAmount !== undefined ? order.totalAmount : (order.service ? order.service.price : 0);
       
-      if (revAmount) {
+      // Fallback logic in case totalAmount wasn't saved in older DB records
+      let revAmount = Number(order.totalAmount);
+      if (isNaN(revAmount) || revAmount === 0) {
+          revAmount = (order.service && order.service.price) ? Number(order.service.price) : 0;
+      }
+      
+      if (revAmount > 0) {
         revenueTrend[orderDay].revenue += revAmount; 
       }
     });
 
-    // Reorder array so today is at the end (continuous graph)
     const currentDayIndex = new Date().getDay();
     const sortedRevenueTrend = [
       ...revenueTrend.slice(currentDayIndex + 1),
@@ -447,11 +450,8 @@ const capturePayment = async (req, res) => {
 };
 
 /* ================= 🔥 INIT ================= */
-
 fixOldShippedOrders();
 startAutoDeliveryChecker();
-
-/* ================= EXPORT ================= */
 
 module.exports = {
   createOrder, getMyOrders, getAllOrders, updateOrderStatus,

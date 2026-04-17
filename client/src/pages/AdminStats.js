@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../utils/api"; // 🔥 Ensure correct import path
+import api from "../utils/api"; 
 import Toast from "../components/Toast";
 import useToast from "../components/useToast";
 import { CSVLink } from "react-csv"; 
@@ -18,7 +18,6 @@ export default function AdminStats() {
   const [stats, setStats] = useState(null);
   const { toast, showToast } = useToast();
   
-  // 🔥 COUPON STATES WITH EDIT FUNCTIONALITY
   const [coupons, setCoupons] = useState([]);
   const [newCoupon, setNewCoupon] = useState({ code: "", title: "", desc: "", type: "percent", value: "", maxDiscount: 10000, applicableCategory: "All" });
   const [isAddingCoupon, setIsAddingCoupon] = useState(false);
@@ -130,8 +129,6 @@ export default function AdminStats() {
     { name: "Rejected", value: rejectedTotal },
   ];
 
-  // 🔥 THE FIX: Using REAL backend revenue data instead of hardcoded numbers!
-  // Fallback to empty array if backend doesn't send it to prevent crashes
   const revenueData = stats.revenueTrend && stats.revenueTrend.length > 0 
     ? stats.revenueTrend 
     : [
@@ -152,7 +149,7 @@ export default function AdminStats() {
     { Metric: "Rejected/Failed", Value: rejectedTotal },
     { Metric: "Overall Approval Rate", Value: `${approvalRate}%` },
     { Metric: "System Health Status", Value: systemHealth },
-    { Metric: "--- REVENUE TREND (LAST 7 DAYS) ---", Value: "" },
+    { Metric: "--- REVENUE TREND (ALL TIME) ---", Value: "" },
     ...revenueData.map(d => ({ Metric: `Revenue on ${d.name}`, Value: `₹${d.revenue}` }))
   ];
 
@@ -251,8 +248,16 @@ export default function AdminStats() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#cbd5e1" strokeOpacity={0.2} />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }} dy={10} />
-                {/* 🔥 REALISTIC FORMATTING FOR RUPEES */}
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }} tickFormatter={(val) => `₹${val/1000}k`} />
+                {/* 🔥 BUG FIX: Smart Y-Axis Formatter. Will never show 0.004k again! */}
+                <YAxis 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }} 
+                  tickFormatter={(val) => {
+                    if (val === 0) return '₹0';
+                    return val >= 1000 ? `₹${(val/1000).toFixed(1)}k` : `₹${val}`;
+                  }} 
+                />
                 <Tooltip cursor={{ stroke: '#6366f1', strokeWidth: 1, strokeDasharray: '4 4' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', fontSize: '14px', backgroundColor: '#1e293b', color: '#f8fafc' }} itemStyle={{ fontWeight: 'bold', color: '#818cf8' }} formatter={(value) => [`₹${value}`, "Revenue"]} />
                 <Area type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
               </AreaChart>
@@ -275,9 +280,7 @@ export default function AdminStats() {
           </div>
         </div>
 
-        {/* ======================================================== */}
-        {/* 🔥 ENTERPRISE LIVE COUPON MANAGEMENT MODULE 🔥 */}
-        {/* ======================================================== */}
+        {/* COUPON MANAGEMENT MODULE */}
         <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 sm:p-8 rounded-[1.5rem] shadow-sm border border-slate-100 dark:border-slate-800 mt-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <h2 className="text-lg font-bold flex items-center gap-2 text-slate-800 dark:text-white">
@@ -299,11 +302,9 @@ export default function AdminStats() {
             </button>
           </div>
 
-          {/* ADD / EDIT COUPON FORM */}
           {isAddingCoupon && (
             <form onSubmit={handleAddOrUpdateCoupon} className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6 animate-fadeIn relative">
               
-              {/* If editing, show a clear title and cancel button */}
               {editingId && (
                 <div className="flex justify-between items-center mb-4 pb-3 border-b border-slate-200 dark:border-slate-600">
                   <h3 className="font-bold text-indigo-600 flex items-center gap-2"><Edit size={16}/> Updating Coupon: {newCoupon.code}</h3>
