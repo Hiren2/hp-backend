@@ -56,14 +56,14 @@ export default function AdminOrderHistory() {
   }, [fetchOrders]);
 
   /* ====================================================================
-     🔥 SMART FILTERING ENGINE (Fix for "Approved" not showing data)
+     🔥 SMART FILTERING ENGINE (Fix for "Approved" & "Completed" match)
   ==================================================================== */
   const filtered = useMemo(() => {
     let data = [...orders];
 
     if (filter !== "All") {
       if (filter === "Approved") {
-        // Show everything that is NOT Pending or Rejected
+        // Show everything that is NOT Pending or Rejected (including COMPLETED)
         const approvedStatuses = ["approved", "processing", "shipped", "completed"];
         data = data.filter((o) => approvedStatuses.includes(o.status?.toLowerCase()));
       } else {

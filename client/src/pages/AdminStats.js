@@ -35,10 +35,17 @@ export default function AdminStats() {
 
     const fetchCoupons = async () => {
       try {
-        const res = await api.get("/coupons/active");
+        // 🔥 ALL COUPONS FETCH FIX
+        const res = await api.get("/coupons");
         setCoupons(res.data);
-      } catch {
-        console.warn("Coupon API not ready yet.");
+      } catch (err) {
+        console.error("Failed to fetch all coupons, trying fallback:", err);
+        try {
+          const fallbackRes = await api.get("/coupons/active");
+          setCoupons(fallbackRes.data);
+        } catch (fallbackErr) {
+          console.warn("Coupon API not ready or empty.");
+        }
       }
     };
 
@@ -371,7 +378,7 @@ export default function AdminStats() {
             ))}
             {coupons.length === 0 && !isAddingCoupon && (
               <div className="col-span-full py-10 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl text-slate-400 font-medium">
-                No active coupons found. Create one to boost sales!
+                No coupons found. Create one to boost sales!
               </div>
             )}
           </div>
