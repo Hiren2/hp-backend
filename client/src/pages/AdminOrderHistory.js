@@ -37,8 +37,11 @@ export default function AdminOrderHistory() {
       };
 
       const sorted = [...res.data].sort((a, b) => {
-        if (priority[a.status] !== priority[b.status]) {
-          return (priority[a.status] || 99) - (priority[b.status] || 99);
+        const statusA = a.status ? a.status.trim() : "";
+        const statusB = b.status ? b.status.trim() : "";
+        
+        if (priority[statusA] !== priority[statusB]) {
+          return (priority[statusA] || 99) - (priority[statusB] || 99);
         }
         return new Date(b.createdAt) - new Date(a.createdAt);
       });
@@ -56,18 +59,17 @@ export default function AdminOrderHistory() {
   }, [fetchOrders]);
 
   /* ====================================================================
-     🔥 SMART FILTERING ENGINE (Fix for "Approved" & "Completed" match)
+     🔥 BULLETPROOF FILTERING ENGINE (Using .trim() to kill hidden spaces)
   ==================================================================== */
   const filtered = useMemo(() => {
     let data = [...orders];
 
     if (filter !== "All") {
       if (filter === "Approved") {
-        // Show everything that is NOT Pending or Rejected (including COMPLETED)
         const approvedStatuses = ["approved", "processing", "shipped", "completed"];
-        data = data.filter((o) => approvedStatuses.includes(o.status?.toLowerCase()));
+        data = data.filter((o) => o.status && approvedStatuses.includes(o.status.trim().toLowerCase()));
       } else {
-        data = data.filter((o) => o.status?.toLowerCase() === filter.toLowerCase());
+        data = data.filter((o) => o.status && o.status.trim().toLowerCase() === filter.toLowerCase());
       }
     }
 
@@ -84,11 +86,11 @@ export default function AdminOrderHistory() {
 
   /* 🔥 PREMIUM BADGE SYSTEM */
   const badgeStyle = (status) => {
-    const s = status?.toLowerCase();
+    const s = status ? status.trim().toLowerCase() : "";
     if (["approved", "completed"].includes(s)) return "bg-emerald-50 text-emerald-600 border-emerald-200/50";
     if (s === "rejected") return "bg-rose-50 text-rose-600 border-rose-200/50";
     if (["processing", "shipped"].includes(s)) return "bg-blue-50 text-blue-600 border-blue-200/50";
-    return "bg-amber-50 text-amber-600 border-amber-200/50"; // Default to pending/yellow
+    return "bg-amber-50 text-amber-600 border-amber-200/50"; 
   };
 
   if (loading) {
@@ -107,7 +109,7 @@ export default function AdminOrderHistory() {
 
       <div className="max-w-7xl mx-auto mt-8 px-4 pb-12 space-y-6 font-sans antialiased animate-fadeIn">
 
-        {/* 🔥 PREMIUM COMPACT HERO HEADER */}
+        {/* HERO HEADER */}
         <div className="relative bg-gradient-to-br from-indigo-600 via-blue-600 to-purple-700 text-white p-5 sm:p-6 rounded-[1.5rem] shadow-xl shadow-blue-500/20 overflow-hidden flex flex-col md:flex-row justify-between md:items-center gap-4">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full mix-blend-overlay filter blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
           
@@ -127,7 +129,7 @@ export default function AdminOrderHistory() {
           </div>
         </div>
 
-        {/* 🔥 FILTER & SEARCH BAR */}
+        {/* FILTER & SEARCH BAR */}
         <div className="bg-white/80 backdrop-blur-xl p-4 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 flex flex-col lg:flex-row gap-4 justify-between items-center">
 
           <div className="relative w-full lg:w-96 group">
@@ -158,7 +160,7 @@ export default function AdminOrderHistory() {
 
         </div>
 
-        {/* 🔥 ENTERPRISE DATA TABLE */}
+        {/* DATA TABLE */}
         <div className="bg-white/80 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 overflow-hidden">
 
           {filtered.length === 0 ? (
@@ -214,7 +216,7 @@ export default function AdminOrderHistory() {
 
                       <td className="px-6 py-5 whitespace-nowrap">
                         <span className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border shadow-sm ${badgeStyle(o.status)}`}>
-                          {o.status}
+                          {o.status ? o.status.trim() : "Unknown"}
                         </span>
                       </td>
 

@@ -32,6 +32,19 @@ const couponSchema = new mongoose.Schema({
 
 const Coupon = mongoose.models.Coupon || mongoose.model("Coupon", couponSchema);
 
+// ========================================================================
+// 🔥 NEW ROUTE ADDED: GET ALL COUPONS (FOR ADMIN DASHBOARD)
+// ========================================================================
+router.get("/", protect, checkRole("Admin", "SuperAdmin"), async (req, res) => {
+  try {
+    const coupons = await Coupon.find().sort({ createdAt: -1 });
+    res.json(coupons);
+  } catch (error) {
+    console.error("All Coupons Fetch Error:", error);
+    res.status(500).json({ message: "Server Error fetching all coupons" });
+  }
+});
+
 // @route   GET /api/coupons/active
 // @desc    Get all active coupons (For Users & Admin)
 router.get("/active", async (req, res) => {
