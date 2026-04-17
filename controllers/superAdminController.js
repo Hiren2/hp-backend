@@ -2,6 +2,7 @@ const AuditLog = require("../models/AuditLog");
 const User = require("../models/User");
 const Order = require("../models/Order");
 const Service = require("../models/Service");
+const Notification = require("../models/Notification"); // 🔥 NEW: Imported Notification Model
 
 /* ================= FETCH AUDIT LOGS ================= */
 exports.getAuditLogs = async (req, res) => {
@@ -90,7 +91,7 @@ exports.updateUserRole = async (req, res) => {
     const { role } = req.body;
     const userId = req.params.id;
 
-    // 🔥 FULL POWER TO SUPERADMIN: Can assign any of these 3 roles explicitly
+    // 🔥 FULL POWER TO SUPERADMIN
     const validRoles = ['user', 'manager', 'admin'];
     if (!validRoles.includes(role)) {
         return res.status(400).json({ message: "Invalid role specified." });
@@ -107,10 +108,10 @@ exports.updateUserRole = async (req, res) => {
     const oldRole = user.role;
     user.role = role;
     
-    // Save without triggering other validations like password changes
+    // Save without triggering other validations
     await user.save({ validateBeforeSave: false });
 
-    // 🔥 THE BULLETPROOF FIX FOR AUDIT LOGS 🔥
+    // 🔥 THE BULLETPROOF FIX FOR AUDIT LOGS
     try {
       if (req.user) {
         await AuditLog.create({
@@ -124,6 +125,22 @@ exports.updateUserRole = async (req, res) => {
       }
     } catch (logErr) {
       console.error("Audit Log Error (Ignored):", logErr.message);
+    }
+
+    // 🔥 SMART RBAC: Notify Admins of Superadmin Action
+    try {
+      const systemAdmins = await User.find({ role: "admin" });
+      for (let admin of systemAdmins) {
+        await Notification.create({
+          user: admin._id,
+          title: "SuperAdmin Action Report 🛡️",
+          message: `SuperAdmin has reassigned ${user.name}'s role from ${oldRole} to ${role}.`,
+          type: "SYSTEM_ALERT",
+          isRead: false
+        });
+      }
+    } catch (notifErr) {
+      console.error("Failed to notify admins of superadmin role change:", notifErr);
     }
 
     res.json({ message: `Role updated to ${role} successfully`, user });

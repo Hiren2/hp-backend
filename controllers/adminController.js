@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Order = require("../models/Order");
 const Service = require("../models/Service");
 const AuditLog = require("../models/AuditLog");
+const Notification = require("../models/Notification"); // 🔥 NEW: Imported Notification Model
 
 /* ================= ADMIN ANALYTICS DASHBOARD ================= */
 exports.getAdminStats = async (req, res) => {
@@ -156,9 +157,27 @@ exports.updateUserRole = async (req, res) => {
       action: "ROLE_CHANGED",
       target: "User",
       targetId: user._id,
-      meta: { from: oldRole, to: role, message: `Role upgraded to ${role.toUpperCase()}` }, // 🔥 Meta Enhanced
+      meta: { from: oldRole, to: role, message: `Role upgraded to ${role.toUpperCase()}` }, 
       severity: "warning"
     });
+
+    // 🔥 SMART RBAC: Notify Superadmin/Admins about Role Change
+    try {
+      const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
+      for (let admin of systemAdmins) {
+        if (admin._id.toString() !== req.user._id.toString()) {
+          await Notification.create({
+            user: admin._id,
+            title: "Access Control Update 🔐",
+            message: `Admin ${req.user.email} changed ${user.name}'s role from ${oldRole} to ${role}.`,
+            type: "SYSTEM_ALERT",
+            isRead: false
+          });
+        }
+      }
+    } catch (notifErr) {
+      console.error("Failed to notify admins of role change:", notifErr);
+    }
 
     res.json({ message: "User role updated successfully" });
 
@@ -195,9 +214,27 @@ exports.updateUserStatus = async (req, res) => {
       action: status === "suspended" ? "USER_SUSPENDED" : "USER_REACTIVATED",
       target: "User",
       targetId: user._id,
-      meta: { message: `Account forced into ${status.toUpperCase()} state by Admin` }, // 🔥 Meta Enhanced
+      meta: { message: `Account forced into ${status.toUpperCase()} state by Admin` }, 
       severity: status === "suspended" ? "critical" : "info",
     });
+
+    // 🔥 SMART RBAC: Notify Superadmin/Admins about Suspend/Activate
+    try {
+      const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
+      for (let admin of systemAdmins) {
+        if (admin._id.toString() !== req.user._id.toString()) {
+          await Notification.create({
+            user: admin._id,
+            title: status === "suspended" ? "Security Action: User Suspended ⛔" : "Security Action: User Reactivated 🟢",
+            message: `Admin ${req.user.email} has ${status} the account of ${user.name} (${user.email}).`,
+            type: "SYSTEM_ALERT",
+            isRead: false
+          });
+        }
+      }
+    } catch (notifErr) {
+      console.error("Failed to notify admins of user status change:", notifErr);
+    }
 
     res.json({ message: `Account ${status} successfully`, user });
   } catch (err) {
@@ -210,9 +247,9 @@ exports.updateUserStatus = async (req, res) => {
 exports.getAuditLogs = async (req, res) => {
   try {
     const logs = await AuditLog.find()
-      .populate("actor","name email role") // We only populate actor. targetId is generic now.
+      .populate("actor","name email role") 
       .sort({ createdAt:-1 })
-      .limit(300); // Fetching more for better visibility
+      .limit(300); 
 
     res.json(logs);
 
