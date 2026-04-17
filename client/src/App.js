@@ -10,7 +10,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 
-/* 🔥 NEW: PUBLIC LANDING PAGE */
+/* PUBLIC */
 import Home from "./pages/Home";
 
 /* USER */
@@ -38,13 +38,11 @@ import ManagerOrders from "./pages/ManagerOrders";
 /* SUPER ADMIN */
 import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import SuperAdminAuditLogs from "./pages/SuperAdminAuditLogs";
-/* 🔥 NEW: IMPORT ROLE MANAGEMENT COMPONENT */
 import SuperAdminManageAdmins from "./pages/SuperAdminManageAdmins";
 
 import { getUser } from "./utils/auth";
 
 /* ================= MULTI TAB LOGOUT ================= */
-
 window.addEventListener("storage", (e) => {
   if (e.key === "logout") {
     window.location.replace("/login");
@@ -52,7 +50,6 @@ window.addEventListener("storage", (e) => {
 });
 
 /* ================= AUTH GUARDS ================= */
-
 const RequireAuth = ({ children }) => {
   const user = getUser();
   if (!user) return <Navigate to="/login" replace />;
@@ -84,29 +81,23 @@ const RequireSuperAdmin = ({ children }) => {
 };
 
 /* ================= APP ================= */
-
 export default function App() {
   return (
     <Router>
       <Routes>
 
         {/* ================= PUBLIC ================= */}
-
-        {/* 🔥 Now the root route goes to our awesome Home page! */}
         <Route path="/" element={<Home />} />
-        
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* ================= PROTECTED ================= */}
-
         <Route
           element={
             <RequireAuth>
               <Layout />
-              {/* 🛡️ Chatbot component is mounted here. Now universal for all roles. */}
               <Chatbot />
             </RequireAuth>
           }
@@ -120,15 +111,10 @@ export default function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/profile" element={<Profile />} />
-          
-          {/* 🔥 NEW: WISHLIST ROUTE */}
           <Route path="/wishlist" element={<Wishlist />} />
-          
-          {/* ✅ NEW: SUPPORT ROUTE (Accessible by everyone logged in) */}
           <Route path="/support" element={<Support />} />
 
           {/* ================= MANAGER ================= */}
-
           <Route
             path="/manager/dashboard"
             element={
@@ -137,7 +123,6 @@ export default function App() {
               </RequireManager>
             }
           />
-
           <Route
             path="/manager/orders"
             element={
@@ -148,7 +133,6 @@ export default function App() {
           />
 
           {/* ================= ADMIN ================= */}
-
           <Route
             path="/admin/dashboard"
             element={
@@ -157,7 +141,6 @@ export default function App() {
               </RequireAdmin>
             }
           />
-
           <Route
             path="/admin/services"
             element={
@@ -166,7 +149,6 @@ export default function App() {
               </RequireAdmin>
             }
           />
-
           <Route
             path="/admin/managers"
             element={
@@ -175,7 +157,6 @@ export default function App() {
               </RequireAdmin>
             }
           />
-
           <Route
             path="/admin/orders"
             element={
@@ -184,7 +165,6 @@ export default function App() {
               </RequireAdmin>
             }
           />
-
           <Route
             path="/admin/system-activity"
             element={
@@ -195,7 +175,6 @@ export default function App() {
           />
 
           {/* ================= SUPER ADMIN ================= */}
-
           <Route
             path="/superadmin/dashboard"
             element={
@@ -204,8 +183,6 @@ export default function App() {
               </RequireSuperAdmin>
             }
           />
-
-          {/* 🔥 NEW: ROLE MANAGEMENT ROUTE */}
           <Route
             path="/superadmin/manage-roles"
             element={
@@ -214,7 +191,6 @@ export default function App() {
               </RequireSuperAdmin>
             }
           />
-
           <Route
             path="/superadmin/audit-logs"
             element={
@@ -227,8 +203,6 @@ export default function App() {
         </Route>
 
         {/* ================= FALLBACK ================= */}
-
-        {/* If user types random URL, send them to our shiny new Home Page instead of Login */}
         <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>

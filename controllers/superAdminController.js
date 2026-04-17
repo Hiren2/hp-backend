@@ -8,16 +8,14 @@ exports.getAuditLogs = async (req, res) => {
   try {
     const logs = await AuditLog.find()
       .populate("actor", "name email role")
-      .populate("target", "name email role") // Adjusted to match generic target if populated
+      .populate("target", "name email role")
       .sort({ createdAt: -1 })
       .limit(200);
 
     res.json(logs);
   } catch (err) {
     console.error("AUDIT LOG FETCH ERROR:", err);
-    res.status(500).json({
-      message: "Failed to load audit logs",
-    });
+    res.status(500).json({ message: "Failed to load audit logs" });
   }
 };
 
@@ -54,9 +52,7 @@ exports.getSystemOverview = async (req, res) => {
     });
   } catch (err) {
     console.error("SYSTEM OVERVIEW ERROR:", err);
-    res.status(500).json({
-      message: "Failed to load system overview",
-    });
+    res.status(500).json({ message: "Failed to load system overview" });
   }
 };
 
@@ -73,33 +69,31 @@ exports.getSecurityAlerts = async (req, res) => {
     res.json(alerts);
   } catch (err) {
     console.error("SECURITY ALERT ERROR:", err);
-    res.status(500).json({
-      message: "Failed to load security alerts",
-    });
+    res.status(500).json({ message: "Failed to load security alerts" });
   }
 };
 
-/* ================= 🔥 NEW: GET ALL USERS FOR ROLE MANAGEMENT ================= */
+/* ================= 🔥 GET ALL USERS FOR ROLE MANAGEMENT ================= */
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find({}).select("-password -passwordHash").sort({ createdAt: -1 });
     res.json(users);
   } catch (err) {
     console.error("GET USERS ERROR:", err);
-    res.status(500).json({ message: "Failed to load users for role management" });
+    res.status(500).json({ message: "Failed to load users" });
   }
 };
 
-/* ================= 🔥 NEW: UPDATE USER ROLE (SUPERADMIN ONLY) ================= */
+/* ================= 🔥 UPDATE USER ROLE (SUPERADMIN ONLY) ================= */
 exports.updateUserRole = async (req, res) => {
   try {
     const { role } = req.body;
     const userId = req.params.id;
 
-    // Validate if the assigned role is valid
-    const validRoles = ['user', 'manager', 'admin'];
+    // 🔥 STRICT LOGIC: SuperAdmin can only promote to 'admin' or demote to 'user'
+    const validRoles = ['user', 'admin'];
     if (!validRoles.includes(role)) {
-        return res.status(400).json({ message: "Invalid role specified" });
+        return res.status(400).json({ message: "SuperAdmin can only manage Admin or User roles." });
     }
 
     const user = await User.findById(userId);
@@ -107,7 +101,7 @@ exports.updateUserRole = async (req, res) => {
 
     // Enterprise Security: Prevent modifying other SuperAdmins
     if (user.role === 'superadmin') {
-        return res.status(403).json({ message: "Action Denied: Cannot modify SuperAdmin roles." });
+        return res.status(403).json({ message: "Cannot modify SuperAdmin accounts." });
     }
 
     const oldRole = user.role;
@@ -123,7 +117,7 @@ exports.updateUserRole = async (req, res) => {
           action: 'ROLE_UPDATED',
           actor: req.user._id,
           actorRole: req.user.role, // <-- REQUIRED FIELD
-          target: user._id,         // <-- REQUIRED FIELD (Not targetId)
+          target: user._id,         // <-- REQUIRED FIELD
           severity: "warning",
           details: `SuperAdmin changed role of ${user.name} from [${oldRole}] to [${role}]`
         });
@@ -133,7 +127,7 @@ exports.updateUserRole = async (req, res) => {
       console.error("Audit Log Error (Ignored):", logErr.message);
     }
 
-    res.json({ message: `Success! User role updated to ${role}`, user });
+    res.json({ message: `Role updated to ${role} successfully`, user });
 
   } catch (err) {
     console.error("UPDATE ROLE ERROR:", err);

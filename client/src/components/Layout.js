@@ -4,13 +4,13 @@ import { useCart } from "../context/CartContext";
 import NotificationBell from "./NotificationBell";
 import Chatbot from "./Chatbot"; 
 import { useEffect, useState } from "react";
-import api from "../utils/api"; // 🔥 Ensure this path points to your API configuration
+import api from "../api/api"; 
 import useTheme from "../hooks/useTheme"; 
 import Swal from "sweetalert2"; 
 import { 
-  Menu, X, User as UserIcon, LogOut, ChevronRight, ShieldCheck, 
-  Sun, Moon, Home, ShoppingCart, Package, ClipboardList, Users, 
-  Settings, ShieldAlert, MessageSquare, Heart 
+  Menu, X, User as UserIcon, LogOut, ChevronRight, Sun, Moon, 
+  Home, ShoppingCart, Package, ClipboardList, Users, Settings, 
+  ShieldAlert, MessageSquare, Heart, ShieldCheck 
 } from "lucide-react";
 import logo from "../assets/logo.png"; 
 
@@ -22,10 +22,8 @@ export default function Layout() {
   const location = useLocation(); 
   const { theme, toggleTheme } = useTheme();
 
-  // 🔥 NEW STATE FOR WISHLIST COUNT
   const [wishlistCount, setWishlistCount] = useState(0);
 
-  // Fetch Wishlist Count
   const fetchWishlistCount = async () => {
     try {
       const res = await api.get("/wishlist");
@@ -43,34 +41,31 @@ export default function Layout() {
     const handleProfileUpdate = () => {
       setUser(getUser()); 
     };
+    
     window.addEventListener('userProfileUpdated', handleProfileUpdate);
 
-    // Initial check for wishlist count if user is logged in
     if (user && user.role === "user") {
         fetchWishlistCount();
     }
 
     const interval = setInterval(() => { 
         setUser(getUser()); 
-        // Sync wishlist count periodically just like the user profile
         if (getUser() && getUser().role === "user") {
             fetchWishlistCount();
         }
-    }, 2000); // Check every 2 seconds
+    }, 2000);
     
     return () => {
       clearInterval(interval);
       window.removeEventListener('userProfileUpdated', handleProfileUpdate);
     };
-  }, [user]); // Re-run if user object changes
+  }, [user]);
 
   if (!user) return <Navigate to="/login" replace />;
 
   const initial = user?.name?.charAt(0)?.toUpperCase() || "U";
   const profileImage = user?.image || null; 
-  
   const userRole = user.role?.toLowerCase()?.trim();
-  
   const normalizedPath = location.pathname.toLowerCase().replace(/\/$/, ""); 
 
   const isDashboardActive = (role) => {
@@ -83,7 +78,6 @@ export default function Layout() {
 
   const handleLogoutClick = () => {
     setOpen(false); 
-    
     Swal.fire({
       title: 'Ready to leave?',
       text: "You are about to securely log out of your session.",
@@ -105,9 +99,8 @@ export default function Layout() {
 
   const navBase = "px-5 py-2.5 rounded-full flex items-center gap-2 text-sm font-bold transition-all duration-300 border border-transparent";
   const navActive = "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/25";
-  const navInactive = "hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-slate-200 dark:hover:border-slate-700 text-slate-600 dark:text-slate-300";
+  const navInactive = "hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300";
 
-  // --- TOP NAVBAR RENDERER ---
   const renderTopNav = () => {
     switch (userRole) {
       case "user":
@@ -142,8 +135,7 @@ export default function Layout() {
         return (
           <>
             <NavLink to="/superadmin/dashboard" className={({isActive})=>`${navBase} ${(isActive || isDashboardActive('superadmin')) ? navActive : navInactive}`}>🛡 Dashboard</NavLink>
-            {/* 🔥 NEW TOP NAV LINK FOR SUPERADMIN */}
-            <NavLink to="/superadmin/manage-roles" className={({isActive})=>`${navBase} ${isActive?navActive:navInactive}`}>👥 Manage Roles</NavLink>
+            <NavLink to="/superadmin/manage-roles" className={({isActive})=>`${navBase} ${isActive?navActive:navInactive}`}>👥 Manage Admins</NavLink>
             <NavLink to="/superadmin/audit-logs" className={({isActive})=>`${navBase} ${isActive?navActive:navInactive}`}>📜 Logs</NavLink>
           </>
         );
@@ -155,7 +147,6 @@ export default function Layout() {
   const sidebarActive = "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 shadow-sm border-blue-100 dark:border-blue-500/20";
   const sidebarInactive = "text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-800 dark:hover:text-slate-200";
 
-  // --- SIDEBAR NAVIGATION ---
   const renderSidebarNav = () => {
     switch (userRole) {
       case "user":
@@ -192,10 +183,7 @@ export default function Layout() {
         return (
           <>
             <NavLink to="/superadmin/dashboard" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${(isActive || isDashboardActive('superadmin')) ? sidebarActive : sidebarInactive}`}><Home size={18} className="group-hover:scale-110 transition-transform"/> Super Dashboard</NavLink>
-            
-            {/* 🔥 NEW SIDEBAR LINK FOR SUPERADMIN ROLE MANAGEMENT */}
-            <NavLink to="/superadmin/manage-roles" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${isActive?sidebarActive:sidebarInactive}`}><Users size={18} className="group-hover:scale-110 transition-transform"/> Manage Roles</NavLink>
-            
+            <NavLink to="/superadmin/manage-roles" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${isActive?sidebarActive:sidebarInactive}`}><ShieldCheck size={18} className="group-hover:scale-110 transition-transform"/> Manage Admins</NavLink>
             <NavLink to="/superadmin/audit-logs" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${isActive?sidebarActive:sidebarInactive}`}><ShieldAlert size={18} className="group-hover:scale-110 transition-transform"/> Global Audit Logs</NavLink>
           </>
         );
@@ -265,9 +253,9 @@ export default function Layout() {
                   )}
                 </div>
                 <div>
-                   <p className="font-extrabold text-slate-800 dark:text-white capitalize text-lg leading-tight">{user.name}</p>
+                   <p className="font-extrabold text-slate-800 dark:text-white capitalize text-lg leading-tight">{user?.name}</p>
                    <span className="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-500/20 px-2.5 py-1 rounded-md mt-1.5 inline-block border border-blue-200 dark:border-blue-500/30">
-                     {user.role}
+                     {user?.role}
                    </span>
                 </div>
              </div>
@@ -276,6 +264,7 @@ export default function Layout() {
 
         <div className="px-4 space-y-1.5 flex-1 overflow-y-auto custom-scrollbar pb-6">
           <p className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-4 mb-3 mt-2">Main Menu</p>
+          
           {renderSidebarNav()}
           
           {userRole === "user" && (
