@@ -37,7 +37,6 @@ const getCatchyTitle = (action) => {
 /* ================= 🔥 BACKGROUND SYSTEMS (AUTO DELIVERY) ================= */
 const fixOldShippedOrders = async () => {
   try {
-    // 🔥 Changed from 3 Hours to 2 Minutes for Presentation
     const twoMinsAgo = new Date(Date.now() - 2 * 60 * 1000); 
 
     const updated = await Order.updateMany(
@@ -58,7 +57,6 @@ const fixOldShippedOrders = async () => {
 };
 
 const startAutoDeliveryChecker = () => {
-  // 🔥 Checks every 20 seconds instead of 5 minutes
   setInterval(async () => {
     try {
       const orders = await Order.find({ status: "Shipped" });
@@ -66,11 +64,10 @@ const startAutoDeliveryChecker = () => {
       for (const o of orders) {
         const timePassedMs = Date.now() - new Date(o.updatedAt).getTime();
         
-        // If order has been shipped for more than 20 seconds, deliver it!
         if (timePassedMs >= 20000) { 
           o.status = "Completed";
           o.completedAt = new Date();
-          o.resolutionTime = Math.round((o.completedAt - o.createdAt) / 1000); // Saving in seconds for demo
+          o.resolutionTime = Math.round((o.completedAt - o.createdAt) / 1000); 
 
           await o.save({ validateBeforeSave: false });
 
@@ -93,7 +90,6 @@ const startAutoDeliveryChecker = () => {
 
 /* ================= AUTO ORDER LIFECYCLE (FAST PRESENTATION MODE) ================= */
 const startOrderLifecycle = (order) => {
-  // STEP 1: PROCESSING (After 5 Seconds)
   setTimeout(async () => {
     try {
       const o = await Order.findById(order._id);
@@ -112,9 +108,8 @@ const startOrderLifecycle = (order) => {
     } catch (err) {
       console.error("PROCESSING ERROR:", err.message);
     }
-  }, 5000); // 🔥 5 Seconds
+  }, 5000); 
 
-  // STEP 2: SHIPPED (After 12 Seconds)
   setTimeout(async () => {
     try {
       const o = await Order.findById(order._id);
@@ -133,9 +128,8 @@ const startOrderLifecycle = (order) => {
     } catch (err) {
       console.error("SHIPPED ERROR:", err.message);
     }
-  }, 12000); // 🔥 12 Seconds
+  }, 12000); 
 
-  // STEP 3: FINAL DELIVERY (After 20 Seconds)
   setTimeout(async () => {
     try {
       const o = await Order.findById(order._id);
@@ -157,10 +151,10 @@ const startOrderLifecycle = (order) => {
     } catch (err) {
       console.error("DELIVERY ERROR:", err.message);
     }
-  }, 20000); // 🔥 20 Seconds
+  }, 20000); 
 };
 
-/* ================= CREATE ORDER (🔥 EXACT FINANCIAL CALCULATIONS 🔥) ================= */
+/* ================= CREATE ORDER ================= */
 const createOrder = async (req, res) => {
   try {
     const { serviceId, priority, address, paymentMethod, couponCode, discountValue } = req.body;
@@ -284,7 +278,6 @@ const updateOrderStatus = async (req, res) => {
         "✅ Great news! Your order has been approved. We are preparing to start the service.",
         order._id
       );
-      // 🔥 Trigger the ultra-fast presentation lifecycle
       startOrderLifecycle(order);
     }
 
@@ -353,7 +346,7 @@ const getManagerStats = async (req, res) => {
   }
 };
 
-/* ================= ADMIN STATS ================= */
+/* ================= ADMIN STATS (100% REAL ALL-TIME DATA) ================= */
 const getAdminStats = async (req, res) => {
   try {
     const [totalUsers, totalServices, totalOrders] = await Promise.all([
@@ -374,42 +367,44 @@ const getAdminStats = async (req, res) => {
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const todayOrders = await Order.countDocuments({ createdAt: { $gte: today } });
 
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-    sevenDaysAgo.setHours(0, 0, 0, 0);
-
+    // Fetching ALL past orders
     const ordersWithService = await Order.find({
-      createdAt: { $gte: sevenDaysAgo },
       status: { $ne: "Rejected" } 
     }).populate("service", "price");
 
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    let revenueTrend = [];
-    
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      revenueTrend.push({ 
-        name: days[d.getDay()], 
-        revenue: 0,
-        dateString: d.toDateString()
-      });
-    }
+    // Pre-fill the week days
+    let revenueTrend = [
+      { name: "Sun", revenue: 0 },
+      { name: "Mon", revenue: 0 },
+      { name: "Tue", revenue: 0 },
+      { name: "Wed", revenue: 0 },
+      { name: "Thu", revenue: 0 },
+      { name: "Fri", revenue: 0 },
+      { name: "Sat", revenue: 0 }
+    ];
 
+    // Map ALL real historical orders to their respective day of the week
     ordersWithService.forEach(order => {
-      const orderDateStr = new Date(order.createdAt).toDateString();
-      const trendItem = revenueTrend.find(item => item.dateString === orderDateStr);
+      const orderDay = new Date(order.createdAt).getDay(); 
       const revAmount = order.totalAmount !== undefined ? order.totalAmount : (order.service ? order.service.price : 0);
       
-      if (trendItem && revAmount) {
-        trendItem.revenue += revAmount;
+      if (revAmount) {
+        revenueTrend[orderDay].revenue += revAmount; 
       }
     });
+
+    // Reorder array so today is at the end (continuous graph)
+    const currentDayIndex = new Date().getDay();
+    const sortedRevenueTrend = [
+      ...revenueTrend.slice(currentDayIndex + 1),
+      ...revenueTrend.slice(0, currentDayIndex + 1)
+    ];
 
     res.json({
       totalUsers, totalServices, totalOrders, todayOrders,
       pendingOrders: stats[0], approvedOrders: stats[1], rejectedOrders: stats[2], 
-      processingOrders: stats[3], shippedOrders: stats[4], completedOrders: stats[5], revenueTrend 
+      processingOrders: stats[3], shippedOrders: stats[4], completedOrders: stats[5], 
+      revenueTrend: sortedRevenueTrend
     });
 
   } catch (err) {
