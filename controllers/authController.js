@@ -62,8 +62,7 @@ const register = async (req, res) => {
       actor: user._id,
       actorRole: user.role,
       action: "USER_REGISTERED",
-      target: "User",
-      targetId: user._id,
+      target: user._id, // Fixed target mapping
       severity: "info",
     });
 
@@ -109,8 +108,7 @@ const login = async (req, res) => {
         actor: user._id,
         actorRole: user.role,
         action: "FAILED_LOGIN_ATTEMPT",
-        target: "Auth",
-        targetId: user._id,
+        target: user._id, // Fixed target mapping
         severity: "warning",
       });
 
@@ -135,8 +133,7 @@ const login = async (req, res) => {
       actor: user._id,
       actorRole: user.role,
       action: "USER_LOGIN",
-      target: "Auth",
-      targetId: user._id,
+      target: user._id, // Fixed target mapping
       severity: "info",
     });
 
@@ -196,8 +193,7 @@ const resetPasswordWithDob = async (req, res) => {
       actor: user._id,
       actorRole: user.role,
       action: "PASSWORD_RESET",
-      target: "User",
-      targetId: user._id,
+      target: user._id, // Fixed target mapping
       severity: "warning",
     });
 
@@ -263,19 +259,15 @@ const updateProfile = async (req, res) => {
     if (!req.user) return res.status(401).json({ message: "Not authenticated" });
     
     const { name, image } = req.body;
-    // Find the exact user by ID
     const user = await User.findById(req.user._id);
     
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Update the values
     if (name) user.name = name;
     if (image) user.image = image;
 
-    // Await the save
     await user.save();
 
-    // Return the updated data to the frontend so it syncs perfectly
     res.json({ 
       message: "Profile updated successfully in DB", 
       user: { 
@@ -292,12 +284,62 @@ const updateProfile = async (req, res) => {
   }
 };
 
+/* ================= 🔥 NEW: SECURE CHANGE PASSWORD (MANAGERS, ADMINS, SUPERADMINS ONLY) ================= */
+const changePassword = async (req, res) => {
+  try {
+    if (!req.user) return res.status(401).json({ message: "Not authenticated" });
+
+    // 🔥 BACKEND SECURITY: Block standard 'user' role strictly!
+    if (req.user.role === "user") {
+      return res.status(403).json({ message: "Users must use the 'Forgot Password' link on the login page." });
+    }
+
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Please provide both current and new passwords" });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Verify current password
+    const match = await bcrypt.compare(currentPassword, user.password);
+    if (!match) {
+      return res.status(400).json({ message: "Incorrect current password" });
+    }
+
+    // Hash and update the new password
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save({ validateBeforeSave: false });
+
+    // Generate Audit Log for Security Event
+    try {
+      await AuditLog.create({
+        actor: user._id,
+        actorRole: user.role,
+        action: "PASSWORD_CHANGED",
+        target: user._id,
+        severity: "info",
+        details: `${user.role} updated their account security credentials.`
+      });
+    } catch (logErr) {
+      console.error("Audit log error ignored:", logErr.message);
+    }
+
+    res.json({ message: "Password updated successfully! 🚀" });
+  } catch (err) {
+    console.error("CHANGE PASSWORD ERROR:", err);
+    res.status(500).json({ message: "Failed to update password" });
+  }
+};
+
 module.exports = {
   register,
   login,
   verifyDob,
   resetPasswordWithDob,
-  getWishlist,     
+  getWishlist,    
   toggleWishlist,
-  updateProfile
+  updateProfile,
+  changePassword // 🔥 Exported the new function
 };

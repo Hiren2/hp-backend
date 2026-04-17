@@ -7,20 +7,25 @@ const {
   resetPasswordWithDob,
   getWishlist,    
   toggleWishlist,
-  updateProfile // 🔥 Ye naya controller import kiya
+  updateProfile,
+  changePassword // 🔥 Imported the new controller function
 } = require("../controllers/authController");
 const { authenticate } = require("../middleware/authMiddleware");
 
+// ================= PUBLIC AUTH ROUTES =================
 router.post("/register", register);
 router.post("/login", login);
 router.post("/verify-dob", verifyDob);
 router.post("/reset-password", resetPasswordWithDob);
 
-// 🔥 WISHLIST ROUTES
+// ================= PROTECTED WISHLIST ROUTES =================
 router.get("/wishlist", authenticate, getWishlist);
 router.put("/wishlist/toggle", authenticate, toggleWishlist);
 
-// 🔥 PROFILE UPDATE ROUTE (The Fix)
+// ================= PROTECTED PROFILE ROUTE =================
 router.put("/profile", authenticate, updateProfile);
+
+// ================= 🔥 NEW: SECURE CHANGE PASSWORD ROUTE =================
+router.put("/change-password", authenticate, changePassword);
 
 module.exports = router;

@@ -1,5 +1,3 @@
-// src/App.js
-
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import Chatbot from "./components/Chatbot"; 
@@ -13,7 +11,7 @@ import ResetPassword from "./pages/ResetPassword";
 /* PUBLIC */
 import Home from "./pages/Home";
 
-/* USER */
+/* USER & UNIVERSAL */
 import Dashboard from "./pages/Dashboard";
 import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
@@ -23,6 +21,7 @@ import Checkout from "./pages/Checkout";
 import Profile from "./pages/Profile";
 import Support from "./pages/Support"; 
 import Wishlist from "./pages/Wishlist"; 
+import ChangePassword from "./pages/ChangePassword"; 
 
 /* ADMIN */
 import AdminServices from "./pages/AdminServices";
@@ -103,7 +102,7 @@ export default function App() {
           }
         >
 
-          {/* USER & UNIVERSAL ROUTES */}
+          {/* UNIVERSAL ROUTES (Accessible to logged-in users based on Sidebar UI hiding) */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
@@ -113,6 +112,7 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/support" element={<Support />} />
+          <Route path="/change-password" element={<ChangePassword />} />
 
           {/* ================= MANAGER ================= */}
           <Route

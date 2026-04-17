@@ -4,13 +4,13 @@ import { useCart } from "../context/CartContext";
 import NotificationBell from "./NotificationBell";
 import Chatbot from "./Chatbot"; 
 import { useEffect, useState } from "react";
-import api from "../api/api"; 
+import api from "../utils/api"; 
 import useTheme from "../hooks/useTheme"; 
 import Swal from "sweetalert2"; 
 import { 
   Menu, X, User as UserIcon, LogOut, ChevronRight, Sun, Moon, 
   Home, ShoppingCart, Package, ClipboardList, Users, Settings, 
-  ShieldAlert, MessageSquare, Heart, ShieldCheck 
+  ShieldAlert, MessageSquare, Heart, ShieldCheck, KeyRound 
 } from "lucide-react";
 import logo from "../assets/logo.png"; 
 
@@ -280,10 +280,21 @@ export default function Layout() {
 
           <div className="my-5 border-t border-slate-100 dark:border-slate-800/60 mx-4"></div>
           <p className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-4 mb-3 mt-4">Account Settings</p>
+          
+          {/* UNIVERSAL PROFILE LINK */}
           <NavLink to="/profile" onClick={() => setOpen(false)} className={({isActive}) => `${sidebarBase} justify-between ${isActive ? sidebarActive : sidebarInactive}`}>
               <div className="flex items-center gap-3"><UserIcon size={18} className="group-hover:scale-110 transition-transform" /> Profile Overview</div>
               <ChevronRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:translate-x-1 transition-transform" />
           </NavLink>
+
+          {/* 🔥 SECURITY LINK - ONLY VISIBLE TO MANAGERS, ADMINS, AND SUPERADMINS */}
+          {userRole !== "user" && (
+            <NavLink to="/change-password" onClick={() => setOpen(false)} className={({isActive}) => `${sidebarBase} justify-between ${isActive ? sidebarActive : sidebarInactive}`}>
+                <div className="flex items-center gap-3"><KeyRound size={18} className="group-hover:scale-110 transition-transform" /> Security</div>
+                <ChevronRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:translate-x-1 transition-transform" />
+            </NavLink>
+          )}
+
         </div>
 
         <div className="w-full p-6 border-t border-slate-100 dark:border-slate-800/60 bg-slate-50 dark:bg-slate-900/50 mt-auto">
