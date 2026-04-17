@@ -1,5 +1,3 @@
-// src/pages/SuperAdminManageAdmins.js
-
 import { useEffect, useState } from "react";
 import api from "../utils/api";
 import useToast from "../components/useToast";
@@ -21,7 +19,9 @@ export default function SuperAdminManageAdmins() {
 
   const fetchUsers = async () => {
     try {
-      const res = await api.get("/users");
+      // 🔥 FIX: Added /superadmin prefix to hit the correct backend route
+      const res = await api.get("/superadmin/users");
+      
       // Filter out superadmins so they can't be accidentally demoted
       const manageableUsers = res.data.filter(u => u.role !== 'superadmin');
       setUsers(manageableUsers);
@@ -48,7 +48,8 @@ export default function SuperAdminManageAdmins() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await api.put(`/users/${userId}/role`, { role: newRole });
+          // 🔥 FIX: Added /superadmin prefix for the PUT request as well
+          await api.put(`/superadmin/users/${userId}/role`, { role: newRole });
           showToast(`Successfully updated role to ${newRole}`, "success");
           fetchUsers(); // Refresh list
         } catch (error) {

@@ -8,7 +8,7 @@ exports.getAuditLogs = async (req, res) => {
   try {
     const logs = await AuditLog.find()
       .populate("actor", "name email role")
-      .populate("targetId", "name email role")
+      .populate("target", "name email role") // Adjusted to match generic target if populated
       .sort({ createdAt: -1 })
       .limit(200);
 
@@ -116,15 +116,21 @@ exports.updateUserRole = async (req, res) => {
     // Save without triggering other validations like password changes
     await user.save({ validateBeforeSave: false });
 
-    // Optional: Log this action if req.user exists
-    if (req.user) {
-      await AuditLog.create({
-        action: 'ROLE_UPDATED',
-        actor: req.user._id,
-        targetId: user._id,
-        severity: "warning",
-        details: `SuperAdmin changed role of ${user.name} from [${oldRole}] to [${role}]`
-      });
+    // 🔥 THE BULLETPROOF FIX FOR AUDIT LOGS 🔥
+    try {
+      if (req.user) {
+        await AuditLog.create({
+          action: 'ROLE_UPDATED',
+          actor: req.user._id,
+          actorRole: req.user.role, // <-- REQUIRED FIELD
+          target: user._id,         // <-- REQUIRED FIELD (Not targetId)
+          severity: "warning",
+          details: `SuperAdmin changed role of ${user.name} from [${oldRole}] to [${role}]`
+        });
+      }
+    } catch (logErr) {
+      // Agar log banane mein error aayi, toh backend crash nahi hoga. Role update succeed hoga.
+      console.error("Audit Log Error (Ignored):", logErr.message);
     }
 
     res.json({ message: `Success! User role updated to ${role}`, user });
