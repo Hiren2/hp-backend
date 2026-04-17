@@ -4,7 +4,7 @@ import useToast from "../components/useToast";
 import Toast from "../components/Toast";
 import Swal from "sweetalert2";
 import useTheme from "../hooks/useTheme";
-import { Shield, UserCheck, UserX, Search, ShieldCheck } from "lucide-react";
+import { ShieldCheck, Search } from "lucide-react";
 
 export default function SuperAdminManageAdmins() {
   const [users, setUsers] = useState([]);
@@ -31,13 +31,13 @@ export default function SuperAdminManageAdmins() {
 
   const handleRoleChange = async (userId, userName, currentRole, newRole) => {
     Swal.fire({
-      title: `Confirm ${newRole === 'admin' ? 'Promotion' : 'Demotion'}`,
+      title: `Confirm Role Change`,
       html: `Are you sure you want to change <b>${userName}</b> to <span className="uppercase font-bold text-indigo-600">${newRole}</span>?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#4f46e5',
       cancelButtonColor: '#64748b',
-      confirmButtonText: 'Confirm Change',
+      confirmButtonText: 'Yes, change role',
       background: theme === 'dark' ? '#1e293b' : '#ffffff',
       color: theme === 'dark' ? '#f8fafc' : '#0f172a',
       borderRadius: '1.5rem',
@@ -45,7 +45,7 @@ export default function SuperAdminManageAdmins() {
       if (result.isConfirmed) {
         try {
           await api.put(`/superadmin/users/${userId}/role`, { role: newRole });
-          showToast(`User is now an ${newRole}`, "success");
+          showToast(`User is now successfully set to ${newRole}`, "success");
           fetchUsers();
         } catch (error) {
           showToast(error.response?.data?.message || "Action failed", "error");
@@ -80,7 +80,7 @@ export default function SuperAdminManageAdmins() {
               <span className="p-2 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl text-indigo-600">
                 <ShieldCheck size={24}/>
               </span> 
-              Admin Management
+              Global Role Management
             </h1>
           </div>
           
@@ -103,7 +103,7 @@ export default function SuperAdminManageAdmins() {
               <tr className="bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
                 <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">User Identity</th>
                 <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Platform Role</th>
-                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Access Control</th>
+                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Access Control Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -112,7 +112,7 @@ export default function SuperAdminManageAdmins() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold">
-                        {user.name.charAt(0)}
+                        {user.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
                         <p className="font-bold text-slate-800 dark:text-white text-sm">{user.name}</p>
@@ -121,27 +121,70 @@ export default function SuperAdminManageAdmins() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter ${user.role === 'admin' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-500'}`}>
+                    <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter 
+                      ${user.role === 'admin' ? 'bg-indigo-100 text-indigo-700' : 
+                        user.role === 'manager' ? 'bg-amber-100 text-amber-700' : 
+                        'bg-slate-100 text-slate-500'}`}>
                       {user.role}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
-                      {user.role !== 'admin' ? (
-                        <button 
-                          onClick={()=>handleRoleChange(user._id, user.name, user.role, 'admin')} 
-                          className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 hover:bg-indigo-700 transition-all shadow-md shadow-indigo-500/20"
-                        >
-                          <UserCheck size={14}/> Promote to Admin
-                        </button>
-                      ) : (
-                        <button 
-                          onClick={()=>handleRoleChange(user._id, user.name, user.role, 'user')} 
-                          className="px-4 py-2 bg-rose-50 text-rose-600 rounded-xl text-xs font-bold flex items-center gap-1.5 hover:bg-rose-100 transition-all border border-rose-100"
-                        >
-                          <UserX size={14}/> Revoke Admin Access
-                        </button>
+                      
+                      {/* IF CURRENT ROLE IS USER */}
+                      {user.role === 'user' && (
+                        <>
+                          <button 
+                            onClick={()=>handleRoleChange(user._id, user.name, user.role, 'manager')} 
+                            className="px-3 py-1.5 bg-amber-50 text-amber-600 rounded-xl text-xs font-bold hover:bg-amber-100 transition-all border border-amber-100"
+                          >
+                            Make Manager
+                          </button>
+                          <button 
+                            onClick={()=>handleRoleChange(user._id, user.name, user.role, 'admin')} 
+                            className="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 transition-all shadow-md shadow-indigo-500/20"
+                          >
+                            Make Admin
+                          </button>
+                        </>
                       )}
+
+                      {/* IF CURRENT ROLE IS MANAGER */}
+                      {user.role === 'manager' && (
+                        <>
+                          <button 
+                            onClick={()=>handleRoleChange(user._id, user.name, user.role, 'user')} 
+                            className="px-3 py-1.5 bg-rose-50 text-rose-600 rounded-xl text-xs font-bold hover:bg-rose-100 transition-all border border-rose-100"
+                          >
+                            Demote to User
+                          </button>
+                          <button 
+                            onClick={()=>handleRoleChange(user._id, user.name, user.role, 'admin')} 
+                            className="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 transition-all shadow-md shadow-indigo-500/20"
+                          >
+                            Promote to Admin
+                          </button>
+                        </>
+                      )}
+
+                      {/* IF CURRENT ROLE IS ADMIN */}
+                      {user.role === 'admin' && (
+                        <>
+                          <button 
+                            onClick={()=>handleRoleChange(user._id, user.name, user.role, 'user')} 
+                            className="px-3 py-1.5 bg-rose-50 text-rose-600 rounded-xl text-xs font-bold hover:bg-rose-100 transition-all border border-rose-100"
+                          >
+                            Demote to User
+                          </button>
+                          <button 
+                            onClick={()=>handleRoleChange(user._id, user.name, user.role, 'manager')} 
+                            className="px-3 py-1.5 bg-amber-50 text-amber-600 rounded-xl text-xs font-bold hover:bg-amber-100 transition-all border border-amber-100"
+                          >
+                            Demote to Manager
+                          </button>
+                        </>
+                      )}
+
                     </div>
                   </td>
                 </tr>

@@ -90,10 +90,10 @@ exports.updateUserRole = async (req, res) => {
     const { role } = req.body;
     const userId = req.params.id;
 
-    // 🔥 STRICT LOGIC: SuperAdmin can only promote to 'admin' or demote to 'user'
-    const validRoles = ['user', 'admin'];
+    // 🔥 FULL POWER TO SUPERADMIN: Can assign any of these 3 roles explicitly
+    const validRoles = ['user', 'manager', 'admin'];
     if (!validRoles.includes(role)) {
-        return res.status(400).json({ message: "SuperAdmin can only manage Admin or User roles." });
+        return res.status(400).json({ message: "Invalid role specified." });
     }
 
     const user = await User.findById(userId);
@@ -116,14 +116,13 @@ exports.updateUserRole = async (req, res) => {
         await AuditLog.create({
           action: 'ROLE_UPDATED',
           actor: req.user._id,
-          actorRole: req.user.role, // <-- REQUIRED FIELD
-          target: user._id,         // <-- REQUIRED FIELD
+          actorRole: req.user.role, 
+          target: user._id,         
           severity: "warning",
           details: `SuperAdmin changed role of ${user.name} from [${oldRole}] to [${role}]`
         });
       }
     } catch (logErr) {
-      // Agar log banane mein error aayi, toh backend crash nahi hoga. Role update succeed hoga.
       console.error("Audit Log Error (Ignored):", logErr.message);
     }
 
