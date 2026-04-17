@@ -22,7 +22,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Profile from "./pages/Profile";
 import Support from "./pages/Support"; 
-import Wishlist from "./pages/Wishlist"; // 🔥 WISHLIST IMPORT KIYA YAHAN
+import Wishlist from "./pages/Wishlist"; 
 
 /* ADMIN */
 import AdminServices from "./pages/AdminServices";
@@ -38,6 +38,8 @@ import ManagerOrders from "./pages/ManagerOrders";
 /* SUPER ADMIN */
 import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import SuperAdminAuditLogs from "./pages/SuperAdminAuditLogs";
+/* 🔥 NEW: IMPORT ROLE MANAGEMENT COMPONENT */
+import SuperAdminManageAdmins from "./pages/SuperAdminManageAdmins";
 
 import { getUser } from "./utils/auth";
 
@@ -199,6 +201,16 @@ export default function App() {
             element={
               <RequireSuperAdmin>
                 <SuperAdminDashboard />
+              </RequireSuperAdmin>
+            }
+          />
+
+          {/* 🔥 NEW: ROLE MANAGEMENT ROUTE */}
+          <Route
+            path="/superadmin/manage-roles"
+            element={
+              <RequireSuperAdmin>
+                <SuperAdminManageAdmins />
               </RequireSuperAdmin>
             }
           />

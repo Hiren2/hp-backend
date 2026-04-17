@@ -4,7 +4,7 @@ import { useCart } from "../context/CartContext";
 import NotificationBell from "./NotificationBell";
 import Chatbot from "./Chatbot"; 
 import { useEffect, useState } from "react";
-import api from "../api/api"; // 🔥 API IMPORTED FOR WISHLIST COUNT
+import api from "../utils/api"; // 🔥 Ensure this path points to your API configuration
 import useTheme from "../hooks/useTheme"; 
 import Swal from "sweetalert2"; 
 import { 
@@ -115,7 +115,6 @@ export default function Layout() {
           <>
             <NavLink to="/dashboard" className={({isActive})=>`${navBase} ${(isActive || isDashboardActive('user')) ? navActive : navInactive}`}>🏠 Dashboard</NavLink>
             <NavLink to="/services" className={({isActive})=>`${navBase} ${isActive?navActive:navInactive}`}>🛒 Services</NavLink>
-            {/* 🔥 ADDED DYNAMIC COUNT TO WISHLIST IN NAVBAR */}
             <NavLink to="/wishlist" className={({isActive})=>`${navBase} ${isActive?navActive:navInactive}`}>
                 ❤️ Wishlist {wishlistCount > 0 && `(${wishlistCount})`}
             </NavLink>
@@ -143,6 +142,8 @@ export default function Layout() {
         return (
           <>
             <NavLink to="/superadmin/dashboard" className={({isActive})=>`${navBase} ${(isActive || isDashboardActive('superadmin')) ? navActive : navInactive}`}>🛡 Dashboard</NavLink>
+            {/* 🔥 NEW TOP NAV LINK FOR SUPERADMIN */}
+            <NavLink to="/superadmin/manage-roles" className={({isActive})=>`${navBase} ${isActive?navActive:navInactive}`}>👥 Manage Roles</NavLink>
             <NavLink to="/superadmin/audit-logs" className={({isActive})=>`${navBase} ${isActive?navActive:navInactive}`}>📜 Logs</NavLink>
           </>
         );
@@ -162,7 +163,6 @@ export default function Layout() {
           <>
             <NavLink to="/dashboard" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${(isActive || isDashboardActive('user')) ? sidebarActive : sidebarInactive}`}><Home size={18} className="group-hover:scale-110 transition-transform"/> Dashboard</NavLink>
             <NavLink to="/services" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${isActive?sidebarActive:sidebarInactive}`}><ShoppingCart size={18} className="group-hover:scale-110 transition-transform"/> Services</NavLink>
-            {/* 🔥 ADDED DYNAMIC COUNT TO WISHLIST IN SIDEBAR */}
             <NavLink to="/wishlist" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${isActive?sidebarActive:sidebarInactive}`}>
                 <Heart size={18} className="group-hover:scale-110 transition-transform text-rose-500"/> 
                 Saved Items {wishlistCount > 0 && `(${wishlistCount})`}
@@ -192,6 +192,10 @@ export default function Layout() {
         return (
           <>
             <NavLink to="/superadmin/dashboard" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${(isActive || isDashboardActive('superadmin')) ? sidebarActive : sidebarInactive}`}><Home size={18} className="group-hover:scale-110 transition-transform"/> Super Dashboard</NavLink>
+            
+            {/* 🔥 NEW SIDEBAR LINK FOR SUPERADMIN ROLE MANAGEMENT */}
+            <NavLink to="/superadmin/manage-roles" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${isActive?sidebarActive:sidebarInactive}`}><Users size={18} className="group-hover:scale-110 transition-transform"/> Manage Roles</NavLink>
+            
             <NavLink to="/superadmin/audit-logs" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${isActive?sidebarActive:sidebarInactive}`}><ShieldAlert size={18} className="group-hover:scale-110 transition-transform"/> Global Audit Logs</NavLink>
           </>
         );

@@ -78,3 +78,59 @@ exports.getSecurityAlerts = async (req, res) => {
     });
   }
 };
+
+/* ================= 🔥 NEW: GET ALL USERS FOR ROLE MANAGEMENT ================= */
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}).select("-password -passwordHash").sort({ createdAt: -1 });
+    res.json(users);
+  } catch (err) {
+    console.error("GET USERS ERROR:", err);
+    res.status(500).json({ message: "Failed to load users for role management" });
+  }
+};
+
+/* ================= 🔥 NEW: UPDATE USER ROLE (SUPERADMIN ONLY) ================= */
+exports.updateUserRole = async (req, res) => {
+  try {
+    const { role } = req.body;
+    const userId = req.params.id;
+
+    // Validate if the assigned role is valid
+    const validRoles = ['user', 'manager', 'admin'];
+    if (!validRoles.includes(role)) {
+        return res.status(400).json({ message: "Invalid role specified" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Enterprise Security: Prevent modifying other SuperAdmins
+    if (user.role === 'superadmin') {
+        return res.status(403).json({ message: "Action Denied: Cannot modify SuperAdmin roles." });
+    }
+
+    const oldRole = user.role;
+    user.role = role;
+    
+    // Save without triggering other validations like password changes
+    await user.save({ validateBeforeSave: false });
+
+    // Optional: Log this action if req.user exists
+    if (req.user) {
+      await AuditLog.create({
+        action: 'ROLE_UPDATED',
+        actor: req.user._id,
+        targetId: user._id,
+        severity: "warning",
+        details: `SuperAdmin changed role of ${user.name} from [${oldRole}] to [${role}]`
+      });
+    }
+
+    res.json({ message: `Success! User role updated to ${role}`, user });
+
+  } catch (err) {
+    console.error("UPDATE ROLE ERROR:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
