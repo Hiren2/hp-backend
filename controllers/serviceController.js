@@ -1,12 +1,12 @@
 const Service = require("../models/Service");
 const Order = require("../models/Order");
 const AuditLog = require("../models/AuditLog");
+const User = require("../models/User"); // 🔥 NEW: Imported User for RBAC
+const Notification = require("../models/Notification"); // 🔥 NEW: Imported Notification
 const mongoose = require("mongoose");
 
-/* ================= 🔥 ENTERPRISE RATING AGGREGATION (BULLETPROOF DUAL-LOOKUP) ================= */
-// Ye logic ID ke String aur ObjectId dono formats ko match karega, isliye ab kabhi 0 nahi aayega!
+/* ================= 🔥 ENTERPRISE RATING AGGREGATION ================= */
 const ratingAggregation = [
-  // 1. Match _id as Object (Standard)
   {
     $lookup: {
       from: "reviews",
@@ -15,13 +15,11 @@ const ratingAggregation = [
       as: "reviewsAsObject"
     }
   },
-  // 2. Convert _id to String
   {
     $addFields: {
       idAsString: { $toString: "$_id" }
     }
   },
-  // 3. Match _id as String (Fallback for Mismatch)
   {
     $lookup: {
       from: "reviews",
@@ -30,7 +28,6 @@ const ratingAggregation = [
       as: "reviewsAsString"
     }
   },
-  // 4. Combine Both and Calculate
   {
     $addFields: {
       allReviewsSafe: { $setUnion: ["$reviewsAsObject", "$reviewsAsString"] }
@@ -42,7 +39,6 @@ const ratingAggregation = [
       totalReviews: { $size: "$allReviewsSafe" }
     }
   },
-  // 5. Cleanup heavy data
   {
     $project: {
       reviewsAsObject: 0,
@@ -54,7 +50,6 @@ const ratingAggregation = [
 ];
 
 /* ================= GET ================= */
-
 exports.getServices = async (req, res) => {
   try {
     const services = await Service.aggregate([
@@ -81,13 +76,11 @@ exports.getServices = async (req, res) => {
 };
 
 /* ================= CREATE ================= */
-
 exports.createService = async (req, res) => {
   try {
     let imagePath = req.body.image;
 
     if (req.file) {
-      // 🔥 DYNAMIC URL FIX: Localhost hatakar request host use kiya hai
       const protocol = req.protocol;
       const host = req.get("host");
       imagePath = `${protocol}://${host}/uploads/${req.file.filename}`;
@@ -108,6 +101,25 @@ exports.createService = async (req, res) => {
       severity: "info"
     });
 
+    // 🔥 SMART RBAC: Notify all Superadmins and Admins about new service
+    try {
+      const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
+      for (let admin of systemAdmins) {
+        // Don't notify the person who actually created it, just the others
+        if (admin._id.toString() !== req.user._id.toString()) {
+          await Notification.create({
+            user: admin._id,
+            title: "New Service Added! 🆕",
+            message: `Platform Update: '${service.name}' was just added to the catalog by ${req.user.role}.`,
+            type: "SERVICE_UPDATED",
+            isRead: false
+          });
+        }
+      }
+    } catch (notifErr) {
+      console.error("Failed to notify admins of new service:", notifErr);
+    }
+
     res.status(201).json(service);
 
   } catch (err) {
@@ -117,13 +129,11 @@ exports.createService = async (req, res) => {
 };
 
 /* ================= UPDATE ================= */
-
 exports.updateService = async (req, res) => {
   try {
     let updateData = { ...req.body };
 
     if (req.file) {
-      // 🔥 DYNAMIC URL FIX: Localhost hatakar request host use kiya hai
       const protocol = req.protocol;
       const host = req.get("host");
       updateData.image = `${protocol}://${host}/uploads/${req.file.filename}`;
@@ -159,7 +169,6 @@ exports.updateService = async (req, res) => {
 };
 
 /* ================= DELETE ================= */
-
 exports.deleteService = async (req, res) => {
   try {
     const serviceId = req.params.id;
@@ -207,7 +216,6 @@ exports.deleteService = async (req, res) => {
 };
 
 /* ================= ANALYTICS ================= */
-
 exports.getServiceAnalytics = async (req, res) => {
   try {
     const analytics = await Order.aggregate([
@@ -236,7 +244,6 @@ exports.getServiceAnalytics = async (req, res) => {
 };
 
 /* ================= 🔥 SMART RECOMMENDATIONS ================= */
-
 exports.getRelatedServices = async (req, res) => {
   try {
     const currentServiceId = new mongoose.Types.ObjectId(req.params.id);

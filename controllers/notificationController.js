@@ -1,30 +1,26 @@
 const Notification = require("../models/Notification");
-const AuditLog = require("../models/AuditLog");
 
 /**
- * 🔥 BULLETPROOF ROLE BASED QUERY LOGIC
+ * 🔥 100% STRICT ROLE-BASED QUERY LOGIC (LEAK-PROOF FIREWALL)
  * User: Sirf apni private notifications dekhega.
- * Manager: Apni personal + sirf wahi global alerts jo Manager ke liye hain (jinka user null hai).
- * Admin/Superadmin: Apni personal + saari global system alerts (jinka user null hai).
- * Master Rule: Agar notification pe user ID lagi hai, toh wo kisi aur (Admin ko bhi) mix hokar nahi dikhegi!
+ * Manager: Apni personal + Manager-specific global alerts.
+ * Admin/Superadmin: Apni personal + Admin global alerts (MANAGER KI ALERTS STRICTLY BLOCKED HAIN).
  */
 const buildQuery = (user) => {
-  // Helper: To strictly find global alerts that don't belong to any specific individual
-  const isGlobalAlert = { $or: [{ user: null }, { user: { $exists: false } }] };
+  const globalCondition = [{ user: null }, { user: { $exists: false } }];
 
-  // 1. User: Strictly personal
+  // 1. USER: Strictly personal
   if (user.role === "user") {
     return { user: user._id }; 
   }
 
-  // 2. Manager: Personal OR Global Manager Alerts
+  // 2. MANAGER: Personal + Manager Global Alerts
   if (user.role === "manager") {
     return { 
       $or: [
-        { user: user._id }, // Unki khud ki personal notification
+        { user: user._id }, 
         { 
-          // Global alerts meant strictly for managers
-          ...isGlobalAlert,
+          $or: globalCondition,
           $or: [
             { type: { $in: ["NEW_ORDER_ALERT", "SUPPORT_REQUEST"] } }, 
             { targetRole: { $in: ["manager", "all"] } }
@@ -34,12 +30,16 @@ const buildQuery = (user) => {
     };
   }
 
-  // 3. Admin / Superadmin: Personal OR All Global System Alerts
+  // 3. ADMIN / SUPERADMIN: Personal + System Global Alerts
   if (user.role === "admin" || user.role === "superadmin") {
     return {
       $or: [
-        { user: user._id }, // Unki khud ki personal notification
-        { ...isGlobalAlert } // System-wide global alerts (lekin kisi dusre private user ki nahi)
+        { user: user._id }, 
+        { 
+          $or: globalCondition,
+          type: { $nin: ["NEW_ORDER_ALERT", "SUPPORT_REQUEST"] },
+          targetRole: { $nin: ["manager", "user"] }
+        }
       ]
     };
   }
@@ -55,11 +55,10 @@ exports.getNotifications = async (req, res) => {
 
     const query = buildQuery(req.user);
 
-    // 🔥 Switching from AuditLog to Notification model for better UI
     const notifications = await Notification.find(query)
       .sort({ createdAt: -1 })
-      .limit(15) // Thoda limit badha diya taaki list achhi dikhe
-      .populate("orderId", "status service"); // Order details fetch karne ke liye
+      .limit(15) 
+      .populate("orderId", "status service"); 
 
     res.json(notifications);
 
@@ -76,15 +75,11 @@ exports.markAllRead = async (req, res) => {
 
     const query = buildQuery(req.user);
 
-    // Update only unread notifications mapped to this strict user/role query
     const result = await Notification.updateMany(
       { ...query, isRead: false },
       { $set: { isRead: true } }
     );
 
-    console.log(`✅ NOTIFICATIONS UPDATED: ${result.modifiedCount}`);
-
-    // 🔥 FIX: Fetch fresh list aur usme 'populate' add kiya taaki UI break na ho
     const updatedNotifications = await Notification.find(query)
       .sort({ createdAt: -1 })
       .limit(15)
@@ -109,8 +104,6 @@ exports.deleteNotification = async (req, res) => {
     
     if (!notification) return res.status(404).json({ message: "Not found" });
     
-    // 🔥 FIX: Check authorization for deletion
-    // If notification has a user, and it's NOT the requesting user, and requester is NOT admin/superadmin -> Block!
     if (notification.user && notification.user.toString() !== req.user._id.toString() && !["admin", "superadmin"].includes(req.user.role)) {
       return res.status(403).json({ message: "Unauthorized" });
     }

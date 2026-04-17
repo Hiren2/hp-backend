@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const AuditLog = require("../models/AuditLog");
+const Notification = require("../models/Notification"); // 🔥 NEW: Imported Notification Model
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -62,9 +63,25 @@ const register = async (req, res) => {
       actor: user._id,
       actorRole: user.role,
       action: "USER_REGISTERED",
-      target: user._id, // Fixed target mapping
+      target: user._id, 
       severity: "info",
     });
+
+    // 🔥 SMART RBAC: Notify Admins & Superadmins about new registration
+    try {
+      const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
+      for (let admin of systemAdmins) {
+        await Notification.create({
+          user: admin._id,
+          title: "New User Registered! 👤",
+          message: `${name} (${email}) has just joined the platform.`,
+          type: "NEW_USER_REGISTERED",
+          isRead: false
+        });
+      }
+    } catch (notifErr) {
+      console.error("Failed to send admin notification for new user:", notifErr);
+    }
 
     res.status(201).json({
       message: "Registration successful",
@@ -108,7 +125,7 @@ const login = async (req, res) => {
         actor: user._id,
         actorRole: user.role,
         action: "FAILED_LOGIN_ATTEMPT",
-        target: user._id, // Fixed target mapping
+        target: user._id, 
         severity: "warning",
       });
 
@@ -133,9 +150,24 @@ const login = async (req, res) => {
       actor: user._id,
       actorRole: user.role,
       action: "USER_LOGIN",
-      target: user._id, // Fixed target mapping
+      target: user._id, 
       severity: "info",
     });
+
+    // 🔥 SMART RBAC: Send "You have logged in" alert to Superadmin/Admin
+    if (user.role === "superadmin" || user.role === "admin") {
+      try {
+        await Notification.create({
+          user: user._id,
+          title: "Security Alert: New Login 🛡️",
+          message: `Welcome back! You have successfully logged in with ${user.role} privileges.`,
+          type: "SYSTEM_ALERT",
+          isRead: false
+        });
+      } catch (notifErr) {
+        console.error("Login notification failed:", notifErr);
+      }
+    }
 
     res.json({
       token,
@@ -193,7 +225,7 @@ const resetPasswordWithDob = async (req, res) => {
       actor: user._id,
       actorRole: user.role,
       action: "PASSWORD_RESET",
-      target: user._id, // Fixed target mapping
+      target: user._id, 
       severity: "warning",
     });
 
@@ -253,7 +285,7 @@ const toggleWishlist = async (req, res) => {
   }
 };
 
-/* ================= 🔥 UPDATE PROFILE (THE LOGOUT FIX) ================= */
+/* ================= 🔥 UPDATE PROFILE ================= */
 const updateProfile = async (req, res) => {
   try {
     if (!req.user) return res.status(401).json({ message: "Not authenticated" });
@@ -284,12 +316,11 @@ const updateProfile = async (req, res) => {
   }
 };
 
-/* ================= 🔥 NEW: SECURE CHANGE PASSWORD (MANAGERS, ADMINS, SUPERADMINS ONLY) ================= */
+/* ================= 🔥 SECURE CHANGE PASSWORD ================= */
 const changePassword = async (req, res) => {
   try {
     if (!req.user) return res.status(401).json({ message: "Not authenticated" });
 
-    // 🔥 BACKEND SECURITY: Block standard 'user' role strictly!
     if (req.user.role === "user") {
       return res.status(403).json({ message: "Users must use the 'Forgot Password' link on the login page." });
     }
@@ -302,17 +333,14 @@ const changePassword = async (req, res) => {
     const user = await User.findById(req.user._id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Verify current password
     const match = await bcrypt.compare(currentPassword, user.password);
     if (!match) {
       return res.status(400).json({ message: "Incorrect current password" });
     }
 
-    // Hash and update the new password
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save({ validateBeforeSave: false });
 
-    // Generate Audit Log for Security Event
     try {
       await AuditLog.create({
         actor: user._id,
@@ -341,5 +369,5 @@ module.exports = {
   getWishlist,    
   toggleWishlist,
   updateProfile,
-  changePassword // 🔥 Exported the new function
+  changePassword
 };

@@ -270,6 +270,7 @@ const updateOrderStatus = async (req, res) => {
 
     await order.save({ validateBeforeSave: false });
 
+    // User Notification
     if (status === "Approved") {
       await createNotification(
         order.user,
@@ -289,6 +290,25 @@ const updateOrderStatus = async (req, res) => {
         "❌ We regret to inform you that your order was rejected. Please contact support for details.",
         order._id
       );
+    }
+
+    // 🔥 SMART RBAC: Notify Admins if Manager processes an order
+    try {
+      const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
+      for (let admin of systemAdmins) {
+        if (admin._id.toString() !== req.user._id.toString()) { // Don't notify the person making the change
+          await Notification.create({
+            user: admin._id,
+            title: "Manager Action Report 📊",
+            message: `Platform Update: Order #${order._id.toString().slice(-6).toUpperCase()} was marked as '${status}' by ${req.user.email}.`,
+            type: "SYSTEM_ALERT",
+            orderId: order._id,
+            isRead: false
+          });
+        }
+      }
+    } catch (notifErr) {
+      console.error("Failed to notify admins of manager action:", notifErr);
     }
 
     res.json(order);
@@ -346,7 +366,7 @@ const getManagerStats = async (req, res) => {
   }
 };
 
-/* ================= ADMIN STATS (THE ULTIMATE BULLETPROOF FIX) ================= */
+/* ================= ADMIN STATS ================= */
 const getAdminStats = async (req, res) => {
   try {
     const [totalUsers, totalServices, totalOrders] = await Promise.all([
@@ -367,7 +387,6 @@ const getAdminStats = async (req, res) => {
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const todayOrders = await Order.countDocuments({ createdAt: { $gte: today } });
 
-    // Fetch ALL valid orders with their linked service
     const ordersWithService = await Order.find({
       status: { $in: ["Approved", "Processing", "Shipped", "Completed"] } 
     }).populate("service");
@@ -378,21 +397,18 @@ const getAdminStats = async (req, res) => {
       { name: "Sat", revenue: 0 }
     ];
 
-    // Map ALL real historical orders
     ordersWithService.forEach(order => {
       const orderDay = new Date(order.createdAt).getDay(); 
       
-      // 🔥 THE BRAHMASTRA FALLBACK LOGIC 🔥
       let revAmount = Number(order.totalAmount);
       
-      // Agar totalAmount 0 ya missing hai (purane orders mein), toh direct Service se basePrice uthao!
       if (!revAmount || isNaN(revAmount) || revAmount === 0) {
           if (order.service && order.service.basePrice) {
               revAmount = Number(order.service.basePrice);
           } else if (order.service && order.service.price) {
               revAmount = Number(order.service.price);
           } else {
-              revAmount = 1500; // Database empty/corrupt hone par bhi graph zinda rahega
+              revAmount = 1500; 
           }
       }
       
