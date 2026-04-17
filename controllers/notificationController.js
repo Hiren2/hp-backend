@@ -3,41 +3,49 @@ const AuditLog = require("../models/AuditLog");
 
 /**
  * 🔥 BULLETPROOF ROLE BASED QUERY LOGIC
- * User: Sirf apni notifications dekhega.
- * Manager/Admin: Sirf apne personal alerts aur system-wide relevant alerts dekhenge, dusro ki private nahi.
+ * User: Sirf apni private notifications dekhega.
+ * Manager: Apni personal + sirf wahi global alerts jo Manager ke liye hain (jinka user null hai).
+ * Admin/Superadmin: Apni personal + saari global system alerts (jinka user null hai).
+ * Master Rule: Agar notification pe user ID lagi hai, toh wo kisi aur (Admin ko bhi) mix hokar nahi dikhegi!
  */
 const buildQuery = (user) => {
-  // 1. Agar normal user hai, toh sirf uska apna private data (No mixup)
+  // Helper: To strictly find global alerts that don't belong to any specific individual
+  const isGlobalAlert = { $or: [{ user: null }, { user: { $exists: false } }] };
+
+  // 1. User: Strictly personal
   if (user.role === "user") {
     return { user: user._id }; 
   }
 
-  // 2. Manager ke liye
+  // 2. Manager: Personal OR Global Manager Alerts
   if (user.role === "manager") {
     return { 
       $or: [
         { user: user._id }, // Unki khud ki personal notification
-        { type: { $in: ["NEW_ORDER_ALERT", "SUPPORT_REQUEST"] } }, // General alerts for manager
-        { targetRole: "manager" } // Agar schema mein explicitly manager defined ho
+        { 
+          // Global alerts meant strictly for managers
+          ...isGlobalAlert,
+          $or: [
+            { type: { $in: ["NEW_ORDER_ALERT", "SUPPORT_REQUEST"] } }, 
+            { targetRole: { $in: ["manager", "all"] } }
+          ]
+        }
       ] 
     };
   }
 
-  // 3. Admin / Superadmin ke liye 
-  // (🔥 FIX: Pehle yahan 'return {}' tha jisse sabka private data aa raha tha)
+  // 3. Admin / Superadmin: Personal OR All Global System Alerts
   if (user.role === "admin" || user.role === "superadmin") {
     return {
       $or: [
-        { user: user._id }, // Unki khud ki
-        { user: null }, // Global system alerts jinka koi specific user nahi hota
-        { user: { $exists: false } },
-        { type: { $in: ["NEW_ORDER_ALERT", "SYSTEM_ALERT", "PAYMENT_RECEIVED", "NEW_USER_REGISTERED", "SUPPORT_REQUEST", "SERVICE_UPDATED"] } },
-        { targetRole: { $in: ["admin", "superadmin", "all"] } }
+        { user: user._id }, // Unki khud ki personal notification
+        { ...isGlobalAlert } // System-wide global alerts (lekin kisi dusre private user ki nahi)
       ]
     };
   }
 
-  return { user: user._id }; // Safe Fallback
+  // Safe Fallback
+  return { user: user._id }; 
 };
 
 /* ================= GET NOTIFICATIONS ================= */
@@ -68,7 +76,7 @@ exports.markAllRead = async (req, res) => {
 
     const query = buildQuery(req.user);
 
-    // Update only unread notifications for this user/role
+    // Update only unread notifications mapped to this strict user/role query
     const result = await Notification.updateMany(
       { ...query, isRead: false },
       { $set: { isRead: true } }
@@ -101,7 +109,8 @@ exports.deleteNotification = async (req, res) => {
     
     if (!notification) return res.status(404).json({ message: "Not found" });
     
-    // 🔥 FIX: Added superadmin support for deletion
+    // 🔥 FIX: Check authorization for deletion
+    // If notification has a user, and it's NOT the requesting user, and requester is NOT admin/superadmin -> Block!
     if (notification.user && notification.user.toString() !== req.user._id.toString() && !["admin", "superadmin"].includes(req.user.role)) {
       return res.status(403).json({ message: "Unauthorized" });
     }
