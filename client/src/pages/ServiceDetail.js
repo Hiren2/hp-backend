@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom"; 
-import api from "../api/api";
-import { Star, ShieldCheck, Clock, Zap, MessageSquare, ArrowRight, CheckCircle } from "lucide-react"; 
+import api from "../utils/api";
+import { Star, ShieldCheck, Clock, Zap, MessageSquare, ArrowRight, CheckCircle, Heart } from "lucide-react"; 
 import GlobalLoader from "../components/GlobalLoader";
 
 import Toast from "../components/Toast";
@@ -21,6 +21,9 @@ export default function ServiceDetail() {
   const [reviews, setReviews] = useState([]);
   const [relatedServices, setRelatedServices] = useState([]); 
   const [loading, setLoading] = useState(true);
+  
+  // 🔥 NEW STATE FOR WISHLIST
+  const [isWished, setIsWished] = useState(false);
 
   // ================= 🔥 LOAD DATA =================
   useEffect(() => {
@@ -44,6 +47,15 @@ export default function ServiceDetail() {
         const resRelated = await api.get(`/services/${id}/related`);
         setRelatedServices(resRelated.data);
 
+        // 🔥 FIX: Fetch Wishlist status for this specific service
+        try {
+          const resWishlist = await api.get("/auth/wishlist");
+          const wishIds = resWishlist.data.map(item => String(item._id || item));
+          setIsWished(wishIds.includes(String(id)));
+        } catch (wishErr) {
+          console.warn("Could not load wishlist data. User might not be logged in.");
+        }
+
       } catch (err) {
         console.error("Error loading service details:", err);
       } finally {
@@ -65,9 +77,28 @@ export default function ServiceDetail() {
     showToast("Added to cart 🛒", "success");
   };
 
+  /* ================= 🔥 HANDLE WISHLIST TOGGLE ================= */
+  const handleToggleWishlist = async () => {
+    const previousState = isWished;
+    setIsWished(!isWished);
+    
+    if (!isWished) {
+      showToast("Saved to wishlist ❤️", "success");
+    } else {
+      showToast("Removed from wishlist", "info");
+    }
+
+    try {
+      await api.put("/auth/wishlist/toggle", { serviceId: id });
+    } catch (err) {
+      setIsWished(previousState); // Revert UI if API fails
+      showToast("Failed to sync wishlist", "error");
+    }
+  };
+
   const isAlreadyInCart = service && cart && cart.some((item) => item._id === service._id);
 
-  // 🔥 FRONTEND BULLETPROOF CALCULATION: Backend fail ho toh bhi UI mein sahi stars dikhenge!
+  // 🔥 FRONTEND BULLETPROOF CALCULATION
   const displayTotalReviews = reviews.length > 0 ? reviews.length : (service?.totalReviews || 0);
   const displayAvgRating = reviews.length > 0 
     ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) 
@@ -120,7 +151,6 @@ export default function ServiceDetail() {
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1.5 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-100">
                   <div className="flex gap-0.5">
-                    {/* 🔥 USING FRONTEND CALCULATION HERE */}
                     {renderDynamicStars(displayAvgRating)}
                   </div>
                   <span className="font-black text-sm text-amber-600 ml-1">
@@ -152,29 +182,44 @@ export default function ServiceDetail() {
               </div>
             </div>
 
-            <button 
-              onClick={handleAddToCart}
-              disabled={isAlreadyInCart}
-              className={`w-full py-5 rounded-[1.5rem] font-black uppercase tracking-[2px] flex items-center justify-center gap-3 transition-all active:scale-95 shadow-2xl
-                ${isAlreadyInCart 
-                  ? "bg-slate-200 text-slate-500 cursor-not-allowed" 
-                  : "bg-slate-900 text-white hover:bg-blue-600 hover:-translate-y-1"
-                }`}
-            >
-              {isAlreadyInCart ? (
-                <>
-                  <CheckCircle size={20} /> Already in Cart
-                </>
-              ) : (
-                <>
-                  <Zap size={20} fill="currentColor" /> Add to Service Cart
-                </>
-              )}
-            </button>
+            {/* 🔥 NEW UI: CART + WISHLIST BUTTONS NEXT TO EACH OTHER */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleToggleWishlist}
+                className={`p-5 rounded-[1.5rem] border-2 transition-all flex items-center justify-center
+                  ${isWished 
+                    ? "bg-rose-50 border-rose-200 text-rose-500 shadow-inner scale-95" 
+                    : "bg-white border-slate-200 text-slate-400 hover:border-rose-300 hover:text-rose-500 hover:bg-rose-50 active:scale-95"
+                  }`}
+                title={isWished ? "Remove from wishlist" : "Add to wishlist"}
+              >
+                <Heart size={24} className={isWished ? "fill-rose-500" : ""} />
+              </button>
+
+              <button 
+                onClick={handleAddToCart}
+                disabled={isAlreadyInCart}
+                className={`flex-1 py-5 rounded-[1.5rem] font-black uppercase tracking-[2px] flex items-center justify-center gap-3 transition-all active:scale-95 shadow-2xl
+                  ${isAlreadyInCart 
+                    ? "bg-slate-200 text-slate-500 cursor-not-allowed" 
+                    : "bg-slate-900 text-white hover:bg-blue-600 hover:-translate-y-1"
+                  }`}
+              >
+                {isAlreadyInCart ? (
+                  <>
+                    <CheckCircle size={20} /> Already in Cart
+                  </>
+                ) : (
+                  <>
+                    <Zap size={20} fill="currentColor" /> Add to Service Cart
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* --- REVIEWS LIST (Share Your Experience form REMOVED totally!) --- */}
+        {/* --- REVIEWS LIST --- */}
         <div className="mt-16">
           <h2 className="text-3xl font-black text-slate-800 mb-8 flex items-center gap-3 uppercase tracking-tighter">
             Customer Stories <span className="text-sm font-bold text-slate-400">({reviews.length})</span>

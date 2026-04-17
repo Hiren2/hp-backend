@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
-import api from "../api/api";
+import api from "../utils/api";
 import Toast from "../components/Toast";
 import useToast from "../components/useToast";
 
@@ -30,6 +30,9 @@ export default function AdminOrderHistory() {
       const priority = {
         Pending: 1,
         Approved: 2,
+        processing: 2,
+        shipped: 2,
+        completed: 2,
         Rejected: 3,
       };
 
@@ -53,15 +56,19 @@ export default function AdminOrderHistory() {
   }, [fetchOrders]);
 
   /* ====================================================================
-     🔥 THE GLITCH FIX: DYNAMIC FILTERING ENGINE (NO MORE USE-EFFECT)
-     Ab ye page render hone se pehle hi instantly filter ho jayega.
-     0.1 second ka glitch ab life mein kabhi nahi aayega!
+     🔥 SMART FILTERING ENGINE (Fix for "Approved" not showing data)
   ==================================================================== */
   const filtered = useMemo(() => {
     let data = [...orders];
 
     if (filter !== "All") {
-      data = data.filter((o) => o.status === filter);
+      if (filter === "Approved") {
+        // Show everything that is NOT Pending or Rejected
+        const approvedStatuses = ["approved", "processing", "shipped", "completed"];
+        data = data.filter((o) => approvedStatuses.includes(o.status?.toLowerCase()));
+      } else {
+        data = data.filter((o) => o.status?.toLowerCase() === filter.toLowerCase());
+      }
     }
 
     if (search) {
@@ -78,9 +85,9 @@ export default function AdminOrderHistory() {
   /* 🔥 PREMIUM BADGE SYSTEM */
   const badgeStyle = (status) => {
     const s = status?.toLowerCase();
-    if (s === "approved" || s === "completed") return "bg-emerald-50 text-emerald-600 border-emerald-200/50";
+    if (["approved", "completed"].includes(s)) return "bg-emerald-50 text-emerald-600 border-emerald-200/50";
     if (s === "rejected") return "bg-rose-50 text-rose-600 border-rose-200/50";
-    if (s === "processing" || s === "shipped") return "bg-blue-50 text-blue-600 border-blue-200/50";
+    if (["processing", "shipped"].includes(s)) return "bg-blue-50 text-blue-600 border-blue-200/50";
     return "bg-amber-50 text-amber-600 border-amber-200/50"; // Default to pending/yellow
   };
 
@@ -120,7 +127,7 @@ export default function AdminOrderHistory() {
           </div>
         </div>
 
-        {/* 🔥 FILTER & SEARCH BAR (Glassmorphism) */}
+        {/* 🔥 FILTER & SEARCH BAR */}
         <div className="bg-white/80 backdrop-blur-xl p-4 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 flex flex-col lg:flex-row gap-4 justify-between items-center">
 
           <div className="relative w-full lg:w-96 group">
@@ -190,7 +197,6 @@ export default function AdminOrderHistory() {
                       key={o._id}
                       className="hover:bg-slate-50/50 transition-colors group"
                     >
-                      {/* User */}
                       <td className="px-6 py-5 whitespace-nowrap">
                         <div className="font-bold text-slate-800 text-sm sm:text-base">
                           {o.user?.email || "Unknown User"}
@@ -200,21 +206,18 @@ export default function AdminOrderHistory() {
                         </div>
                       </td>
 
-                      {/* Service */}
                       <td className="px-6 py-5">
                         <div className="font-semibold text-slate-700 text-sm sm:text-base line-clamp-1">
                           {o.service?.name || "Service Unavailable"}
                         </div>
                       </td>
 
-                      {/* Status */}
                       <td className="px-6 py-5 whitespace-nowrap">
                         <span className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border shadow-sm ${badgeStyle(o.status)}`}>
                           {o.status}
                         </span>
                       </td>
 
-                      {/* Processed By */}
                       <td className="px-6 py-5 whitespace-nowrap">
                         {o.processedBy?.email ? (
                           <span className="font-mono text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1.5 rounded-md border border-indigo-100/50">
@@ -225,7 +228,6 @@ export default function AdminOrderHistory() {
                         )}
                       </td>
 
-                      {/* Created At */}
                       <td className="px-6 py-5 whitespace-nowrap text-right text-sm font-mono font-bold text-slate-500">
                         {new Date(o.createdAt).toLocaleString(undefined, {
                           year: 'numeric', month: 'short', day: 'numeric',

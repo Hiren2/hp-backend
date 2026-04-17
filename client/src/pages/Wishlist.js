@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../api/api";
+import api from "../utils/api";
 import GlobalLoader from "../components/GlobalLoader";
 import EmptyState from "../components/EmptyState";
 import Toast from "../components/Toast";
@@ -23,7 +23,8 @@ export default function Wishlist() {
 
   const fetchWishlistDetails = async () => {
     try {
-      const res = await api.get("/wishlist");
+      // 🔥 FIX 1: Updated API path to the secure auth route
+      const res = await api.get("/auth/wishlist");
       const allServicesRes = await api.get("/services");
       const allServices = allServicesRes.data;
 
@@ -61,7 +62,8 @@ export default function Wishlist() {
     showToast("Removed from wishlist 🗑️", "info");
 
     try {
-      await api.put("/wishlist/toggle", { serviceId });
+      // 🔥 FIX 2: Updated API path for toggle
+      await api.put("/auth/wishlist/toggle", { serviceId });
     } catch (err) {
       fetchWishlistDetails(); 
       showToast("Failed to remove item", "error");
@@ -84,7 +86,8 @@ export default function Wishlist() {
 
     // 3. Inform Backend to remove from Wishlist DB
     try {
-      await api.put("/wishlist/toggle", { serviceId: service._id });
+      // 🔥 FIX 3: Updated API path for toggle
+      await api.put("/auth/wishlist/toggle", { serviceId: service._id });
     } catch (err) {
       console.warn("Failed to sync wishlist deletion in background.");
       // We don't bother the user with an error toast here if cart addition was successful

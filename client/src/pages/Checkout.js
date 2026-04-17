@@ -6,8 +6,34 @@ import { QRCodeCanvas } from "qrcode.react";
 import Toast from "../components/Toast";
 import useToast from "../components/useToast";
 import { 
-  MapPin, CreditCard, Smartphone, Truck, User, Phone, Receipt, ShieldCheck, ArrowRight, CheckCircle, XCircle, Loader2, Lock, Tag, TicketPercent, X
+  MapPin, CreditCard, Smartphone, Truck, User, Phone, Receipt, ShieldCheck, ArrowRight, CheckCircle, XCircle, Loader2, Lock, Tag, TicketPercent, X, ChevronDown
 } from "lucide-react";
+
+// 🔥 INDIAN STATES & CITIES DATABASE (REAL E-COMMERCE BEHAVIOR)
+const INDIA_LOCATIONS = {
+  "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Kurnool"],
+  "Assam": ["Guwahati", "Silchar", "Dibrugarh", "Jorhat", "Nagaon"],
+  "Bihar": ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Purnia"],
+  "Chhattisgarh": ["Raipur", "Bhilai", "Bilaspur", "Korba", "Raigarh"],
+  "Delhi": ["New Delhi", "North Delhi", "South Delhi", "East Delhi", "West Delhi", "Central Delhi"],
+  "Goa": ["Panaji", "Margao", "Vasco da Gama", "Mapusa", "Ponda"],
+  "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Gandhinagar"],
+  "Haryana": ["Chandigarh", "Faridabad", "Gurugram", "Rohtak", "Panipat"],
+  "Himachal Pradesh": ["Shimla", "Solan", "Dharamshala", "Mandi", "Palampur"],
+  "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro", "Deoghar"],
+  "Karnataka": ["Bengaluru", "Mysuru", "Mangaluru", "Hubballi", "Belagavi"],
+  "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Kollam", "Thrissur"],
+  "Madhya Pradesh": ["Bhopal", "Indore", "Jabalpur", "Gwalior", "Ujjain"],
+  "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Nashik", "Thane", "Aurangabad", "Navi Mumbai"],
+  "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela", "Brahmapur", "Sambalpur"],
+  "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Bathinda"],
+  "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Ajmer"],
+  "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem"],
+  "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar", "Khammam"],
+  "Uttar Pradesh": ["Lucknow", "Kanpur", "Ghaziabad", "Agra", "Varanasi", "Noida", "Prayagraj"],
+  "Uttarakhand": ["Dehradun", "Haridwar", "Roorkee", "Haldwani", "Rudrapur"],
+  "West Bengal": ["Kolkata", "Howrah", "Darjeeling", "Siliguri", "Asansol"]
+};
 
 export default function Checkout() {
   const { cart, clearCart, appliedCoupon, setAppliedCoupon } = useCart();
@@ -50,7 +76,7 @@ export default function Checkout() {
 
   // 🔥 3D CARD ANIMATION STATE
   const [cardDetails, setCardDetails] = useState({ number: "", expiry: "", cvv: "", name: "" });
-  const [isFlipped, setIsFlipped] = useState(false); // Ye state CVV focus hone par true hogi
+  const [isFlipped, setIsFlipped] = useState(false); 
   
   const [showGateway, setShowGateway] = useState(false);
   const [gatewayState, setGatewayState] = useState("loading");
@@ -104,7 +130,7 @@ export default function Checkout() {
   }, [upiState]);
 
   // ✅ ADDRESS VALIDATION LOGIC
-  const isAddressValid = address.fullName.trim().length > 2 && address.phone.length === 10 && address.street.trim() !== "" && address.city.trim() !== "" && address.state.trim() !== "" && address.pincode.length >= 6;
+  const isAddressValid = address.fullName.trim().length > 2 && address.phone.length === 10 && address.street.trim() !== "" && address.city.trim() !== "" && address.state.trim() !== "" && address.pincode.length === 6;
 
   const isValidExpiry = (exp) => {
     if (exp.length !== 5) return false;
@@ -256,19 +282,68 @@ export default function Checkout() {
 
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
+            
+            {/* DELIVERY INFORMATION SECTION */}
             <div className="bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100">
               <h2 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
                 <MapPin className="text-blue-600" size={20} /> Delivery Information
               </h2>
+              
               <div className="grid md:grid-cols-2 gap-4">
-                <Input icon={<User size={16}/>} label="Full Name" value={address.fullName} onChange={(val) => setAddress({...address, fullName: val})} />
-                <Input icon={<Phone size={16}/>} label="Phone Number" value={address.phone} onChange={(val) => setAddress({...address, phone: val.replace(/\D/g, "").substring(0, 10)})} />
+                
+                {/* STRICT NAME VALIDATION: ONLY LETTERS AND SPACES */}
+                <Input 
+                  icon={<User size={16}/>} 
+                  label="Full Name" 
+                  value={address.fullName} 
+                  onChange={(val) => setAddress({...address, fullName: val.replace(/[^a-zA-Z\s]/g, "")})} 
+                />
+                
+                <Input 
+                  icon={<Phone size={16}/>} 
+                  label="Phone Number" 
+                  value={address.phone} 
+                  onChange={(val) => setAddress({...address, phone: val.replace(/\D/g, "").substring(0, 10)})} 
+                />
+                
                 <div className="md:col-span-2">
-                  <Input icon={<MapPin size={16}/>} label="Street / Area" value={address.street} onChange={(val) => setAddress({...address, street: val})} />
+                  <Input 
+                    icon={<MapPin size={16}/>} 
+                    label="Street / Area" 
+                    value={address.street} 
+                    onChange={(val) => setAddress({...address, street: val})} 
+                  />
                 </div>
-                <Input label="City" value={address.city} onChange={(val) => setAddress({...address, city: val})} />
-                <Input label="State" value={address.state} onChange={(val) => setAddress({...address, state: val})} />
-                <Input label="Pincode" value={address.pincode} onChange={(val) => setAddress({...address, pincode: val.replace(/\D/g, "").substring(0, 6)})} />
+
+                {/* 🔥 REAL E-COMMERCE CASCADE DROPDOWNS 🔥 */}
+                <SelectInput 
+                  icon={<MapPin size={16}/>} 
+                  label="State" 
+                  value={address.state} 
+                  onChange={(val) => setAddress({...address, state: val, city: ""})} 
+                  options={Object.keys(INDIA_LOCATIONS).sort()} 
+                  placeholder="Select State" 
+                />
+                
+                <SelectInput 
+                  icon={<MapPin size={16}/>} 
+                  label="City" 
+                  value={address.city} 
+                  onChange={(val) => setAddress({...address, city: val})} 
+                  options={address.state ? INDIA_LOCATIONS[address.state].sort() : []} 
+                  disabled={!address.state}
+                  placeholder={address.state ? "Select City" : "Select State First"} 
+                />
+
+                <div className="md:col-span-2">
+                  <Input 
+                    icon={<MapPin size={16}/>} 
+                    label="Pincode" 
+                    value={address.pincode} 
+                    onChange={(val) => setAddress({...address, pincode: val.replace(/\D/g, "").substring(0, 6)})} 
+                  />
+                </div>
+
               </div>
             </div>
 
@@ -474,7 +549,6 @@ export default function Checkout() {
                             maxLength="3" 
                             value={cardDetails.cvv} 
                             onChange={(e) => setCardDetails({ ...cardDetails, cvv: e.target.value.replace(/\D/g, "") })} 
-                            // 🔥 YAHAN ONFOCUS AND ONBLUR LAGAYA HAI ANIMATION KE LIYE
                             onFocus={() => setIsFlipped(true)}
                             onBlur={() => setIsFlipped(false)}
                             placeholder="•••" 
@@ -720,6 +794,7 @@ export default function Checkout() {
   );
 }
 
+// STANDARD TEXT INPUT COMPONENT
 function Input({ icon, label, value, onChange }) {
   return (
     <div className="space-y-1.5 flex-1">
@@ -732,6 +807,30 @@ function Input({ icon, label, value, onChange }) {
           placeholder={`Enter ${label}`}
           className={`w-full bg-slate-50/50 border border-slate-200 ${icon ? 'pl-10' : 'px-4'} py-3 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm font-semibold`}
         />
+      </div>
+    </div>
+  );
+}
+
+// 🔥 NEW SELECT DROPDOWN COMPONENT
+function SelectInput({ icon, label, value, onChange, options, disabled, placeholder }) {
+  return (
+    <div className="space-y-1.5 flex-1">
+      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">{label}</label>
+      <div className="relative group">
+        {icon && <div className="absolute left-3 top-3.5 text-slate-400 group-focus-within:text-blue-600 transition-colors z-10">{icon}</div>}
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={disabled}
+          className={`w-full bg-slate-50/50 border border-slate-200 ${icon ? 'pl-10' : 'px-4'} py-3 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all text-sm font-semibold text-slate-700 appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
+        >
+          <option value="" disabled hidden>{placeholder}</option>
+          {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+        </select>
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+           <ChevronDown size={16} />
+        </div>
       </div>
     </div>
   );

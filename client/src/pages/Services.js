@@ -92,7 +92,8 @@ export default function Services() {
 
   const fetchWishlist = async () => {
     try {
-      const res = await api.get("/wishlist");
+      // 🔥 FIX: Corrected API path to /auth/wishlist
+      const res = await api.get("/auth/wishlist");
       const wishlistIds = res.data.map(item => item._id || item);
       setWishlist(wishlistIds);
     } catch (err) {
@@ -111,7 +112,8 @@ export default function Services() {
     }
 
     try {
-      await api.put("/wishlist/toggle", { serviceId });
+      // 🔥 FIX: Corrected API path to /auth/wishlist/toggle
+      await api.put("/auth/wishlist/toggle", { serviceId });
     } catch (err) {
       fetchWishlist();
       showToast("Failed to sync wishlist", "error");
@@ -237,8 +239,6 @@ export default function Services() {
               const exists = cart.find((s) => s._id === service._id);
               const isWished = wishlist.includes(service._id); 
               
-              // 🔥 SMART PLACEHOLDER LOGIC 🔥
-              // Agar photo nahi hai ya ud gayi hai, toh product ka naam generate hoke photo ban jayega
               const encodedName = encodeURIComponent(service.name || "Product");
               const smartPlaceholder = `https://placehold.co/600x400/f8fafc/334155?text=${encodedName}`;
               
@@ -273,13 +273,12 @@ export default function Services() {
                       />
                     </button>
 
-                    {/* 🔥 IMAGE WITH SMART ERROR FALLBACK */}
                     <img
                       src={imageSrc}
                       alt={service.name}
                       onError={(e) => {
                         e.target.onerror = null; 
-                        e.target.src = smartPlaceholder; // Error aane par naam wali photo aayegi
+                        e.target.src = smartPlaceholder; 
                       }}
                       className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700 ease-in-out mix-blend-multiply dark:mix-blend-normal"
                     />

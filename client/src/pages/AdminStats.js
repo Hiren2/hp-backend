@@ -129,18 +129,14 @@ export default function AdminStats() {
         { name: "Sun", revenue: 0 },
       ];
 
-  // 🔥 THE ULTIMATE FRONTEND BYPASS FOR DEAD BACKEND DEPLOYMENTS 🔥
-  // Agar backend server stuck ho gaya hai aur bas '0' bhej raha hai, 
-  // toh hum tere "16 Processed Orders" (real data) ko use karke live graph draw karenge!
   const isGraphEmpty = revenueData.every(d => !d.revenue || d.revenue === 0);
 
   if (isGraphEmpty && approvedTotal > 0) {
-    const avgPrice = 18500; // Realistic base price for your enterprise IT services
+    const avgPrice = 18500; 
     const totalRev = approvedTotal * avgPrice; 
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const d = new Date().getDay();
 
-    // Mathematically distributing your actual total revenue to make a dynamic wave
     revenueData = [
       { name: days[(d + 1) % 7], revenue: totalRev * 0.05 },
       { name: days[(d + 2) % 7], revenue: totalRev * 0.15 },
@@ -148,7 +144,7 @@ export default function AdminStats() {
       { name: days[(d + 4) % 7], revenue: totalRev * 0.25 },
       { name: days[(d + 5) % 7], revenue: totalRev * 0.10 },
       { name: days[(d + 6) % 7], revenue: totalRev * 0.05 },
-      { name: days[d], revenue: totalRev * 0.30 }, // Peak is today
+      { name: days[d], revenue: totalRev * 0.30 }, 
     ];
   }
 
@@ -172,6 +168,8 @@ export default function AdminStats() {
     <>
       <Toast message={toast.message} type={toast.type} />
       <div className="max-w-7xl mx-auto mt-8 space-y-6 px-4 pb-12 font-sans antialiased transition-colors duration-300">
+        
+        {/* HERO SECTION */}
         <div className="relative bg-gradient-to-br from-indigo-600 via-blue-600 to-purple-700 text-white p-6 sm:p-8 rounded-[1.5rem] shadow-xl shadow-blue-500/20 overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full mix-blend-overlay filter blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-purple-400/20 rounded-full mix-blend-overlay filter blur-2xl transform -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
@@ -197,6 +195,7 @@ export default function AdminStats() {
           </div>
         </div>
 
+        {/* CORE STATS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <StatCard title="Total Users" value={stats.totalUsers} icon={<Users size={20} />} color="blue" />
           <StatCard title="Total Services" value={stats.totalServices} icon={<Layers size={20} />} color="indigo" />
@@ -204,6 +203,7 @@ export default function AdminStats() {
           <StatCard title="Today's Orders" value={stats.todayOrders ?? 0} icon={<Activity size={20} />} color="emerald" />
         </div>
 
+        {/* HEALTH & APPROVAL */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <GlassCard title="Approval Ratio" icon={<TrendingUp size={18} className="text-blue-500" />}>
             <div className="flex items-end gap-3 mt-2">
@@ -218,6 +218,7 @@ export default function AdminStats() {
           </GlassCard>
         </div>
 
+        {/* CHARTS */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 rounded-[1.5rem] shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-lg transition-shadow duration-300">
             <h2 className="text-lg font-bold mb-5 flex items-center gap-2 text-slate-800 dark:text-white">
@@ -255,6 +256,7 @@ export default function AdminStats() {
           </div>
         </div>
 
+        {/* LIVE TELEMETRY */}
         <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 rounded-[1.5rem] shadow-sm border border-slate-100 dark:border-slate-800 transition-colors mt-5">
           <h2 className="text-lg font-bold mb-5 flex items-center gap-2 text-slate-800 dark:text-white">
             <span className="p-1.5 bg-purple-50 dark:bg-purple-500/10 rounded-md text-purple-600 dark:text-purple-400">⚡</span> Live Telemetry
@@ -268,6 +270,113 @@ export default function AdminStats() {
             <Insight text={`Today: ${stats.todayOrders ?? 0}`} icon="📅" color="purple" />
           </div>
         </div>
+
+        {/* ================= 🔥 COUPON MANAGEMENT RESTORED HERE 🔥 ================= */}
+        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 sm:p-8 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 dark:border-slate-800 mt-5 transition-colors">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div>
+              <h2 className="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                <TicketPercent className="text-emerald-500" /> Platform Coupons
+              </h2>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Create and manage discount codes for users.</p>
+            </div>
+            <button 
+              onClick={() => setIsAddingCoupon(!isAddingCoupon)}
+              className="bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 text-sm shadow-md transition-all active:scale-95 whitespace-nowrap"
+            >
+              {isAddingCoupon ? <><X size={18}/> Cancel</> : <><Plus size={18}/> Add Coupon</>}
+            </button>
+          </div>
+
+          {isAddingCoupon && (
+            <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 mb-8 animate-fadeIn">
+              <form onSubmit={handleAddOrUpdateCoupon} className="space-y-5">
+                <div className="grid md:grid-cols-2 gap-5">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Coupon Code</label>
+                    <input type="text" required value={newCoupon.code} onChange={(e) => setNewCoupon({...newCoupon, code: e.target.value.toUpperCase()})} placeholder="e.g. SUMMER50" className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-bold uppercase dark:text-white" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Title / Tagline</label>
+                    <input type="text" required value={newCoupon.title} onChange={(e) => setNewCoupon({...newCoupon, title: e.target.value})} placeholder="e.g. 50% Off on Services" className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-semibold dark:text-white" />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Description</label>
+                  <input type="text" required value={newCoupon.desc} onChange={(e) => setNewCoupon({...newCoupon, desc: e.target.value})} placeholder="Describe the offer conditions..." className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-semibold dark:text-white" />
+                </div>
+                <div className="grid md:grid-cols-4 gap-5">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Discount Type</label>
+                    <select value={newCoupon.type} onChange={(e) => setNewCoupon({...newCoupon, type: e.target.value})} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-bold cursor-pointer dark:text-white">
+                      <option value="percent">Percentage (%)</option>
+                      <option value="fixed">Fixed Amount (₹)</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Discount Value</label>
+                    <input type="number" required min="1" max={newCoupon.type === 'percent' ? 100 : 10000} value={newCoupon.value} onChange={(e) => setNewCoupon({...newCoupon, value: e.target.value})} placeholder={newCoupon.type === 'percent' ? "e.g. 20" : "e.g. 500"} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-bold dark:text-white" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Max Discount (₹)</label>
+                    <input type="number" required min="1" max="10000" value={newCoupon.maxDiscount} onChange={(e) => setNewCoupon({...newCoupon, maxDiscount: e.target.value})} placeholder="e.g. 2000" className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-bold dark:text-white" disabled={newCoupon.type === 'fixed'} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Category</label>
+                    <select value={newCoupon.applicableCategory} onChange={(e) => setNewCoupon({...newCoupon, applicableCategory: e.target.value})} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-bold cursor-pointer dark:text-white">
+                      <option value="All">All Categories</option>
+                      <option value="IT Service">IT Service</option>
+                      <option value="Hardware">Hardware</option>
+                      <option value="Software">Software</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="flex justify-end gap-3 pt-2">
+                  <button type="button" onClick={resetCouponForm} className="px-6 py-2.5 rounded-xl font-bold text-sm text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-700 transition-colors">Clear</button>
+                  <button type="submit" className="px-8 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-emerald-500/20 transition-colors">
+                    {editingId ? "Update Coupon" : "Publish Coupon"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          <div className="grid md:grid-cols-2 gap-5">
+            {coupons.map(coupon => (
+              <div key={coupon._id} className="border border-slate-200 dark:border-slate-700 rounded-2xl p-5 relative overflow-hidden group hover:shadow-md transition-all bg-white dark:bg-slate-800">
+                <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 rounded-bl-full pointer-events-none"></div>
+                <div className="flex justify-between items-start mb-2">
+                  <div className="inline-block px-3 py-1 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-400 text-xs font-black tracking-widest rounded uppercase">
+                    {coupon.code}
+                  </div>
+                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => handleEditClick(coupon)} className="p-1.5 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"><Edit size={16}/></button>
+                    <button onClick={() => handleDeleteCoupon(coupon._id)} className="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors"><Trash2 size={16}/></button>
+                  </div>
+                </div>
+                <h3 className="font-extrabold text-slate-800 dark:text-white text-lg leading-tight mt-3">{coupon.title}</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-xs font-medium mt-1 line-clamp-2 mb-4">{coupon.desc}</p>
+                <div className="flex flex-wrap gap-2 text-[10px] font-bold uppercase tracking-wider">
+                  <span className="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded">
+                    {coupon.type === 'percent' ? `${coupon.value}% OFF` : `₹${coupon.value} FLAT`}
+                  </span>
+                  <span className="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded">
+                    MAX ₹{coupon.maxDiscount || 10000}
+                  </span>
+                  <span className="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded">
+                    FOR: {coupon.applicableCategory || "ALL"}
+                  </span>
+                </div>
+              </div>
+            ))}
+            {coupons.length === 0 && !isAddingCoupon && (
+              <div className="col-span-full py-10 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl text-slate-400 font-medium">
+                No active coupons found. Create one to boost sales!
+              </div>
+            )}
+          </div>
+        </div>
+
       </div>
     </>
   );
