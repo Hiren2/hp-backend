@@ -254,7 +254,8 @@ const getAllOrders = async (req, res) => {
 /* ================= UPDATE ORDER STATUS ================= */
 const updateOrderStatus = async (req, res) => {
   try {
-    const { status } = req.body;
+    // 🔥 Extract managerNotes from frontend payload
+    const { status, managerNotes } = req.body;
     if (!req.user) return res.status(401).json({ message: "User not authenticated" });
 
     const order = await Order.findById(req.params.id);
@@ -267,6 +268,11 @@ const updateOrderStatus = async (req, res) => {
     order.status = status;
     order.processedBy = req.user._id;
     order.processedAt = new Date();
+    
+    // 🔥 Save managerNotes if provided
+    if (managerNotes) {
+      order.managerNotes = managerNotes;
+    }
 
     await order.save({ validateBeforeSave: false });
 
@@ -283,11 +289,16 @@ const updateOrderStatus = async (req, res) => {
     }
 
     if (status === "Rejected") {
+      // 🔥 Send the rejection reason directly in the notification if it exists
+      const rejectMessage = managerNotes 
+        ? `❌ Order Rejected. Reason: ${managerNotes}`
+        : "❌ We regret to inform you that your order was rejected. Please contact support for details.";
+
       await createNotification(
         order.user,
         "user",
         "ORDER_REJECTED",
-        "❌ We regret to inform you that your order was rejected. Please contact support for details.",
+        rejectMessage,
         order._id
       );
     }

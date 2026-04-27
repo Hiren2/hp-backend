@@ -198,6 +198,17 @@ export default function MyOrders() {
                   </div>
                 </div>
 
+                {/* 🔥 REJECTION NOTES UI */}
+                {isRejected && order.managerNotes && (
+                  <div className="mb-4 p-4 bg-rose-50 border border-rose-100 rounded-xl flex items-start gap-3">
+                    <XCircle className="text-rose-500 mt-0.5 shrink-0" size={18} />
+                    <div>
+                      <p className="text-sm font-bold text-rose-800 uppercase tracking-wider text-[10px]">Manager's Note</p>
+                      <p className="text-sm font-medium text-rose-600 mt-0.5">{order.managerNotes}</p>
+                    </div>
+                  </div>
+                )}
+
                 {!isRejected && (
                   <div className="mt-8 mb-4">
                     <div className="relative w-full bg-slate-100 h-2 rounded-full overflow-hidden">
@@ -252,7 +263,7 @@ export default function MyOrders() {
             </div>
 
             <textarea 
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm font-medium outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 h-32 mb-6 transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm font-medium outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 h-32 mb-6 transition-all resize-none"
               placeholder="Tell us what you liked or disliked..."
               value={comment}
               onChange={(e) => setComment(e.target.value)}
