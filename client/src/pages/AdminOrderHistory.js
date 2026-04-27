@@ -11,7 +11,8 @@ import {
   Activity, 
   ShieldCheck, 
   Clock,
-  Inbox
+  Inbox,
+  AlertCircle // 🔥 Ye naya icon add kiya hai note ke liye
 } from "lucide-react";
 
 export default function AdminOrderHistory() {
@@ -199,7 +200,7 @@ export default function AdminOrderHistory() {
                       key={o._id}
                       className="hover:bg-slate-50/50 transition-colors group"
                     >
-                      <td className="px-6 py-5 whitespace-nowrap align-top">
+                      <td className="px-6 py-5 whitespace-nowrap">
                         <div className="font-bold text-slate-800 text-sm sm:text-base">
                           {o.user?.email || "Unknown User"}
                         </div>
@@ -208,27 +209,29 @@ export default function AdminOrderHistory() {
                         </div>
                       </td>
 
-                      <td className="px-6 py-5 align-top">
+                      <td className="px-6 py-5">
                         <div className="font-semibold text-slate-700 text-sm sm:text-base line-clamp-1">
                           {o.service?.name || "Service Unavailable"}
                         </div>
                       </td>
 
-                      <td className="px-6 py-5 align-top max-w-[200px]">
+                      <td className="px-6 py-5">
                         <span className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border shadow-sm ${badgeStyle(o.status)}`}>
                           {o.status ? o.status.trim() : "Unknown"}
                         </span>
                         
-                        {/* 🔥 ADMIN AUDIT LOG: Display Manager Note inline if available */}
-                        {o.status === "Rejected" && o.managerNotes && (
-                          <div className="mt-3 text-xs font-medium text-rose-600 bg-rose-50/80 p-2.5 rounded-lg border border-rose-100 break-words">
-                            <strong className="block text-[10px] uppercase tracking-wider text-rose-400 mb-1">Reason:</strong>
-                            {o.managerNotes}
+                        {/* 🔥 YAHAN MANAGER KA NOTE ADD KIYA HAI */}
+                        {o.status?.trim().toLowerCase() === "rejected" && o.managerNotes && (
+                          <div className="mt-3 p-3 bg-rose-50 border border-rose-100 rounded-xl flex flex-col gap-1 max-w-[200px] whitespace-normal">
+                            <div className="flex items-center gap-1.5 text-rose-500 font-bold text-[10px] uppercase tracking-widest">
+                              <AlertCircle size={12} /> Reason
+                            </div>
+                            <p className="text-sm font-medium text-rose-700">"{o.managerNotes}"</p>
                           </div>
                         )}
                       </td>
 
-                      <td className="px-6 py-5 whitespace-nowrap align-top">
+                      <td className="px-6 py-5 whitespace-nowrap">
                         {o.processedBy?.email ? (
                           <span className="font-mono text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1.5 rounded-md border border-indigo-100/50">
                             {o.processedBy.email}
@@ -238,7 +241,7 @@ export default function AdminOrderHistory() {
                         )}
                       </td>
 
-                      <td className="px-6 py-5 whitespace-nowrap text-right text-sm font-mono font-bold text-slate-500 align-top">
+                      <td className="px-6 py-5 whitespace-nowrap text-right text-sm font-mono font-bold text-slate-500">
                         {new Date(o.createdAt).toLocaleString(undefined, {
                           year: 'numeric', month: 'short', day: 'numeric',
                           hour: '2-digit', minute:'2-digit'

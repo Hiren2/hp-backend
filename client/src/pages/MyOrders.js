@@ -15,7 +15,8 @@ import {
   FileText,
   Star,
   X,
-  Send
+  Send,
+  AlertCircle // 🔥 Naya icon refund banner ke liye
 } from "lucide-react";
 
 const STEPS = ["Pending", "Approved", "Processing", "Shipped", "Completed"];
@@ -56,7 +57,6 @@ export default function MyOrders() {
 
       const ratedSet = new Set();
       
-      // Loop through completed services to check if current user reviewed them
       for (let sId of completedServiceIds) {
         try {
           const revRes = await api.get(`/reviews/service/${sId}`);
@@ -83,7 +83,6 @@ export default function MyOrders() {
     return STEPS.indexOf(status);
   };
 
-  /* ================= 🔥 ADVANCED PDF NAMING LOGIC ================= */
   const handleDownload = async (order) => {
     try {
       const doc = await generateInvoice(order);
@@ -105,7 +104,6 @@ export default function MyOrders() {
     }
   };
 
-  // --- SUBMIT REVIEW LOGIC ---
   const submitReview = async () => {
     if (rating === 0) return alert("Please select stars ⭐");
     setSubmitting(true);
@@ -117,7 +115,6 @@ export default function MyOrders() {
       });
       alert("Thank you for your review! 🚀");
       
-      // Add to rated set so button updates to "Already Rated" immediately
       setRatedServices(prev => new Set(prev).add(String(selectedService)));
       
       setShowModal(false);
@@ -175,7 +172,6 @@ export default function MyOrders() {
                   </div>
                   <div className="flex items-center gap-3">
                     
-                    {/* 🔥 INTELLIGENT RATE BUTTON */}
                     {order.status === "Completed" && (
                       hasUserRatedThis ? (
                         <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-600 px-4 py-2 rounded-xl text-xs font-bold border border-emerald-200">
@@ -225,14 +221,31 @@ export default function MyOrders() {
                 )}
 
                 <div className="mt-8 pt-5 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-                  <div className="flex gap-3 w-full sm:w-auto">
-                    <button onClick={() => handleView(order)} className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-slate-50 transition-all">
-                      <Eye size={16} /> View Invoice
-                    </button>
-                    <button onClick={() => handleDownload(order)} className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-slate-800 transition-all">
-                      <Download size={16} /> Download
-                    </button>
-                  </div>
+                  
+                  {/* 🔥 ENTERPRISE LOGIC: Hide Invoice buttons if Rejected, Show Refund Notice */}
+                  {isRejected ? (
+                    <div className="w-full bg-amber-50/50 border border-amber-200 p-3.5 rounded-xl flex items-start gap-3">
+                      <div className="bg-amber-100 p-2 rounded-full shrink-0">
+                        <AlertCircle size={16} className="text-amber-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-amber-800">Order Cancelled & Refund Notice</p>
+                        <p className="text-xs font-medium text-amber-700 mt-1">
+                          Since this service request was rejected, if you have already completed the payment, a full refund will be automatically initiated to your original source account within 24-48 hours.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex gap-3 w-full sm:w-auto">
+                      <button onClick={() => handleView(order)} className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-slate-50 transition-all">
+                        <Eye size={16} /> View Invoice
+                      </button>
+                      <button onClick={() => handleDownload(order)} className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-slate-800 transition-all">
+                        <Download size={16} /> Download
+                      </button>
+                    </div>
+                  )}
+
                   <span className="flex items-center gap-1.5 text-slate-400 text-xs font-bold bg-slate-50 px-3 py-1.5 rounded-lg border">
                     <CalendarDays size={14} /> {new Date(order.createdAt).toLocaleDateString()}
                   </span>

@@ -20,6 +20,12 @@ const orderSchema = new mongoose.Schema(
       default: "Pending",
     },
 
+    /* 🔥 NEW — MANAGER REVIEW NOTES */
+    managerNotes: {
+      type: String,
+      default: "", // Stores the reason for rejection/approval
+    },
+
     /* 🔥 NEW — ADDRESS (PRO LEVEL) */
     address: {
       fullName: { type: String, required: true },
