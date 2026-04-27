@@ -202,7 +202,9 @@ const createOrder = async (req, res) => {
       order._id
     );
 
-    const managers = await User.find({ role: { $in: ["manager", "admin", "superadmin"] } });
+    // 🔥 HIGH INTELLIGENCE FIX: Role Bleed resolved. 
+    // Now ONLY Managers will get the "waiting for your approval" alert.
+    const managers = await User.find({ role: "manager" });
     for (let m of managers) {
         await Notification.create({
             user: m._id,
@@ -254,7 +256,6 @@ const getAllOrders = async (req, res) => {
 /* ================= UPDATE ORDER STATUS ================= */
 const updateOrderStatus = async (req, res) => {
   try {
-    // 🔥 Extract managerNotes from frontend payload
     const { status, managerNotes } = req.body;
     if (!req.user) return res.status(401).json({ message: "User not authenticated" });
 
@@ -269,7 +270,6 @@ const updateOrderStatus = async (req, res) => {
     order.processedBy = req.user._id;
     order.processedAt = new Date();
     
-    // 🔥 Save managerNotes if provided
     if (managerNotes) {
       order.managerNotes = managerNotes;
     }
@@ -289,7 +289,6 @@ const updateOrderStatus = async (req, res) => {
     }
 
     if (status === "Rejected") {
-      // 🔥 Send the rejection reason directly in the notification if it exists
       const rejectMessage = managerNotes 
         ? `❌ Order Rejected. Reason: ${managerNotes}`
         : "❌ We regret to inform you that your order was rejected. Please contact support for details.";
