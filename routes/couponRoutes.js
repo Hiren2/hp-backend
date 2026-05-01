@@ -18,7 +18,7 @@ const checkRole = (...roles) => {
   };
 };
 
-// 🔥 COUPON SCHEMA (WITH CATEGORY)
+
 const couponSchema = new mongoose.Schema({
   code: { type: String, required: true, uppercase: true, unique: true },
   title: { type: String, required: true },
@@ -32,9 +32,9 @@ const couponSchema = new mongoose.Schema({
 
 const Coupon = mongoose.models.Coupon || mongoose.model("Coupon", couponSchema);
 
-// ========================================================================
-// 🔥 NEW ROUTE ADDED: GET ALL COUPONS (FOR ADMIN DASHBOARD)
-// ========================================================================
+
+
+
 router.get("/", protect, checkRole("Admin", "SuperAdmin"), async (req, res) => {
   try {
     const coupons = await Coupon.find().sort({ createdAt: -1 });
@@ -45,8 +45,8 @@ router.get("/", protect, checkRole("Admin", "SuperAdmin"), async (req, res) => {
   }
 });
 
-// @route   GET /api/coupons/active
-// @desc    Get all active coupons (For Users & Admin)
+
+
 router.get("/active", async (req, res) => {
   try {
     const coupons = await Coupon.find({ isActive: true });
@@ -57,8 +57,8 @@ router.get("/active", async (req, res) => {
   }
 });
 
-// @route   POST /api/coupons
-// @desc    Create a new coupon (Admin Only)
+
+
 router.post("/", protect, checkRole("Admin", "SuperAdmin"), async (req, res) => {
   try {
     const { code, title, desc, type, value, maxDiscount, applicableCategory } = req.body;
@@ -91,8 +91,8 @@ router.post("/", protect, checkRole("Admin", "SuperAdmin"), async (req, res) => 
   }
 });
 
-// 🔥 @route PUT /api/coupons/:id
-// @desc    Update an existing coupon (Admin Only)
+
+
 router.put("/:id", protect, checkRole("Admin", "SuperAdmin"), async (req, res) => {
   try {
     const { code, title, desc, type, value, maxDiscount, applicableCategory } = req.body;
@@ -105,7 +105,7 @@ router.put("/:id", protect, checkRole("Admin", "SuperAdmin"), async (req, res) =
       return res.status(400).json({ message: "Fixed discount cannot exceed ₹10,000" });
     }
 
-    // Check if the new code already belongs to ANOTHER coupon
+    
     const existing = await Coupon.findOne({ code: code.toUpperCase(), _id: { $ne: req.params.id } });
     if (existing) return res.status(400).json({ message: "Coupon code already exists on another offer" });
 
@@ -132,8 +132,8 @@ router.put("/:id", protect, checkRole("Admin", "SuperAdmin"), async (req, res) =
   }
 });
 
-// @route   DELETE /api/coupons/:id
-// @desc    Delete/Deactivate a coupon (Admin Only)
+
+
 router.delete("/:id", protect, checkRole("Admin", "SuperAdmin"), async (req, res) => {
   try {
     await Coupon.findByIdAndDelete(req.params.id);

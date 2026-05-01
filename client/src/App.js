@@ -2,16 +2,16 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Layout from "./components/Layout";
 import Chatbot from "./components/Chatbot"; 
 
-/* AUTH */
+
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 
-/* PUBLIC */
+
 import Home from "./pages/Home";
 
-/* USER & UNIVERSAL */
+
 import Dashboard from "./pages/Dashboard";
 import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
@@ -23,32 +23,32 @@ import Support from "./pages/Support";
 import Wishlist from "./pages/Wishlist"; 
 import ChangePassword from "./pages/ChangePassword"; 
 
-/* ADMIN */
+
 import AdminServices from "./pages/AdminServices";
 import AdminManagers from "./pages/AdminManagers";
 import AdminStats from "./pages/AdminStats";
 import AdminOrderHistory from "./pages/AdminOrderHistory";
 import SystemActivity from "./pages/SystemActivity";
 
-/* MANAGER */
+
 import ManagerDashboard from "./pages/ManagerDashboard";
 import ManagerOrders from "./pages/ManagerOrders";
 
-/* SUPER ADMIN */
+
 import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import SuperAdminAuditLogs from "./pages/SuperAdminAuditLogs";
 import SuperAdminManageAdmins from "./pages/SuperAdminManageAdmins";
 
 import { getUser } from "./utils/auth";
 
-/* ================= MULTI TAB LOGOUT ================= */
+
 window.addEventListener("storage", (e) => {
   if (e.key === "logout") {
     window.location.replace("/login");
   }
 });
 
-/* ================= AUTH GUARDS ================= */
+
 const RequireAuth = ({ children }) => {
   const user = getUser();
   if (!user) return <Navigate to="/login" replace />;
@@ -79,20 +79,20 @@ const RequireSuperAdmin = ({ children }) => {
   return children;
 };
 
-/* ================= APP ================= */
+
 export default function App() {
   return (
     <Router>
       <Routes>
 
-        {/* ================= PUBLIC ================= */}
+        {}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
 
-        {/* ================= PROTECTED ================= */}
+        {}
         <Route
           element={
             <RequireAuth>
@@ -102,7 +102,7 @@ export default function App() {
           }
         >
 
-          {/* UNIVERSAL ROUTES (Accessible to logged-in users based on Sidebar UI hiding) */}
+          {}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
@@ -114,7 +114,7 @@ export default function App() {
           <Route path="/support" element={<Support />} />
           <Route path="/change-password" element={<ChangePassword />} />
 
-          {/* ================= MANAGER ================= */}
+          {}
           <Route
             path="/manager/dashboard"
             element={
@@ -132,7 +132,7 @@ export default function App() {
             }
           />
 
-          {/* ================= ADMIN ================= */}
+          {}
           <Route
             path="/admin/dashboard"
             element={
@@ -174,7 +174,7 @@ export default function App() {
             }
           />
 
-          {/* ================= SUPER ADMIN ================= */}
+          {}
           <Route
             path="/superadmin/dashboard"
             element={
@@ -202,7 +202,7 @@ export default function App() {
 
         </Route>
 
-        {/* ================= FALLBACK ================= */}
+        {}
         <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>

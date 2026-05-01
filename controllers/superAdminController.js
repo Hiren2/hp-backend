@@ -2,9 +2,9 @@ const AuditLog = require("../models/AuditLog");
 const User = require("../models/User");
 const Order = require("../models/Order");
 const Service = require("../models/Service");
-const Notification = require("../models/Notification"); // 🔥 NEW: Imported Notification Model
+const Notification = require("../models/Notification"); 
 
-/* ================= FETCH AUDIT LOGS ================= */
+
 exports.getAuditLogs = async (req, res) => {
   try {
     const logs = await AuditLog.find()
@@ -20,7 +20,7 @@ exports.getAuditLogs = async (req, res) => {
   }
 };
 
-/* ================= SYSTEM MONITORING ================= */
+
 exports.getSystemOverview = async (req, res) => {
   try {
     const [
@@ -57,7 +57,7 @@ exports.getSystemOverview = async (req, res) => {
   }
 };
 
-/* ================= SECURITY ALERTS ================= */
+
 exports.getSecurityAlerts = async (req, res) => {
   try {
     const alerts = await AuditLog.find({
@@ -74,7 +74,7 @@ exports.getSecurityAlerts = async (req, res) => {
   }
 };
 
-/* ================= 🔥 GET ALL USERS FOR ROLE MANAGEMENT ================= */
+
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find({}).select("-password -passwordHash").sort({ createdAt: -1 });
@@ -85,13 +85,13 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-/* ================= 🔥 UPDATE USER ROLE (SUPERADMIN ONLY) ================= */
+
 exports.updateUserRole = async (req, res) => {
   try {
     const { role } = req.body;
     const userId = req.params.id;
 
-    // 🔥 FULL POWER TO SUPERADMIN
+    
     const validRoles = ['user', 'manager', 'admin'];
     if (!validRoles.includes(role)) {
         return res.status(400).json({ message: "Invalid role specified." });
@@ -100,7 +100,7 @@ exports.updateUserRole = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Enterprise Security: Prevent modifying other SuperAdmins
+    
     if (user.role === 'superadmin') {
         return res.status(403).json({ message: "Cannot modify SuperAdmin accounts." });
     }
@@ -108,10 +108,10 @@ exports.updateUserRole = async (req, res) => {
     const oldRole = user.role;
     user.role = role;
     
-    // Save without triggering other validations
+    
     await user.save({ validateBeforeSave: false });
 
-    // 🔥 THE BULLETPROOF FIX FOR AUDIT LOGS
+    
     try {
       if (req.user) {
         await AuditLog.create({
@@ -127,7 +127,7 @@ exports.updateUserRole = async (req, res) => {
       console.error("Audit Log Error (Ignored):", logErr.message);
     }
 
-    // 🔥 SMART RBAC: Notify Admins of Superadmin Action
+    
     try {
       const systemAdmins = await User.find({ role: "admin" });
       for (let admin of systemAdmins) {

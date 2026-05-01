@@ -20,7 +20,7 @@ export default function SuperAdminManageAdmins() {
   const fetchUsers = async () => {
     try {
       const res = await api.get("/superadmin/users");
-      // Filter out superadmins so they can't be accidentally demoted
+      
       setUsers(res.data.filter(u => u.role !== 'superadmin'));
     } catch (err) {
       showToast("Failed to fetch users", "error");
@@ -73,7 +73,7 @@ export default function SuperAdminManageAdmins() {
       
       <div className="max-w-6xl mx-auto space-y-6">
         
-        {/* Header Section */}
+        {}
         <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <h1 className="text-2xl font-black flex items-center gap-3 text-slate-800 dark:text-white">
@@ -96,7 +96,7 @@ export default function SuperAdminManageAdmins() {
           </div>
         </div>
 
-        {/* Table Section */}
+        {}
         <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
           <table className="w-full text-left">
             <thead>
@@ -131,7 +131,7 @@ export default function SuperAdminManageAdmins() {
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
                       
-                      {/* IF CURRENT ROLE IS USER */}
+                      {}
                       {user.role === 'user' && (
                         <>
                           <button 
@@ -149,7 +149,7 @@ export default function SuperAdminManageAdmins() {
                         </>
                       )}
 
-                      {/* IF CURRENT ROLE IS MANAGER */}
+                      {}
                       {user.role === 'manager' && (
                         <>
                           <button 
@@ -167,7 +167,7 @@ export default function SuperAdminManageAdmins() {
                         </>
                       )}
 
-                      {/* IF CURRENT ROLE IS ADMIN */}
+                      {}
                       {user.role === 'admin' && (
                         <>
                           <button 

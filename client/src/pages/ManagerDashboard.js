@@ -25,11 +25,11 @@ import {
   Briefcase
 } from "lucide-react";
 
-// Strict color mapping taaki colors humesha fix rahein
+
 const COLORS_MAP = {
-  "Pending": "#f59e0b", // Amber
-  "Approved": "#10b981", // Emerald
-  "Rejected": "#f43f5e"  // Rose
+  "Pending": "#f59e0b", 
+  "Approved": "#10b981", 
+  "Rejected": "#f43f5e"  
 };
 
 export default function ManagerDashboard() {
@@ -78,7 +78,7 @@ export default function ManagerDashboard() {
       { name: "Rejected", value: Number(stats.rejectedOrders || 0) },
     ];
 
-    // 🚀 Sirf wahi data dikhega jo 0 se bada hai taaki math crash na ho
+    
     const filteredPieData = rawData.filter(item => item.value > 0);
 
     return { pieData: filteredPieData, barData: rawData };
@@ -88,7 +88,7 @@ export default function ManagerDashboard() {
     return <SkeletonManagerDashboard />;
   }
 
-  /* ================= CALCULATIONS ================= */
+  
   const processed =
     (stats.approvedOrders || 0) +
     (stats.processingOrders || 0) +
@@ -157,7 +157,7 @@ export default function ManagerDashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           
-          {/* PIE CHART */}
+          {}
           <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-5 rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 dark:border-slate-800 transition-colors">
             <h2 className="text-base font-bold mb-4 flex items-center gap-2 text-slate-800 dark:text-slate-100">
               <span className="p-1.5 bg-blue-50 dark:bg-blue-900/30 rounded-md text-blue-600 dark:text-blue-400 text-sm">📊</span> Order Distribution
@@ -179,7 +179,7 @@ export default function ManagerDashboard() {
                       cy="50%" 
                       innerRadius={60} 
                       outerRadius={85} 
-                      isAnimationActive={false} // 🚀 ULTIMATE FIX: Hang issue solved, loads instantly!
+                      isAnimationActive={false} 
                       label={{ fontSize: 12, fill: '#64748b', fontWeight: 600 }}
                     >
                       {pieData.map((entry, index) => (
@@ -196,7 +196,7 @@ export default function ManagerDashboard() {
             )}
           </div>
 
-          {/* BAR CHART */}
+          {}
           <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-5 rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 dark:border-slate-800 transition-colors">
             <h2 className="text-base font-bold mb-4 flex items-center gap-2 text-slate-800 dark:text-slate-100">
               <span className="p-1.5 bg-indigo-50 dark:bg-indigo-900/30 rounded-md text-indigo-600 dark:text-indigo-400 text-sm">📈</span> Order Insights

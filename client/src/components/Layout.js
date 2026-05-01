@@ -26,7 +26,7 @@ export default function Layout() {
 
   const fetchWishlistCount = async () => {
     try {
-      // 🔥 FIX: Corrected the API path here to stop the 404 loop!
+      
       const res = await api.get("/auth/wishlist");
       if (res.data) {
         setWishlistCount(res.data.length);
@@ -195,7 +195,7 @@ export default function Layout() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 transition-colors duration-300 font-sans">
       
-      {/* --- GLASSMORPHISM HEADER --- */}
+      {}
       <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm border-b border-slate-200/50 dark:border-slate-800/50 px-6 py-4 flex items-center sticky top-0 z-40 transition-colors">
         <button onClick={() => setOpen(true)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl transition-colors">
           <Menu size={24} />
@@ -229,7 +229,7 @@ export default function Layout() {
         </div>
       </header>
 
-      {/* --- PREMIUM SIDEBAR DRAWER --- */}
+      {}
       <div className={`fixed inset-y-0 left-0 w-80 bg-white dark:bg-slate-900 shadow-[20px_0_40px_rgb(0,0,0,0.1)] z-50 transform transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] flex flex-col ${open ? "translate-x-0" : "-translate-x-full"}`}>
         
         <div className="p-6 flex items-center justify-between border-b border-slate-100 dark:border-slate-800/60">

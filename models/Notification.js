@@ -16,7 +16,7 @@ const notificationSchema = new mongoose.Schema(
       required: true,
     },
     type: {
-      type: String, // e.g., ORDER_CREATED, ORDER_SHIPPED
+      type: String, 
     },
     orderId: {
       type: mongoose.Schema.Types.ObjectId,

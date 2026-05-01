@@ -19,7 +19,7 @@ export default function ChangePassword() {
   const [loading, setLoading] = useState(false);
   const [strength, setStrength] = useState(0);
 
-  // Live Password Strength Calculator
+  
   useEffect(() => {
     let score = 0;
     const pwd = passwords.newPassword;
@@ -59,7 +59,7 @@ export default function ChangePassword() {
     }
   };
 
-  // UI Helpers for Strength Meter
+  
   const strengthColors = ["bg-slate-200", "bg-rose-500", "bg-amber-500", "bg-yellow-400", "bg-emerald-400", "bg-emerald-600"];
   const strengthLabels = ["Enter Password", "Very Weak", "Weak", "Fair", "Strong", "Enterprise Grade"];
 
@@ -70,9 +70,9 @@ export default function ChangePassword() {
       <div className="max-w-6xl mx-auto mt-6 mb-12">
         <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[2.5rem] shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col lg:flex-row">
           
-          {/* LEFT SIDE: BRANDING & TIPS */}
+          {}
           <div className="lg:w-5/12 bg-gradient-to-br from-indigo-600 to-purple-700 p-10 text-white relative overflow-hidden flex flex-col justify-center">
-            {/* Background elements */}
+            {}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full mix-blend-overlay filter blur-3xl transform translate-x-1/3 -translate-y-1/3"></div>
             <div className="absolute bottom-0 left-0 w-40 h-40 bg-purple-400/20 rounded-full mix-blend-overlay filter blur-2xl transform -translate-x-1/2 translate-y-1/2"></div>
             
@@ -101,7 +101,7 @@ export default function ChangePassword() {
             </div>
           </div>
 
-          {/* RIGHT SIDE: THE FORM */}
+          {}
           <div className="lg:w-7/12 p-8 sm:p-12 flex flex-col justify-center bg-slate-50/50 dark:bg-slate-900/50">
             
             <div className="mb-8">
@@ -113,7 +113,7 @@ export default function ChangePassword() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               
-              {/* CURRENT PASSWORD */}
+              {}
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Current Authorization Key</label>
                 <div className="relative group">
@@ -134,7 +134,7 @@ export default function ChangePassword() {
 
               <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent my-6"></div>
 
-              {/* NEW PASSWORD */}
+              {}
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">New Security Key</label>
                 <div className="relative group mb-3">
@@ -152,7 +152,7 @@ export default function ChangePassword() {
                   </button>
                 </div>
                 
-                {/* LIVE STRENGTH METER */}
+                {}
                 {passwords.newPassword.length > 0 && (
                   <div className="px-1 mt-2 animate-in fade-in slide-in-from-top-2 duration-300">
                     <div className="flex gap-1.5 h-1.5 mb-1.5 w-full">
@@ -167,7 +167,7 @@ export default function ChangePassword() {
                 )}
               </div>
 
-              {/* CONFIRM NEW PASSWORD */}
+              {}
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Confirm New Key</label>
                 <div className="relative group">

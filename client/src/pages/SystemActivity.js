@@ -14,7 +14,7 @@ export default function SystemActivity() {
 
     try {
 
-      /* ONLY ORDERS ACTIVITY FOR ADMIN */
+      
 
       const ordersRes = await api.get("/orders/admin");
 
@@ -61,7 +61,7 @@ export default function SystemActivity() {
 
       <div className="max-w-7xl mx-auto mt-8 space-y-8">
 
-        {/* HEADER */}
+        {}
 
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
@@ -73,7 +73,7 @@ export default function SystemActivity() {
           </p>
         </div>
 
-        {/* TOP STATS */}
+        {}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
@@ -95,7 +95,7 @@ export default function SystemActivity() {
 
         </div>
 
-        {/* ACTIVITY FEED */}
+        {}
 
         <div className="bg-white rounded-2xl shadow p-6">
 
@@ -126,13 +126,13 @@ export default function SystemActivity() {
                   className="flex items-start gap-4 p-4 border rounded-xl hover:bg-gray-50 transition"
                 >
 
-                  {/* ICON */}
+                  {}
 
                   <div className="text-xl">
                     {icon()}
                   </div>
 
-                  {/* CONTENT */}
+                  {}
 
                   <div className="flex-1">
 
@@ -172,7 +172,7 @@ export default function SystemActivity() {
 }
 
 
-/* ---------- COMPONENT ---------- */
+
 
 function StatCard({ title, value, highlight }) {
 

@@ -11,10 +11,10 @@ const {
   deleteMyOrder,
   getManagerStats, 
   getAdminStats,
-  capturePayment // 🔥 Payment function import kiya
+  capturePayment 
 } = require("../controllers/orderController");
 
-/* ================= STATS (NEW) ================= */
+
 
 router.get(
   "/admin/stats",
@@ -30,9 +30,9 @@ router.get(
   getManagerStats
 );
 
-/* ================= MOCK PAYMENT GATEWAY ================= */
 
-// 🔥 Naya route for payment success capture
+
+
 router.post(
   "/payment",
   authenticate,
@@ -40,7 +40,7 @@ router.post(
   capturePayment
 );
 
-/* ================= USER ================= */
+
 
 router.post(
   "/",
@@ -63,7 +63,7 @@ router.delete(
   deleteMyOrder
 );
 
-/* ================= ADMIN / MANAGER ================= */
+
 
 router.get(
   "/admin",

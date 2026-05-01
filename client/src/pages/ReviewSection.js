@@ -6,7 +6,7 @@ export default function ReviewSection({ serviceId }) {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Stats Logic
+  
   const averageRating = reviews.length > 0 
     ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length).toFixed(1) 
     : 0;
@@ -30,7 +30,7 @@ export default function ReviewSection({ serviceId }) {
   return (
     <div className="mt-16 max-w-7xl mx-auto px-4 pb-20">
       
-      {/* 🔥 AMAZON STYLE HEADER & STATS */}
+      {}
       <div className="grid lg:grid-cols-4 gap-12 mb-12">
         
         <div className="lg:col-span-1 space-y-4">
@@ -47,7 +47,7 @@ export default function ReviewSection({ serviceId }) {
             </div>
           </div>
 
-          {/* Rating Progress Bars (Amazon Style) */}
+          {}
           <div className="space-y-2.5 pt-4">
             {[5, 4, 3, 2, 1].map((star) => {
               const count = reviews.filter(r => r.rating === star).length;
@@ -65,7 +65,7 @@ export default function ReviewSection({ serviceId }) {
           </div>
         </div>
 
-        {/* 🔥 REVIEWS LIST */}
+        {}
         <div className="lg:col-span-3 space-y-8">
           {reviews.length === 0 ? (
             <div className="bg-slate-50 rounded-[2rem] p-12 text-center border-2 border-dashed border-slate-200">
@@ -101,7 +101,7 @@ export default function ReviewSection({ serviceId }) {
                   {rev.comment}
                 </p>
 
-                {/* USER UPLOADED IMAGES (IF ANY) */}
+                {}
                 {rev.reviewImage && (
                   <div className="mb-4 rounded-xl overflow-hidden w-32 h-32 border border-slate-100 shadow-sm hover:scale-105 transition-transform cursor-pointer">
                     <img src={rev.reviewImage} alt="user upload" className="w-full h-full object-cover" />

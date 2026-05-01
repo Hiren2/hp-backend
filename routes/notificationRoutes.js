@@ -8,14 +8,14 @@ const {
   markAllRead
 } = require("../controllers/notificationController");
 
-/* GET */
+
 router.get(
   "/",
   authenticate,
   getNotifications
 );
 
-/* 🔥 MARK ALL READ */
+
 router.put(
   "/read-all",
   authenticate,

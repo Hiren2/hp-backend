@@ -13,17 +13,17 @@ const {
   getTaskAnalytics,
 } = require("../controllers/taskController");
 
-/* USER */
 
-// create task
+
+
 router.post("/", authenticate, createTask);
 
-// my tasks
+
 router.get("/my", authenticate, getMyTasks);
 
-/* ADMIN / MANAGER */
 
-// all tasks
+
+
 router.get(
   "/all",
   authenticate,
@@ -31,7 +31,7 @@ router.get(
   getAllTasks
 );
 
-// update task
+
 router.put(
   "/:id",
   authenticate,
@@ -39,7 +39,7 @@ router.put(
   updateTaskStatus
 );
 
-// analytics
+
 router.get(
   "/analytics",
   authenticate,

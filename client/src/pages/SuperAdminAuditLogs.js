@@ -22,7 +22,7 @@ export default function SuperAdminAuditLogs() {
 
   const { toast, showToast } = useToast();
 
-  /* 🔥 DEBOUNCE FIX */
+  
   useEffect(() => {
     const t = setTimeout(() => {
       setDebouncedSearch(search);
@@ -46,7 +46,7 @@ export default function SuperAdminAuditLogs() {
     fetchLogs();
   }, [fetchLogs]);
 
-  /* 🔥 FAST FILTER */
+  
   const filteredLogs = useMemo(() => {
     return logs.filter((log) =>
       JSON.stringify(log)
@@ -81,9 +81,9 @@ export default function SuperAdminAuditLogs() {
     );
   };
 
-  /* 🔥 INTELLIGENT META PARSER */
+  
   const renderMetaDetails = (meta) => {
-    // 🔥 THE FIX: Agar koi extra data nahi hai, toh kuch bhi render mat karo (Return null).
+    
     if (!meta || Object.keys(meta).length === 0) return null;
 
     return (
@@ -116,7 +116,7 @@ export default function SuperAdminAuditLogs() {
 
       <div className="max-w-7xl mx-auto mt-8 px-4 pb-12 space-y-6 font-sans antialiased animate-fadeIn">
 
-        {/* HERO HEADER */}
+        {}
         <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white p-6 sm:p-8 rounded-[2rem] shadow-2xl shadow-slate-900/20 overflow-hidden border border-slate-700">
           <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full mix-blend-overlay filter blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
           
@@ -136,7 +136,7 @@ export default function SuperAdminAuditLogs() {
           </div>
         </div>
 
-        {/* SEARCH BAR */}
+        {}
         <div className="bg-white/80 backdrop-blur-xl p-5 rounded-[1.5rem] shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="relative w-full md:w-[400px] group">
             <Search size={18} className="absolute left-4 top-3 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
@@ -159,7 +159,7 @@ export default function SuperAdminAuditLogs() {
           </div>
         </div>
 
-        {/* DATA TABLE */}
+        {}
         <div className="bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-24 text-slate-400">
@@ -188,7 +188,7 @@ export default function SuperAdminAuditLogs() {
                   {filteredLogs.map((log) => (
                     <tr key={log._id} className="hover:bg-blue-50/30 transition-colors group">
                       
-                      {/* ACTOR */}
+                      {}
                       <td className="px-6 py-5 whitespace-nowrap align-top">
                         <div className="font-black text-slate-800 text-sm">
                           {log.actor?.name || "System Automated"}
@@ -201,16 +201,16 @@ export default function SuperAdminAuditLogs() {
                         </div>
                       </td>
 
-                      {/* ACTION & METADATA */}
+                      {}
                       <td className="px-6 py-5 align-top max-w-md">
                         <span className="font-mono text-[11px] font-black text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded border border-indigo-100">
                           {log.action}
                         </span>
-                        {/* 🔥 DYNAMIC META RENDERER */}
+                        {}
                         {renderMetaDetails(log.meta)}
                       </td>
 
-                      {/* TARGET */}
+                      {}
                       <td className="px-6 py-5 align-top">
                         <div className="text-slate-700 font-bold text-sm">
                           {log.target}
@@ -220,12 +220,12 @@ export default function SuperAdminAuditLogs() {
                         </div>
                       </td>
 
-                      {/* SEVERITY */}
+                      {}
                       <td className="px-6 py-5 whitespace-nowrap align-top">
                         {severityBadge(log.severity)}
                       </td>
 
-                      {/* TIMESTAMP */}
+                      {}
                       <td className="px-6 py-5 whitespace-nowrap text-right align-top">
                         <div className="text-sm font-bold text-slate-700">
                           {new Date(log.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}

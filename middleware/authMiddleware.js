@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const AuditLog = require("../models/AuditLog");
 
-/* ================= AUTHENTICATION ================= */
+
 const authenticate = async (req, res, next) => {
   try {
     let token;
@@ -26,7 +26,7 @@ const authenticate = async (req, res, next) => {
       return res.status(401).json({ message: "User not found" });
     }
 
-    /* 🔒 account status check */
+    
     if (user.accountStatus === "suspended") {
       return res.status(403).json({
         message: "Account suspended. Contact administrator.",
@@ -41,7 +41,7 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-/* ================= ROLE AUTHORIZATION ================= */
+
 const authorizeRoles = (...roles) => {
   return async (req, res, next) => {
     try {
@@ -50,7 +50,7 @@ const authorizeRoles = (...roles) => {
       }
 
       if (!roles.includes(req.user.role)) {
-        /* 🔥 optional audit logging for unauthorized attempt */
+        
         try {
           await AuditLog.create({
             actor: req.user._id,
@@ -78,6 +78,6 @@ const authorizeRoles = (...roles) => {
 
 module.exports = {
   authenticate,
-  protect: authenticate, // ✅ Dono naam kaam karenge ab
+  protect: authenticate, 
   authorizeRoles,
 };

@@ -14,9 +14,9 @@ import {
   Mail, 
   UserCircle,
   Shield,
-  UserX,        // 🔥 Added for Suspended icon
-  UserCheck,    // 🔥 Added for Active icon
-  Power         // 🔥 Added for Kill Switch icon
+  UserX,        
+  UserCheck,    
+  Power         
 } from "lucide-react";
 
 export default function AdminManagers() {
@@ -44,7 +44,7 @@ export default function AdminManagers() {
     fetchUsers();
   }, [fetchUsers]);
 
-  /* 🔥 ULTRA FIX — NO STATE LOOP */
+  
   const filtered = useMemo(() => {
     let data = users;
 
@@ -62,7 +62,7 @@ export default function AdminManagers() {
     return data;
   }, [users, search, filter]);
 
-  /* 🔥 ZERO JERK UPDATE FOR ROLE */
+  
   const changeRole = async (id, role) => {
     if (!window.confirm(`Are you sure you want to change this user's role to ${role.toUpperCase()}?`)) return;
 
@@ -84,7 +84,7 @@ export default function AdminManagers() {
     }
   };
 
-  /* 🔥 NEW: KILL SWITCH LOGIC (SUSPEND / REACTIVATE) */
+  
   const toggleAccountStatus = async (id, currentStatus) => {
     const newStatus = currentStatus === "active" ? "suspended" : "active";
     const actionText = newStatus === "suspended" ? "SUSPEND (Block)" : "REACTIVATE (Unblock)";
@@ -92,7 +92,7 @@ export default function AdminManagers() {
     if (!window.confirm(`⚠️ Are you sure you want to ${actionText} this user?`)) return;
 
     try {
-      // Calling the backend status update route
+      
       await api.put(`/admin/users/${id}/status`, { status: newStatus });
 
       setUsers((prev) =>
@@ -110,7 +110,7 @@ export default function AdminManagers() {
     }
   };
 
-  /* RBAC PROTECTION LOGIC */
+  
   const canModify = (user) => {
     if (user._id === currentUser._id) return false;
     if (user.role === "superadmin") return false;
@@ -125,18 +125,18 @@ export default function AdminManagers() {
     return false;
   };
 
-  /* PREMIUM ROLE BADGES */
+  
   const roleBadge = (role) => {
     if (role === "superadmin") return "bg-slate-900 text-amber-400 border-slate-700 shadow-md";
     if (role === "admin") return "bg-blue-50 text-blue-600 border-blue-200/50";
     if (role === "manager") return "bg-indigo-50 text-indigo-600 border-indigo-200/50";
-    return "bg-slate-50 text-slate-600 border-slate-200/50"; // user
+    return "bg-slate-50 text-slate-600 border-slate-200/50"; 
   };
 
-  /* 🔥 PREMIUM STATUS BADGES */
+  
   const statusBadge = (status) => {
     if (status === "suspended") return "bg-rose-50 text-rose-600 border-rose-200";
-    return "bg-emerald-50 text-emerald-600 border-emerald-200"; // active
+    return "bg-emerald-50 text-emerald-600 border-emerald-200"; 
   };
 
   if (loading) {
@@ -155,7 +155,7 @@ export default function AdminManagers() {
 
       <div className="max-w-7xl mx-auto mt-8 px-4 pb-12 space-y-6 font-sans antialiased animate-fadeIn">
 
-        {/* 🔥 PREMIUM COMPACT HERO HEADER */}
+        {}
         <div className="relative bg-gradient-to-br from-indigo-600 via-blue-600 to-purple-700 text-white p-5 sm:p-6 rounded-[1.5rem] shadow-xl shadow-blue-500/20 overflow-hidden flex flex-col md:flex-row justify-between md:items-center gap-4">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full mix-blend-overlay filter blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
           
@@ -175,7 +175,7 @@ export default function AdminManagers() {
           </div>
         </div>
 
-        {/* 🔥 FILTER & SEARCH BAR (Glassmorphism) */}
+        {}
         <div className="bg-white/80 backdrop-blur-xl p-4 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 flex flex-col lg:flex-row gap-4 justify-between items-center">
 
           <div className="relative w-full lg:w-96 group">
@@ -206,7 +206,7 @@ export default function AdminManagers() {
 
         </div>
 
-        {/* 🔥 ENTERPRISE DATA TABLE */}
+        {}
         <div className="bg-white/80 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 overflow-hidden">
 
           {filtered.length === 0 ? (
@@ -243,28 +243,28 @@ export default function AdminManagers() {
                   {filtered.map((u) => (
                     <tr key={u._id} className="hover:bg-slate-50/50 transition-colors group">
 
-                      {/* Name */}
+                      {}
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="font-bold text-slate-800 text-sm sm:text-base capitalize">
                           {u.name || "Unknown"}
                         </div>
                       </td>
 
-                      {/* Email */}
+                      {}
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-slate-600">
                           {u.email}
                         </div>
                       </td>
 
-                      {/* Role Badge */}
+                      {}
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border ${roleBadge(u.role)}`}>
                           {u.role}
                         </span>
                       </td>
 
-                      {/* 🔥 Status Badge */}
+                      {}
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border ${statusBadge(u.accountStatus || 'active')}`}>
                           {u.accountStatus === 'suspended' ? <UserX size={14} /> : <UserCheck size={14} />}
@@ -272,7 +272,7 @@ export default function AdminManagers() {
                         </div>
                       </td>
 
-                      {/* Action Buttons / Protection */}
+                      {}
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         
                         {!canModify(u) ? (
@@ -282,7 +282,7 @@ export default function AdminManagers() {
                         ) : (
                           <div className="flex items-center justify-end gap-2">
                             
-                            {/* 🔥 ROLE CHANGE BUTTONS */}
+                            {}
                             {u.role === "user" ? (
                               <button
                                 onClick={() => changeRole(u._id, "manager")}
@@ -299,7 +299,7 @@ export default function AdminManagers() {
                               </button>
                             ) : null}
 
-                            {/* 🔥 KILL SWITCH BUTTON */}
+                            {}
                             <button
                               onClick={() => toggleAccountStatus(u._id, u.accountStatus || 'active')}
                               className={`inline-flex items-center gap-1.5 px-3 py-2 border rounded-xl text-xs font-bold transition-all duration-300 shadow-sm

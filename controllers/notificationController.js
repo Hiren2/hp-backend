@@ -9,12 +9,12 @@ const Notification = require("../models/Notification");
 const buildQuery = (user) => {
   const globalCondition = [{ user: null }, { user: { $exists: false } }];
 
-  // 1. USER: Strictly personal
+  
   if (user.role === "user") {
     return { user: user._id }; 
   }
 
-  // 2. MANAGER: Personal + Manager Global Alerts
+  
   if (user.role === "manager") {
     return { 
       $or: [
@@ -30,7 +30,7 @@ const buildQuery = (user) => {
     };
   }
 
-  // 3. ADMIN / SUPERADMIN: Personal + System Global Alerts
+  
   if (user.role === "admin" || user.role === "superadmin") {
     return {
       $or: [
@@ -44,11 +44,11 @@ const buildQuery = (user) => {
     };
   }
 
-  // Safe Fallback
+  
   return { user: user._id }; 
 };
 
-/* ================= GET NOTIFICATIONS ================= */
+
 exports.getNotifications = async (req, res) => {
   try {
     if (!req.user) return res.status(401).json({ message: "Unauthorized" });
@@ -68,7 +68,7 @@ exports.getNotifications = async (req, res) => {
   }
 };
 
-/* ================= MARK ALL AS READ ================= */
+
 exports.markAllRead = async (req, res) => {
   try {
     if (!req.user) return res.status(401).json({ message: "Unauthorized" });
@@ -97,7 +97,7 @@ exports.markAllRead = async (req, res) => {
   }
 };
 
-/* ================= DELETE NOTIFICATION ================= */
+
 exports.deleteNotification = async (req, res) => {
   try {
     const notification = await Notification.findById(req.params.id);

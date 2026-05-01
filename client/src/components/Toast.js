@@ -4,7 +4,7 @@ import { CheckCircle, XCircle, Info, X } from "lucide-react";
 export default function Toast({ message, type, duration = 3000 }) {
   const [visible, setVisible] = useState(false);
 
-  // Auto-hide logic
+  
   useEffect(() => {
     if (message) {
       setVisible(true);
@@ -50,7 +50,7 @@ export default function Toast({ message, type, duration = 3000 }) {
           {message}
         </span>
 
-        {/* Manual Close Button */}
+        {}
         <button 
           onClick={() => setVisible(false)}
           className="ml-auto opacity-70 hover:opacity-100 transition-opacity"

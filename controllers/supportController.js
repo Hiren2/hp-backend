@@ -1,39 +1,39 @@
 const Order = require("../models/Order");
 
-// =====================================================================
-// 🔥 ENTERPRISE HEURISTIC NLP ENGINE (THE ULTRA PRO MAX BOT) 🔥
-// This engine classifies user intent based on 200+ keywords across 
-// English, Hinglish, Devanagari, Gujlish, and Gujarati script.
-// =====================================================================
+
+
+
+
+
 
 const detectIntent = (text) => {
     const t = text.toLowerCase().trim();
 
-    // 1. Language Acknowledgment
+    
     if (t.includes("prefer") || t === "hindi" || t === "english" || t === "gujarati" || t.includes("language")) return "LANG_ACK";
 
-    // 2. Greetings
+    
     if (/(hi|hello|hey|kaise|kem cho|kem|namaste|halo|नमस्ते|हेलो|હેલો|નમસ્તે)/.test(t)) return "GREETING";
 
-    // 3. Order Status & Tracking
+    
     if (/(order|status|track|history|last|kahan|kya hua|kyare aavse|ऑर्डर|स्टेटस|ટ્રેક|ઓર્ડર)/.test(t)) return "ORDER_STATUS";
 
-    // 4. Contact & Support
+    
     if (/(contact|call|number|email|support|help|madad|sahayta|संपर्क|मदद|સંપર્ક|મદદ)/.test(t)) return "CONTACT";
 
-    // 5. About / Company / Owner
+    
     if (/(what is|who|owner|founder|ceo|company|h&p|कौन|क्या है|શું|કોણ|માલિક)/.test(t)) return "ABOUT";
 
-    // 6. Delivery & Time
+    
     if (/(delivery|time|kab aayega|kitna time|kyare|डिलीवरी|समय|डિલિવરી|ક્યારે)/.test(t)) return "DELIVERY";
 
-    // 7. Pricing & Cost
+    
     if (/(price|cost|kitne ka|bhav|paisa|paise|खर्च|कितने|કિંમત|પૈસા)/.test(t)) return "PRICING";
 
-    // 8. Services & Products
+    
     if (/(services|buy|offer|product|kya bechte|shu male|सर्विस|उत्पाद|સર્વિસ|પ્રોડક્ટ)/.test(t)) return "SERVICES";
 
-    // Default Fallback Intent
+    
     return "UNKNOWN";
 };
 
@@ -42,7 +42,7 @@ const getSmartResponse = (intent, lang, name, latestOrder) => {
     const oName = latestOrder ? (latestOrder.service?.title || latestOrder.service?.name || "Service") : "None";
     const oStatus = latestOrder ? latestOrder.status : "N/A";
 
-    // ================= 1. ENGLISH RESPONSES =================
+    
     if (l === "english") {
         switch (intent) {
             case "LANG_ACK": return `You are comfortable with English. Got you. Now if you have any queries, feel free to ask us.`;
@@ -59,7 +59,7 @@ const getSmartResponse = (intent, lang, name, latestOrder) => {
         }
     }
 
-    // ================= 2. HINDI (हिंदी) RESPONSES =================
+    
     if (l === "hindi") {
         switch (intent) {
             case "LANG_ACK": return `आप हिंदी भाषा के साथ सहज हैं। समझ गया। अब यदि आपके कोई प्रश्न हैं, तो बेझिझक हमसे पूछें।`;
@@ -76,7 +76,7 @@ const getSmartResponse = (intent, lang, name, latestOrder) => {
         }
     }
 
-    // ================= 3. GUJARATI (ગુજરાતી) RESPONSES =================
+    
     if (l === "gujarati") {
         switch (intent) {
             case "LANG_ACK": return `તમે ગુજરાતી ભાષા સાથે આરામદાયક છો. સમજી ગયો. હવે જો તમને કોઈ પ્રશ્ન હોય, તો નિઃસંકોચ અમને પૂછો.`;
@@ -103,19 +103,19 @@ exports.handleSupportChat = async (req, res) => {
         const userName = req.user?.name || req.user?.fullName || "Guest"; 
         const userId = req.user?._id || req.user?.id; 
 
-        // 1. FETCH EXACT REAL DATA FROM DB FOR IMPRESSIVE RESPONSES
+        
         let latestOrder = null;
         if (userId) {
             latestOrder = await Order.findOne({ user: userId }).populate("service").sort({ createdAt: -1 });
         }
 
-        // 2. RUN THE ADVANCED HEURISTIC NLP ENGINE
+        
         const userIntent = detectIntent(message);
         
-        // 3. GET PERFECT LANGUAGE TRANSLATION & CONTEXTUAL REPLY
+        
         const finalReply = getSmartResponse(userIntent, language, userName, latestOrder);
 
-        // 4. MOCK API DELAY (To make it feel like real AI processing)
+        
         setTimeout(() => {
             return res.status(200).json({ reply: finalReply });
         }, 1200); 

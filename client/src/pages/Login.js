@@ -32,7 +32,7 @@ export default function Login() {
     orders: 0
   });
 
-  /* 🔥 FIXED GREETING (NO GOOD NIGHT EVER) */
+  
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) return "Good Morning ☀️";
@@ -92,29 +92,29 @@ export default function Login() {
     <>
       <Toast message={toast.message} type={toast.type} />
 
-      {/* Kept your original gradient vibe, just made the colors blend smoother */}
+      {}
       <div className="min-h-screen grid md:grid-cols-2 bg-gradient-to-br from-indigo-50 via-blue-50/50 to-purple-100/60 font-sans">
 
-        {/* LEFT HERO */}
+        {}
         <div className="hidden md:flex flex-col justify-center px-12 lg:px-20 relative">
           
-          {/* Subtle background blur circle to make the glass pop */}
+          {}
           <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob pointer-events-none"></div>
 
           <div className="space-y-10 relative z-10">
 
             <div className="flex items-center gap-4">
-              {/* 🔥 NEW MODERN SVG MONOGRAM LOGO */}
+              {}
               <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-lg rounded-full">
                 <circle cx="24" cy="24" r="24" fill="url(#paint0_linear_login)"/>
-                {/* H Letter Path */}
+                {}
                 <path d="M14 14V34 M14 24H22 M22 14V34" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-                {/* P Letter Path */}
+                {}
                 <path d="M28 34V14H33C35.7614 14 38 16.2386 38 19C38 21.7614 35.7614 24 33 24H28" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                 <defs>
                   <linearGradient id="paint0_linear_login" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#2563EB"/> {/* Tailwind blue-600 */}
-                    <stop offset="1" stopColor="#4F46E5"/> {/* Tailwind indigo-600 */}
+                    <stop stopColor="#2563EB"/> {}
+                    <stop offset="1" stopColor="#4F46E5"/> {}
                   </linearGradient>
                 </defs>
               </svg>
@@ -123,7 +123,7 @@ export default function Login() {
               </h1>
             </div>
 
-            {/* Kept your big shield block! Made it look really premium */}
+            {}
             <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-blue-500/30 border border-white/20 transform hover:scale-105 transition-transform duration-300">
               <ShieldCheck size={64} className="text-white drop-shadow-md" />
             </div>
@@ -138,7 +138,7 @@ export default function Login() {
               <Feature icon={<Cpu size={30} />} title="Intelligent" />
             </div>
 
-            {/* Polished Glassmorphism Stats Box */}
+            {}
             <div className="grid grid-cols-4 gap-6 mt-4 bg-white/40 backdrop-blur-lg p-5 rounded-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
               <Stat number={`${stats.users}+`} label="Users" />
               <Stat number={`${stats.services}+`} label="Services" />
@@ -149,10 +149,10 @@ export default function Login() {
           </div>
         </div>
 
-        {/* LOGIN CARD */}
+        {}
         <div className="flex items-center justify-center px-6 py-10 relative z-10">
           
-          {/* Enhanced Glassmorphism Card */}
+          {}
           <div className="w-full max-w-md bg-white/60 backdrop-blur-2xl p-8 sm:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/80">
 
             <p className="text-center text-sm font-bold text-blue-600 uppercase tracking-wider mb-3">
@@ -169,7 +169,7 @@ export default function Login() {
 
             <form onSubmit={handleSubmit} className="space-y-5">
 
-              {/* EMAIL */}
+              {}
               <div>
                 <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
                   Email Address
@@ -188,7 +188,7 @@ export default function Login() {
                 </div>
               </div>
 
-              {/* PASSWORD */}
+              {}
               <div>
                 <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
                   Password
@@ -252,7 +252,7 @@ export default function Login() {
 
       </div>
 
-      {/* FOOTER - Glassy version to match */}
+      {}
       <footer className="bg-white/80 backdrop-blur-md border-t border-slate-200/50 py-5 text-center text-sm text-slate-500 font-medium absolute bottom-0 w-full z-20">
         © {new Date().getFullYear()} H&P Solutions. All rights reserved.
         <div className="space-x-6 mt-2">
@@ -267,7 +267,7 @@ export default function Login() {
         </div>
       </footer>
 
-      {/* MODALS */}
+      {}
       {privacyOpen && (
         <Modal title="Privacy Policy" close={() => setPrivacyOpen(false)}>
           H&P Solutions respects your privacy. All authentication data is encrypted and securely stored.

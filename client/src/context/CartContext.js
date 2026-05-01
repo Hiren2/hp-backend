@@ -5,9 +5,9 @@ const CartContext = createContext();
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [animate, setAnimate] = useState(false);
-  const [appliedCoupon, setAppliedCoupon] = useState(null); // 🔥 Added Coupon State
+  const [appliedCoupon, setAppliedCoupon] = useState(null); 
 
-  // Load from localStorage
+  
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     const storedCoupon = JSON.parse(localStorage.getItem("appliedCoupon")) || null;
@@ -15,12 +15,12 @@ export function CartProvider({ children }) {
     setAppliedCoupon(storedCoupon);
   }, []);
 
-  // Sync cart to localStorage
+  
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Sync coupon to localStorage
+  
   useEffect(() => {
     if (appliedCoupon) {
       localStorage.setItem("appliedCoupon", JSON.stringify(appliedCoupon));
@@ -29,12 +29,12 @@ export function CartProvider({ children }) {
     }
   }, [appliedCoupon]);
 
-  /* ADD */
+  
   const addToCart = (service) => {
     setCart((prev) => {
       if (prev.find((s) => s._id === service._id)) return prev;
 
-      // 🔥 trigger animation
+      
       setAnimate(true);
       setTimeout(() => setAnimate(false), 500);
 
@@ -42,15 +42,15 @@ export function CartProvider({ children }) {
     });
   };
 
-  /* REMOVE */
+  
   const removeFromCart = (id) => {
     setCart((prev) => prev.filter((s) => s._id !== id));
   };
 
-  /* CLEAR */
+  
   const clearCart = () => {
     setCart([]);
-    setAppliedCoupon(null); // Clear coupon on order complete
+    setAppliedCoupon(null); 
     localStorage.removeItem("cart");
     localStorage.removeItem("appliedCoupon");
   };
@@ -64,8 +64,8 @@ export function CartProvider({ children }) {
         addToCart,
         removeFromCart,
         clearCart,
-        appliedCoupon, // 🔥 Exported Coupon State
-        setAppliedCoupon // 🔥 Exported Setter
+        appliedCoupon, 
+        setAppliedCoupon 
       }}
     >
       {children}

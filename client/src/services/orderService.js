@@ -5,7 +5,7 @@ const API_URL = "http://localhost:5000/api/orders";
 export const createOrder = (serviceId, token) =>
   axios.post(
     API_URL,
-    { service: serviceId }, // ✅ FIX HERE
+    { service: serviceId }, 
     {
       headers: {
         Authorization: `Bearer ${token}`,

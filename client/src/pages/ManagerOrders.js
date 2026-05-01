@@ -8,7 +8,7 @@ export default function ManagerOrders() {
   const [orders, setOrders] = useState([]);
   const { toast, showToast } = useToast();
 
-  // 🔥 Reject Modal State
+  
   const [rejectModal, setRejectModal] = useState({ show: false, orderId: null });
   const [rejectReason, setRejectReason] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,7 +48,7 @@ export default function ManagerOrders() {
     fetchOrders();
   }, [fetchOrders]);
 
-  // 🔥 Updated to accept managerNotes
+  
   const updateStatus = async (id, status, notes = "") => {
     if (status === "Approved") {
       if (!window.confirm(`Mark order as Approved?`)) return;
@@ -173,7 +173,7 @@ export default function ManagerOrders() {
                             >
                               Approve
                             </button>
-                            {/* 🔥 TRIGGER MODAL INSTEAD OF DIRECT REJECT */}
+                            {}
                             <button
                               onClick={() => setRejectModal({ show: true, orderId: o._id })}
                               className="px-4 py-2 rounded-lg text-sm font-bold text-red-500 bg-red-50 hover:bg-red-500 hover:text-white dark:bg-red-900/20 dark:hover:bg-red-600 transition-all"
@@ -195,7 +195,7 @@ export default function ManagerOrders() {
         )}
       </div>
 
-      {/* 🔥 REJECT REASON MODAL */}
+      {}
       {rejectModal.show && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div className="bg-white rounded-[2rem] w-full max-w-md p-8 shadow-2xl animate-slideUp relative">

@@ -29,7 +29,7 @@ export default function UserDashboard() {
     rejected: 0
   });
 
-  /* 🔥 SMART GREETING */
+  
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) return "Good Morning ☀️";
@@ -37,7 +37,7 @@ export default function UserDashboard() {
     return "Good Evening 🌙";
   };
 
-  /* ================= FETCH USER ORDERS ================= */
+  
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -72,14 +72,14 @@ export default function UserDashboard() {
     fetchOrders();
   }, []);
 
-  /* 🔥 COMPLETION RATE (REJECT EXCLUDED) */
+  
   const validOrders = stats.total - stats.rejected;
   const completionRate =
     validOrders <= 0
       ? 0
       : Math.round((stats.completed / validOrders) * 100);
 
-  /* 🔥 ACTIVE ORDERS (APPROVED FLOW) */
+  
   const activeOrders =
     stats.approved +
     stats.processing +
@@ -88,7 +88,7 @@ export default function UserDashboard() {
   return (
     <div className="max-w-7xl mx-auto mt-8 px-4 pb-12 space-y-6 font-sans antialiased animate-fadeIn">
 
-      {/* 🔥 PREMIUM HERO HEADER */}
+      {}
       <div className="relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white p-6 sm:p-8 rounded-[1.5rem] shadow-xl shadow-blue-500/20 overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full mix-blend-overlay filter blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-purple-400/20 rounded-full mix-blend-overlay filter blur-2xl transform -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
@@ -109,7 +109,7 @@ export default function UserDashboard() {
         </div>
       </div>
 
-      {/* 🔥 STATS GRID */}
+      {}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         <StatCard
           icon={<Clock size={20} />}
@@ -136,10 +136,10 @@ export default function UserDashboard() {
         />
       </div>
 
-      {/* 🔥 INSIGHTS SECTION */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-        {/* COMPLETION RATE */}
+        {}
         <div className="bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center gap-2 mb-4">
             <div className="p-1.5 bg-emerald-50 rounded-md text-emerald-600">
@@ -157,7 +157,7 @@ export default function UserDashboard() {
             <span className="text-sm font-semibold text-slate-500 mb-1.5">completion</span>
           </div>
 
-          {/* Sleek Progress Bar */}
+          {}
           <div className="w-full bg-slate-100 h-2.5 rounded-full mt-4 overflow-hidden shadow-inner">
             <div
               className="bg-gradient-to-r from-emerald-400 to-emerald-600 h-full rounded-full transition-all duration-1000 ease-out relative"
@@ -172,7 +172,7 @@ export default function UserDashboard() {
           </p>
         </div>
 
-        {/* ACTIVITY LOG */}
+        {}
         <div className="bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 hover:shadow-md transition-shadow duration-300">
           <div className="flex items-center gap-2 mb-5">
             <div className="p-1.5 bg-blue-50 rounded-md text-blue-600">
@@ -220,7 +220,7 @@ export default function UserDashboard() {
 
       </div>
 
-      {/* 🔥 QUICK ACTIONS PORTALS */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
 
         <Link
@@ -273,7 +273,7 @@ export default function UserDashboard() {
   );
 }
 
-/* ================= POLISHED COMPONENTS ================= */
+
 
 function StatCard({ icon, title, value, note, color }) {
   const colorMap = {

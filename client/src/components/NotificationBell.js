@@ -23,7 +23,7 @@ export default function NotificationBell() {
   const dropdownRef = useRef(null);
   const intervalRef = useRef(null);
 
-  /* ================= FETCH ================= */
+  
   const fetchNotifications = useCallback(async () => {
     try {
       const res = await api.get("/notifications");
@@ -35,7 +35,7 @@ export default function NotificationBell() {
     }
   }, [isUpdating]);
 
-  /* ================= POLLING ================= */
+  
   useEffect(() => {
     fetchNotifications();
     intervalRef.current = setInterval(() => {
@@ -44,7 +44,7 @@ export default function NotificationBell() {
     return () => clearInterval(intervalRef.current);
   }, [fetchNotifications]);
 
-  /* ================= OUTSIDE CLICK ================= */
+  
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -57,7 +57,7 @@ export default function NotificationBell() {
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
-  /* ================= MARK ALL READ ================= */
+  
   const markAllRead = async () => {
     try {
       setIsUpdating(true);
@@ -80,9 +80,9 @@ export default function NotificationBell() {
     }
   };
 
-  /* ================= 🔥 UPDATED DYNAMIC ICONS ================= */
+  
   const getIcon = (type = "") => {
-    const act = (type || "").toUpperCase(); // Safety check added here
+    const act = (type || "").toUpperCase(); 
     const style = "p-1.5 rounded-lg";
     
     if (act.includes("ORDER_CREATED")) 
@@ -99,7 +99,7 @@ export default function NotificationBell() {
     return <div className={`${style} bg-slate-50 text-slate-600`}><Zap size={16} /></div>;
   };
 
-  /* ================= TIME ================= */
+  
   const timeAgo = (date) => {
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -114,7 +114,7 @@ export default function NotificationBell() {
   return (
     <div className="relative" ref={dropdownRef}>
       
-      {/* 🔔 BELL TRIGGER */}
+      {}
       <button
         onClick={() => setOpen(!open)}
         className={`relative p-2 rounded-xl transition-all duration-300 hover:bg-slate-100 group ${open ? 'bg-slate-100' : ''}`}
@@ -131,7 +131,7 @@ export default function NotificationBell() {
         )}
       </button>
 
-      {/* 📂 DROPDOWN */}
+      {}
       {open && (
         <div className="absolute right-0 mt-3 w-80 sm:w-96 bg-white/95 backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] rounded-[1.5rem] border border-slate-100 z-50 overflow-hidden animate-fadeIn">
           
@@ -172,17 +172,17 @@ export default function NotificationBell() {
                     }`}
                   >
                     <div className="shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      {/* 🔥 Uses .type now instead of .action */}
+                      {}
                       {getIcon(n.type)}
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      {/* 🔥 Uses .title if available, else falls back to type */}
+                      {}
                       <p className={`text-sm tracking-tight capitalize leading-snug mb-1 ${!n.isRead ? "text-slate-900 font-bold" : "text-slate-600 font-medium"}`}>
                         {n.title || (n.type || "Update").replace(/_/g, " ").toLowerCase()}
                       </p>
                       
-                      {/* 🔥 Shows the detailed message */}
+                      {}
                       <p className="text-[11px] text-slate-500 line-clamp-2 mb-1">
                         {n.message}
                       </p>

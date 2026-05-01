@@ -32,7 +32,7 @@ export default function AdminServices() {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   
-  // 🔥 IMAGE FIX: Added imageUrl state for permanent links
+  
   const [image, setImage] = useState(null); 
   const [imageUrl, setImageUrl] = useState(""); 
   
@@ -44,7 +44,7 @@ export default function AdminServices() {
     price: "",
     description: "",
     image: null,
-    imageUrl: "", // Fixed edit state for URL
+    imageUrl: "", 
     category: ""
   });
 
@@ -74,7 +74,7 @@ export default function AdminServices() {
     }
   };
 
-  /* ================= ADD ================= */
+  
   const addService = async (e) => {
     e.preventDefault();
 
@@ -85,7 +85,7 @@ export default function AdminServices() {
       formData.append("description", description);
       formData.append("category", category);
 
-      // 🔥 FIX: Backend ko URL bhej do directly agar diya hai, warna file
+      
       if (imageUrl) {
           formData.append("image", imageUrl);
       } else if (image) {
@@ -109,11 +109,11 @@ export default function AdminServices() {
     }
   };
 
-  /* ================= EDIT ================= */
+  
   const startEdit = (s) => {
     setEditingId(s._id);
     
-    // Check if the existing image is a URL or a file path
+    
     const isLink = s.image && s.image.startsWith("http") && !s.image.includes("localhost") && !s.image.includes("uploads");
     
     setEditData({
@@ -155,7 +155,7 @@ export default function AdminServices() {
     }
   };
 
-  /* ================= DELETE ================= */
+  
   const deleteService = async (id) => {
     if (!window.confirm("Are you sure you want to delete this service? This action cannot be undone.")) return;
 
@@ -176,7 +176,7 @@ export default function AdminServices() {
 
       <div className="max-w-7xl mx-auto mt-8 px-4 pb-12 space-y-6 font-sans antialiased animate-fadeIn">
 
-        {/* 🔥 PREMIUM HERO HEADER */}
+        {}
         <div className="relative bg-gradient-to-br from-indigo-600 via-blue-600 to-purple-700 text-white p-6 sm:p-8 rounded-[1.5rem] shadow-xl shadow-blue-500/20 overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full mix-blend-overlay filter blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
           
@@ -201,7 +201,7 @@ export default function AdminServices() {
           </button>
         </div>
 
-        {/* 🔍 SEARCH BAR */}
+        {}
         <div className="bg-white/80 backdrop-blur-xl p-4 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100">
           <div className="relative w-full group">
             <Search size={18} className="absolute left-4 top-3 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
@@ -214,7 +214,7 @@ export default function AdminServices() {
           </div>
         </div>
 
-        {/* 📝 ADD NEW SERVICE FORM */}
+        {}
         {showForm && (
           <form onSubmit={addService} className="bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-[1.5rem] shadow-lg border border-slate-100 animate-fadeIn border-t-4 border-t-indigo-500">
             <h2 className="text-lg font-bold text-slate-800 mb-5 flex items-center gap-2">
@@ -247,7 +247,7 @@ export default function AdminServices() {
                 </div>
               </div>
 
-              {/* 🔥 IMAGE UPLOAD OR URL (THE FIX) */}
+              {}
               <div className="space-y-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 ml-1 flex justify-between">
                   <span>Cover Image</span>
@@ -298,7 +298,7 @@ export default function AdminServices() {
           </form>
         )}
 
-        {/* 📦 SERVICES GRID */}
+        {}
         {filtered.length === 0 ? (
           <div className="pt-8">
             <EmptyState title="No services found" description="Adjust your search or add a new service to the catalog." />
@@ -311,7 +311,7 @@ export default function AdminServices() {
                 className="bg-white/80 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 overflow-hidden group flex flex-col hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
               >
                 
-                {/* Image Section */}
+                {}
                 <div className="relative h-40 overflow-hidden bg-slate-100 p-2 pb-0">
                   <img
                     src={s.image}
@@ -331,7 +331,7 @@ export default function AdminServices() {
                 <div className="p-5 flex flex-col flex-1">
                   {editingId === s._id ? (
                     
-                    /* 🔥 INLINE EDIT FORM */
+                    
                     <div className="flex flex-col gap-3 animate-fadeIn">
                       <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-1">
                         <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">Editing Service</span>
@@ -340,7 +340,7 @@ export default function AdminServices() {
                       <input value={editData.price} onChange={(e)=>setEditData({...editData, price:e.target.value})} placeholder="Price" type="number" className="w-full bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-indigo-500/20 outline-none" />
                       <input value={editData.category} onChange={(e)=>setEditData({...editData, category:e.target.value})} placeholder="Category" className="w-full bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-indigo-500/20 outline-none" />
                       
-                      {/* Edit Image Field */}
+                      {}
                       <input 
                         type="url" 
                         value={editData.imageUrl} 
@@ -364,7 +364,7 @@ export default function AdminServices() {
 
                   ) : (
                     
-                    /* 🔥 NORMAL VIEW */
+                    
                     <>
                       <div className="flex-1">
                         <h2 className="text-lg font-bold text-slate-800 line-clamp-1 mb-1">
@@ -381,7 +381,7 @@ export default function AdminServices() {
                           <span className="text-xl font-extrabold text-slate-800 tracking-tight">{s.price}</span>
                         </div>
 
-                        {/* Premium Icon Action Buttons */}
+                        {}
                         <div className="flex gap-2">
                           <button 
                             onClick={()=>startEdit(s)} 

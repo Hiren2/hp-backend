@@ -9,7 +9,7 @@ import {
   MapPin, CreditCard, Smartphone, Truck, User, Phone, Receipt, ShieldCheck, ArrowRight, CheckCircle, XCircle, Loader2, Lock, Tag, TicketPercent, X, ChevronDown
 } from "lucide-react";
 
-// 🔥 INDIAN STATES & CITIES DATABASE (REAL E-COMMERCE BEHAVIOR)
+
 const INDIA_LOCATIONS = {
   "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Kurnool"],
   "Assam": ["Guwahati", "Silchar", "Dibrugarh", "Jorhat", "Nagaon"],
@@ -43,7 +43,7 @@ export default function Checkout() {
   const [method, setMethod] = useState("");
   const [loading, setLoading] = useState(false);
   
-  // 🔥 UPI STATE MANAGEMENT
+  
   const [upiId, setUpiId] = useState("");
   const [upiState, setUpiState] = useState("input");
   const [timer, setTimer] = useState(300); 
@@ -74,7 +74,7 @@ export default function Checkout() {
     fetchCheckoutData();
   }, []);
 
-  // 🔥 3D CARD ANIMATION STATE
+  
   const [cardDetails, setCardDetails] = useState({ number: "", expiry: "", cvv: "", name: "" });
   const [isFlipped, setIsFlipped] = useState(false); 
   
@@ -111,7 +111,7 @@ export default function Checkout() {
   const delivery = discountedSubtotal === 0 ? 0 : discountedSubtotal > 1000 ? 0 : 49;
   const total = discountedSubtotal + tax + delivery;
 
-  // 🔥 5 MINUTE TIMER
+  
   useEffect(() => {
     if (upiState !== "waiting") return;
     setTimer(300);
@@ -129,7 +129,7 @@ export default function Checkout() {
     return () => clearInterval(t);
   }, [upiState]);
 
-  // ✅ ADDRESS VALIDATION LOGIC
+  
   const isAddressValid = address.fullName.trim().length > 2 && address.phone.length === 10 && address.street.trim() !== "" && address.city.trim() !== "" && address.state.trim() !== "" && address.pincode.length === 6;
 
   const isValidExpiry = (exp) => {
@@ -283,7 +283,7 @@ export default function Checkout() {
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             
-            {/* DELIVERY INFORMATION SECTION */}
+            {}
             <div className="bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100">
               <h2 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
                 <MapPin className="text-blue-600" size={20} /> Delivery Information
@@ -291,7 +291,7 @@ export default function Checkout() {
               
               <div className="grid md:grid-cols-2 gap-4">
                 
-                {/* STRICT NAME VALIDATION: ONLY LETTERS AND SPACES */}
+                {}
                 <Input 
                   icon={<User size={16}/>} 
                   label="Full Name" 
@@ -315,7 +315,7 @@ export default function Checkout() {
                   />
                 </div>
 
-                {/* 🔥 REAL E-COMMERCE CASCADE DROPDOWNS 🔥 */}
+                {}
                 <SelectInput 
                   icon={<MapPin size={16}/>} 
                   label="State" 
@@ -449,7 +449,7 @@ export default function Checkout() {
               {method === "card" && (
                 <div className="mt-8 p-6 bg-slate-50/50 rounded-2xl border border-slate-200 animate-fadeIn">
                   
-                  {/* 🔥 INTERACTIVE 3D CREDIT CARD START 🔥 */}
+                  {}
                   <div className="relative w-full max-w-[340px] h-[200px] mx-auto mb-8" style={{ perspective: '1000px' }}>
                     <div 
                       className="w-full h-full relative transition-transform duration-700 ease-in-out shadow-2xl rounded-2xl" 
@@ -458,7 +458,7 @@ export default function Checkout() {
                         transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' 
                       }}
                     >
-                      {/* FRONT OF CARD */}
+                      {}
                       <div 
                         className="absolute w-full h-full bg-gradient-to-tr from-slate-800 via-slate-900 to-indigo-950 rounded-2xl text-white p-6 flex flex-col justify-between" 
                         style={{ backfaceVisibility: 'hidden' }}
@@ -495,7 +495,7 @@ export default function Checkout() {
                         </div>
                       </div>
 
-                      {/* BACK OF CARD */}
+                      {}
                       <div 
                         className="absolute w-full h-full bg-gradient-to-tr from-slate-800 via-slate-900 to-indigo-950 rounded-2xl flex flex-col pt-6" 
                         style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
@@ -513,7 +513,7 @@ export default function Checkout() {
                       </div>
                     </div>
                   </div>
-                  {/* 🔥 INTERACTIVE 3D CREDIT CARD END 🔥 */}
+                  {}
 
                   <div className="space-y-4">
                     <div className="space-y-1.5">
@@ -794,7 +794,7 @@ export default function Checkout() {
   );
 }
 
-// STANDARD TEXT INPUT COMPONENT
+
 function Input({ icon, label, value, onChange }) {
   return (
     <div className="space-y-1.5 flex-1">
@@ -812,7 +812,7 @@ function Input({ icon, label, value, onChange }) {
   );
 }
 
-// 🔥 NEW SELECT DROPDOWN COMPONENT
+
 function SelectInput({ icon, label, value, onChange, options, disabled, placeholder }) {
   return (
     <div className="space-y-1.5 flex-1">

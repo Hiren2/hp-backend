@@ -1,11 +1,11 @@
 const Service = require("../models/Service");
 const Order = require("../models/Order");
 const AuditLog = require("../models/AuditLog");
-const User = require("../models/User"); // 🔥 NEW: Imported User for RBAC
-const Notification = require("../models/Notification"); // 🔥 NEW: Imported Notification
+const User = require("../models/User"); 
+const Notification = require("../models/Notification"); 
 const mongoose = require("mongoose");
 
-/* ================= 🔥 ENTERPRISE RATING AGGREGATION ================= */
+
 const ratingAggregation = [
   {
     $lookup: {
@@ -49,7 +49,7 @@ const ratingAggregation = [
   }
 ];
 
-/* ================= GET ================= */
+
 exports.getServices = async (req, res) => {
   try {
     const services = await Service.aggregate([
@@ -75,7 +75,7 @@ exports.getServices = async (req, res) => {
   }
 };
 
-/* ================= CREATE ================= */
+
 exports.createService = async (req, res) => {
   try {
     let imagePath = req.body.image;
@@ -101,11 +101,11 @@ exports.createService = async (req, res) => {
       severity: "info"
     });
 
-    // 🔥 SMART RBAC: Notify all Superadmins and Admins about new service
+    
     try {
       const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
       for (let admin of systemAdmins) {
-        // Don't notify the person who actually created it, just the others
+        
         if (admin._id.toString() !== req.user._id.toString()) {
           await Notification.create({
             user: admin._id,
@@ -128,7 +128,7 @@ exports.createService = async (req, res) => {
   }
 };
 
-/* ================= UPDATE ================= */
+
 exports.updateService = async (req, res) => {
   try {
     let updateData = { ...req.body };
@@ -168,7 +168,7 @@ exports.updateService = async (req, res) => {
   }
 };
 
-/* ================= DELETE ================= */
+
 exports.deleteService = async (req, res) => {
   try {
     const serviceId = req.params.id;
@@ -215,7 +215,7 @@ exports.deleteService = async (req, res) => {
   }
 };
 
-/* ================= ANALYTICS ================= */
+
 exports.getServiceAnalytics = async (req, res) => {
   try {
     const analytics = await Order.aggregate([
@@ -243,7 +243,7 @@ exports.getServiceAnalytics = async (req, res) => {
   }
 };
 
-/* ================= 🔥 SMART RECOMMENDATIONS ================= */
+
 exports.getRelatedServices = async (req, res) => {
   try {
     const currentServiceId = new mongoose.Types.ObjectId(req.params.id);

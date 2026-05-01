@@ -14,7 +14,7 @@ export default function Dashboard() {
     return <Navigate to="/login" replace />;
   }
 
-  /* 🔥 ROLE BASED DASHBOARD */
+  
 
   if (user.role === "superadmin") {
     return <SuperAdminDashboard />;

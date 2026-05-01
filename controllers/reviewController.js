@@ -2,17 +2,17 @@ const Review = require("../models/Review");
 const Order = require("../models/Order");
 const Service = require("../models/Service");
 
-/* CREATE REVIEW */
+
 exports.createReview = async (req, res) => {
   try {
     const { serviceId, rating, comment } = req.body;
     const userId = req.user._id;
 
-    /* CHECK IF USER ORDERED SERVICE & IT IS COMPLETED */
+    
     const order = await Order.findOne({
       user: userId,
       service: serviceId,
-      status: "Completed", // Amazon style: Only delivered orders can be reviewed
+      status: "Completed", 
     });
 
     if (!order) {
@@ -28,7 +28,7 @@ exports.createReview = async (req, res) => {
       comment,
     });
 
-    /* UPDATE SERVICE RATING */
+    
     const reviews = await Review.find({ service: serviceId });
     const avg = reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length;
 
@@ -44,13 +44,13 @@ exports.createReview = async (req, res) => {
   }
 };
 
-/* GET SERVICE REVIEWS */
+
 exports.getReviews = async (req, res) => {
   try {
     const reviews = await Review.find({
       service: req.params.serviceId,
     })
-    .populate("user", "name image") // Added image for premium look
+    .populate("user", "name image") 
     .sort("-createdAt");
 
     res.json(reviews);

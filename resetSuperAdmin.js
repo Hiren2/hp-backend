@@ -8,13 +8,13 @@ const resetSuperAdmin = async () => {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ MongoDB connected");
 
-    // ❌ Remove existing superadmin if any
+    
     await User.deleteOne({ email: "superadmin@system.com" });
 
-    // 🔐 Hash password
+    
     const hashedPassword = await bcrypt.hash("SuperAdmin@123", 10);
 
-    // ✅ Create fresh superadmin
+    
     const user = await User.create({
       name: "System Owner",
       email: "superadmin@system.com",

@@ -4,7 +4,7 @@ const User = require("../models/User");
 const AuditLog = require("../models/AuditLog");
 const Notification = require("../models/Notification"); 
 
-/* ================= HELPER: CREATE SMART NOTIFICATION ================= */
+
 const createNotification = async (userId, role, action, message, orderId) => {
   try {
     await Notification.create({
@@ -34,7 +34,7 @@ const getCatchyTitle = (action) => {
   return titles[action] || "Notification Update";
 };
 
-/* ================= 🔥 BACKGROUND SYSTEMS (AUTO DELIVERY) ================= */
+
 const fixOldShippedOrders = async () => {
   try {
     const twoMinsAgo = new Date(Date.now() - 2 * 60 * 1000); 
@@ -88,7 +88,7 @@ const startAutoDeliveryChecker = () => {
   }, 20000); 
 };
 
-/* ================= AUTO ORDER LIFECYCLE ================= */
+
 const startOrderLifecycle = (order) => {
   setTimeout(async () => {
     try {
@@ -154,7 +154,7 @@ const startOrderLifecycle = (order) => {
   }, 20000); 
 };
 
-/* ================= CREATE ORDER ================= */
+
 const createOrder = async (req, res) => {
   try {
     const { serviceId, priority, address, paymentMethod, couponCode, discountValue } = req.body;
@@ -202,8 +202,8 @@ const createOrder = async (req, res) => {
       order._id
     );
 
-    // 🔥 HIGH INTELLIGENCE FIX: Role Bleed resolved. 
-    // Now ONLY Managers will get the "waiting for your approval" alert.
+    
+    
     const managers = await User.find({ role: "manager" });
     for (let m of managers) {
         await Notification.create({
@@ -223,7 +223,7 @@ const createOrder = async (req, res) => {
   }
 };
 
-/* ================= USER ORDERS ================= */
+
 const getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user._id })
@@ -237,7 +237,7 @@ const getMyOrders = async (req, res) => {
   }
 };
 
-/* ================= ADMIN / MANAGER ORDERS ================= */
+
 const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
@@ -253,7 +253,7 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-/* ================= UPDATE ORDER STATUS ================= */
+
 const updateOrderStatus = async (req, res) => {
   try {
     const { status, managerNotes } = req.body;
@@ -276,7 +276,7 @@ const updateOrderStatus = async (req, res) => {
 
     await order.save({ validateBeforeSave: false });
 
-    // User Notification
+    
     if (status === "Approved") {
       await createNotification(
         order.user,
@@ -302,11 +302,11 @@ const updateOrderStatus = async (req, res) => {
       );
     }
 
-    // 🔥 SMART RBAC: Notify Admins if Manager processes an order
+    
     try {
       const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
       for (let admin of systemAdmins) {
-        if (admin._id.toString() !== req.user._id.toString()) { // Don't notify the person making the change
+        if (admin._id.toString() !== req.user._id.toString()) { 
           await Notification.create({
             user: admin._id,
             title: "Manager Action Report 📊",
@@ -329,7 +329,7 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-/* ================= DELETE ORDER ================= */
+
 const deleteMyOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -349,7 +349,7 @@ const deleteMyOrder = async (req, res) => {
   }
 };
 
-/* ================= MANAGER STATS ================= */
+
 const getManagerStats = async (req, res) => {
   try {
     const stats = await Promise.all([
@@ -376,7 +376,7 @@ const getManagerStats = async (req, res) => {
   }
 };
 
-/* ================= ADMIN STATS ================= */
+
 const getAdminStats = async (req, res) => {
   try {
     const [totalUsers, totalServices, totalOrders] = await Promise.all([
@@ -446,7 +446,7 @@ const getAdminStats = async (req, res) => {
   }
 };
 
-/* ================= 🔥 MOCK PAYMENT GATEWAY ================= */
+
 const capturePayment = async (req, res) => {
   try {
     const { orderId, status } = req.body;
@@ -479,7 +479,7 @@ const capturePayment = async (req, res) => {
   }
 };
 
-/* ================= 🔥 INIT ================= */
+
 fixOldShippedOrders();
 startAutoDeliveryChecker();
 

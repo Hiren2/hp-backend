@@ -92,7 +92,7 @@ export default function Services() {
 
   const fetchWishlist = async () => {
     try {
-      // 🔥 FIX: Corrected API path to /auth/wishlist
+      
       const res = await api.get("/auth/wishlist");
       const wishlistIds = res.data.map(item => item._id || item);
       setWishlist(wishlistIds);
@@ -112,7 +112,7 @@ export default function Services() {
     }
 
     try {
-      // 🔥 FIX: Corrected API path to /auth/wishlist/toggle
+      
       await api.put("/auth/wishlist/toggle", { serviceId });
     } catch (err) {
       fetchWishlist();

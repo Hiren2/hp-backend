@@ -16,7 +16,7 @@ import {
   Star,
   X,
   Send,
-  AlertCircle // 🔥 Naya icon refund banner ke liye
+  AlertCircle 
 } from "lucide-react";
 
 const STEPS = ["Pending", "Approved", "Processing", "Shipped", "Completed"];
@@ -25,17 +25,17 @@ export default function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 FETCH LOGGED IN USER
+  
   const currentUser = getUser();
 
-  // --- REVIEW MODAL STATES ---
+  
   const [showModal, setShowModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // 🔥 TRACK RATED SERVICES
+  
   const [ratedServices, setRatedServices] = useState(new Set());
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function MyOrders() {
       const fetchedOrders = res.data;
       setOrders(fetchedOrders);
 
-      // 🔥 HIGH INTELLIGENCE: Check which delivered services the user has already rated
+      
       const completedServiceIds = [...new Set(
         fetchedOrders
           .filter(o => o.status === "Completed" && o.service)
@@ -132,7 +132,7 @@ export default function MyOrders() {
   return (
     <div className="max-w-7xl mx-auto mt-8 px-4 pb-12 font-sans antialiased animate-fadeIn space-y-6">
       
-      {/* HEADER */}
+      {}
       <div className="relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white p-6 sm:p-8 rounded-[1.5rem] shadow-xl shadow-blue-500/20 overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full mix-blend-overlay filter blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -194,7 +194,7 @@ export default function MyOrders() {
                   </div>
                 </div>
 
-                {/* 🔥 REJECTION NOTES UI */}
+                {}
                 {isRejected && order.managerNotes && (
                   <div className="mb-4 p-4 bg-rose-50 border border-rose-100 rounded-xl flex items-start gap-3">
                     <XCircle className="text-rose-500 mt-0.5 shrink-0" size={18} />
@@ -222,7 +222,7 @@ export default function MyOrders() {
 
                 <div className="mt-8 pt-5 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
                   
-                  {/* 🔥 ENTERPRISE LOGIC: Hide Invoice buttons if Rejected, Show Refund Notice */}
+                  {}
                   {isRejected ? (
                     <div className="w-full bg-amber-50/50 border border-amber-200 p-3.5 rounded-xl flex items-start gap-3">
                       <div className="bg-amber-100 p-2 rounded-full shrink-0">
@@ -256,7 +256,7 @@ export default function MyOrders() {
         </div>
       )}
 
-      {/* --- IN-LINE REVIEW MODAL --- */}
+      {}
       {showModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div className="bg-white rounded-[2rem] w-full max-w-md p-8 shadow-2xl animate-slideUp relative">

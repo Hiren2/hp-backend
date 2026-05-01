@@ -24,13 +24,13 @@ export default function Profile() {
   const [imageError, setImageError] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  // 🔥 10 Premium AI AVATAR OPTIONS
+  
   const avatarSeeds = ["Felix", "Aneka", "Midnight", "Jack", "Luna", "Oliver", "Milo", "Leo", "Bella", "Zoe"];
   const avatars = avatarSeeds.map(seed => `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`);
 
   const initial = user?.name?.charAt(0)?.toUpperCase() || "U";
 
-  // CLIENT-SIDE IMAGE COMPRESSION FOR PC UPLOAD
+  
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -72,17 +72,17 @@ export default function Profile() {
     };
   };
 
-  // 🔥 STRICT DB SYNC ENGINE
+  
   const saveProfile = async () => {
     setIsSaving(true);
     try {
-      // 1. Force backend to update the database FIRST
+      
       const res = await api.put("/auth/profile", { name, image });
       
-      // 2. Extract the fresh data directly from Database response
+      
       const updatedUserDB = res.data.user; 
       
-      // 3. Update local storage with REAL database truth
+      
       localStorage.setItem("user", JSON.stringify(updatedUserDB));
       
       showToast("Profile Updated Successfully! 🚀", "success");

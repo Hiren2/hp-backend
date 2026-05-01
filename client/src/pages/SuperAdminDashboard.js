@@ -22,7 +22,7 @@ import {
   FileKey
 } from "lucide-react";
 
-// Premium Tailwind Hex Colors: Amber (Pending), Emerald (Approved), Rose (Rejected)
+
 const COLORS = ["#f59e0b", "#10b981", "#f43f5e"];
 
 export default function SuperAdminDashboard() {
@@ -52,7 +52,7 @@ export default function SuperAdminDashboard() {
     );
   }
 
-  /* 🔥 SAFE CALCULATIONS */
+  
   const approvedTotal =
     (stats?.approvedOrders || 0) +
     (stats?.processingOrders || 0) +
@@ -71,9 +71,9 @@ export default function SuperAdminDashboard() {
   return (
     <div className="max-w-7xl mx-auto mt-8 px-4 pb-12 space-y-6 font-sans antialiased animate-fadeIn">
 
-      {/* 🔥 GOD-MODE HERO HEADER (Deep Slate/Black Theme) */}
+      {}
       <div className="relative bg-gradient-to-br from-slate-800 via-gray-900 to-black text-white p-6 sm:p-8 rounded-[1.5rem] shadow-2xl shadow-slate-900/20 overflow-hidden">
-        {/* Subtle high-tech ambient glows */}
+        {}
         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full mix-blend-overlay filter blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-emerald-500/10 rounded-full mix-blend-overlay filter blur-2xl transform -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
         
@@ -93,7 +93,7 @@ export default function SuperAdminDashboard() {
         </div>
       </div>
 
-      {/* 🔥 SYSTEM OVERVIEW GRID */}
+      {}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <StatCard title="Total Users" value={stats?.totalUsers || 0} icon={<Users size={20} />} color="blue" />
         <StatCard title="Total Services" value={stats?.totalServices || 0} icon={<Layers size={20} />} color="indigo" />
@@ -101,7 +101,7 @@ export default function SuperAdminDashboard() {
         <StatCard title="Orders Today" value={stats?.todayOrders || 0} icon={<Activity size={20} />} color="emerald" />
       </div>
 
-      {/* 🔥 PLATFORM HEALTH OVERVIEW */}
+      {}
       <div className="bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100">
         <h2 className="text-lg font-bold mb-5 flex items-center gap-2 text-slate-800 pb-4 border-b border-slate-100">
           <Server size={20} className="text-blue-600" /> Platform Health Overview
@@ -116,7 +116,7 @@ export default function SuperAdminDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-        {/* 🔥 CHARTS (Donut Chart Upgrade) */}
+        {}
         <div className="bg-white/80 backdrop-blur-xl p-6 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 hover:shadow-lg transition-shadow duration-300">
           <h2 className="text-lg font-bold mb-5 flex items-center gap-2 text-slate-800">
             <span className="p-1.5 bg-indigo-50 rounded-md text-indigo-600">📊</span> Order Status Analytics
@@ -155,7 +155,7 @@ export default function SuperAdminDashboard() {
           </div>
         </div>
 
-        {/* 🔥 INSIGHTS (3x2 Grid Format) */}
+        {}
         <div className="bg-white/80 backdrop-blur-xl p-6 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 hover:shadow-lg transition-shadow duration-300 flex flex-col">
           <h2 className="text-lg font-bold mb-5 flex items-center gap-2 text-slate-800">
             <span className="p-1.5 bg-blue-50 rounded-md text-blue-600">📈</span> Platform Insights
@@ -173,7 +173,7 @@ export default function SuperAdminDashboard() {
 
       </div>
 
-      {/* 🔥 SECURITY PANEL */}
+      {}
       <div className="bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100">
         <h2 className="text-lg font-bold mb-5 flex items-center gap-2 text-slate-800 pb-4 border-b border-slate-100">
           <ShieldCheck size={20} className="text-emerald-600" /> Security & Governance
@@ -205,7 +205,7 @@ export default function SuperAdminDashboard() {
   );
 }
 
-/* 🔥 POLISHED COMPONENTS */
+
 
 function StatCard({ title, value, icon, color }) {
   const colorMap = {

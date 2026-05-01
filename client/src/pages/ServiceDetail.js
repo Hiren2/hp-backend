@@ -22,10 +22,10 @@ export default function ServiceDetail() {
   const [relatedServices, setRelatedServices] = useState([]); 
   const [loading, setLoading] = useState(true);
   
-  // 🔥 NEW STATE FOR WISHLIST
+  
   const [isWished, setIsWished] = useState(false);
 
-  // ================= 🔥 LOAD DATA =================
+  
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     
@@ -47,7 +47,7 @@ export default function ServiceDetail() {
         const resRelated = await api.get(`/services/${id}/related`);
         setRelatedServices(resRelated.data);
 
-        // 🔥 FIX: Fetch Wishlist status for this specific service
+        
         try {
           const resWishlist = await api.get("/auth/wishlist");
           const wishIds = resWishlist.data.map(item => String(item._id || item));
@@ -66,7 +66,7 @@ export default function ServiceDetail() {
     fetchAllDetails();
   }, [id]);
 
-  /* ================= HANDLE ADD TO CART ================= */
+  
   const handleAddToCart = () => {
     if (!service) return;
     addToCart({
@@ -77,7 +77,7 @@ export default function ServiceDetail() {
     showToast("Added to cart 🛒", "success");
   };
 
-  /* ================= 🔥 HANDLE WISHLIST TOGGLE ================= */
+  
   const handleToggleWishlist = async () => {
     const previousState = isWished;
     setIsWished(!isWished);
@@ -91,14 +91,14 @@ export default function ServiceDetail() {
     try {
       await api.put("/auth/wishlist/toggle", { serviceId: id });
     } catch (err) {
-      setIsWished(previousState); // Revert UI if API fails
+      setIsWished(previousState); 
       showToast("Failed to sync wishlist", "error");
     }
   };
 
   const isAlreadyInCart = service && cart && cart.some((item) => item._id === service._id);
 
-  // 🔥 FRONTEND BULLETPROOF CALCULATION
+  
   const displayTotalReviews = reviews.length > 0 ? reviews.length : (service?.totalReviews || 0);
   const displayAvgRating = reviews.length > 0 
     ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) 
@@ -182,7 +182,7 @@ export default function ServiceDetail() {
               </div>
             </div>
 
-            {/* 🔥 NEW UI: CART + WISHLIST BUTTONS NEXT TO EACH OTHER */}
+            {}
             <div className="flex items-center gap-4">
               <button
                 onClick={handleToggleWishlist}
@@ -219,7 +219,7 @@ export default function ServiceDetail() {
           </div>
         </div>
 
-        {/* --- REVIEWS LIST --- */}
+        {}
         <div className="mt-16">
           <h2 className="text-3xl font-black text-slate-800 mb-8 flex items-center gap-3 uppercase tracking-tighter">
             Customer Stories <span className="text-sm font-bold text-slate-400">({reviews.length})</span>
@@ -259,7 +259,7 @@ export default function ServiceDetail() {
           )}
         </div>
 
-        {/* ================= 🔥 SIMILAR SERVICES ================= */}
+        {}
         {relatedServices.length > 0 && (
           <div className="mt-20 border-t border-slate-200 pt-16">
             <h2 className="text-3xl font-black text-slate-800 mb-8 uppercase tracking-tighter">

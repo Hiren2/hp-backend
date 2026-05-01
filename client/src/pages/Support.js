@@ -7,7 +7,7 @@ import {
   MessageSquare, 
   ShieldCheck, 
   ChevronRight, 
-  Sparkles // 🔥 Yeh missing tha, ab add kar diya hai
+  Sparkles 
 } from 'lucide-react';
 
 const Support = () => {
@@ -34,7 +34,7 @@ const Support = () => {
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-slate-950 p-4 sm:p-8 transition-colors duration-300">
-            {/* Header Section */}
+            {}
             <div className="max-w-6xl mx-auto text-center mb-12 animate-fadeIn">
                 <h1 className="text-4xl font-black text-slate-800 dark:text-white mb-4">
                     How can we <span className="text-blue-600">Help You?</span>
@@ -45,7 +45,7 @@ const Support = () => {
             </div>
 
             <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8 mb-16">
-                {/* Contact Cards */}
+                {}
                 <div className="md:col-span-1 space-y-6">
                     {contactInfo.map((item, i) => (
                         <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-all">
@@ -67,7 +67,7 @@ const Support = () => {
                     </div>
                 </div>
 
-                {/* AI Chat Intro Section */}
+                {}
                 <div className="md:col-span-2 bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center text-center shadow-sm">
                     <div className="w-20 h-20 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-6">
                         <MessageSquare size={40} className="text-blue-600 animate-bounce" />
@@ -94,7 +94,7 @@ const Support = () => {
                 </div>
             </div>
 
-            {/* Chatbot mounting */}
+            {}
             <Chatbot />
         </div>
     );

@@ -12,7 +12,7 @@ import {
   ShieldCheck, 
   Clock,
   Inbox,
-  AlertCircle // 🔥 Ye naya icon add kiya hai note ke liye
+  AlertCircle 
 } from "lucide-react";
 
 export default function AdminOrderHistory() {
@@ -85,7 +85,7 @@ export default function AdminOrderHistory() {
     return data;
   }, [search, filter, orders]);
 
-  /* 🔥 PREMIUM BADGE SYSTEM */
+  
   const badgeStyle = (status) => {
     const s = status ? status.trim().toLowerCase() : "";
     if (["approved", "completed"].includes(s)) return "bg-emerald-50 text-emerald-600 border-emerald-200/50";
@@ -110,7 +110,7 @@ export default function AdminOrderHistory() {
 
       <div className="max-w-7xl mx-auto mt-8 px-4 pb-12 space-y-6 font-sans antialiased animate-fadeIn">
 
-        {/* HERO HEADER */}
+        {}
         <div className="relative bg-gradient-to-br from-indigo-600 via-blue-600 to-purple-700 text-white p-5 sm:p-6 rounded-[1.5rem] shadow-xl shadow-blue-500/20 overflow-hidden flex flex-col md:flex-row justify-between md:items-center gap-4">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full mix-blend-overlay filter blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
           
@@ -130,7 +130,7 @@ export default function AdminOrderHistory() {
           </div>
         </div>
 
-        {/* FILTER & SEARCH BAR */}
+        {}
         <div className="bg-white/80 backdrop-blur-xl p-4 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 flex flex-col lg:flex-row gap-4 justify-between items-center">
 
           <div className="relative w-full lg:w-96 group">
@@ -161,7 +161,7 @@ export default function AdminOrderHistory() {
 
         </div>
 
-        {/* DATA TABLE */}
+        {}
         <div className="bg-white/80 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 overflow-hidden">
 
           {filtered.length === 0 ? (
@@ -220,7 +220,7 @@ export default function AdminOrderHistory() {
                           {o.status ? o.status.trim() : "Unknown"}
                         </span>
                         
-                        {/* 🔥 YAHAN MANAGER KA NOTE ADD KIYA HAI */}
+                        {}
                         {o.status?.trim().toLowerCase() === "rejected" && o.managerNotes && (
                           <div className="mt-3 p-3 bg-rose-50 border border-rose-100 rounded-xl flex flex-col gap-1 max-w-[200px] whitespace-normal">
                             <div className="flex items-center gap-1.5 text-rose-500 font-bold text-[10px] uppercase tracking-widest">

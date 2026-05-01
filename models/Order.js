@@ -20,13 +20,13 @@ const orderSchema = new mongoose.Schema(
       default: "Pending",
     },
 
-    /* 🔥 NEW — MANAGER REVIEW NOTES */
+    
     managerNotes: {
       type: String,
-      default: "", // Stores the reason for rejection/approval
+      default: "", 
     },
 
-    /* 🔥 NEW — ADDRESS (PRO LEVEL) */
+    
     address: {
       fullName: { type: String, required: true },
       phone: { type: String, required: true },
@@ -36,21 +36,21 @@ const orderSchema = new mongoose.Schema(
       pincode: { type: String, required: true },
     },
 
-    /* 🔥 NEW — COUPON & DISCOUNT ENGINE (ENTERPRISE LEVEL) */
+    
     couponCode: {
       type: String,
-      default: null, // Stores the applied coupon code (e.g., 'ELEC2')
+      default: null, 
     },
 
     discountValue: {
       type: Number,
-      default: 0, // Stores how much money was saved
+      default: 0, 
     },
 
-    /* 🔥 NEW — EXACT FINANCIAL SNAPSHOT FOR INVOICES */
+    
     taxAmount: {
       type: Number,
-      default: 0, // 18% GST Amount
+      default: 0, 
     },
     
     deliveryCharge: {
@@ -60,25 +60,25 @@ const orderSchema = new mongoose.Schema(
     
     totalAmount: {
       type: Number,
-      default: 0, // Final Net Payable Amount
+      default: 0, 
     },
 
-    /* 🔥 PAYMENT (UPGRADED FOR GATEWAY) */
+    
     paymentMethod: {
       type: String,
-      enum: ["upi", "card", "cod", "Online"], // 'Online' added for gateway
+      enum: ["upi", "card", "cod", "Online"], 
       default: "cod",
     },
 
     paymentStatus: {
       type: String,
-      enum: ["Pending", "Paid", "Failed", "cod", "paid"], // Merged old and new logic
-      default: "Pending", // Default is Pending until they pay
+      enum: ["Pending", "Paid", "Failed", "cod", "paid"], 
+      default: "Pending", 
     },
 
     transactionId: {
       type: String,
-      default: null, // Stores the TXN_ ID after success
+      default: null, 
     },
 
     priority: {
@@ -108,13 +108,13 @@ const orderSchema = new mongoose.Schema(
       default: null,
     },
 
-    /* 🔥 NEW — SOFT DELETE (USER SIDE ONLY) */
+    
     isDeletedByUser: {
       type: Boolean,
       default: false,
     },
 
-    /* 🔥 NEW — STATUS TRACKING (ULTRA PRO 🔥) */
+    
     statusHistory: [
       {
         status: String,
@@ -128,7 +128,7 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-/* 🔥 INDEXES (PERFORMANCE BOOST) */
+
 orderSchema.index({ user: 1, createdAt: -1 });
 orderSchema.index({ status: 1 });
 

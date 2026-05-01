@@ -45,13 +45,13 @@ export default function ForgotPassword() {
     <>
       <Toast message={toast.message} type={toast.type} />
 
-      {/* Premium Glassmorphism Background */}
+      {}
       <div className="min-h-screen grid md:grid-cols-2 bg-gradient-to-br from-indigo-50 via-blue-50/50 to-purple-100/60 font-sans pb-16 md:pb-0">
 
-        {/* LEFT SIDE HERO */}
+        {}
         <div className="hidden md:flex flex-col justify-center px-12 lg:px-20 relative">
 
-          {/* Subtle background blur circle */}
+          {}
           <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob pointer-events-none"></div>
 
           <div className="space-y-10 relative z-10">
@@ -65,7 +65,7 @@ export default function ForgotPassword() {
               </h1>
             </div>
 
-            {/* Shield Box with Hover Effect */}
+            {}
             <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-blue-500/30 border border-white/20 transform hover:scale-105 transition-transform duration-300">
               <ShieldCheck size={64} className="text-white drop-shadow-md" />
             </div>
@@ -78,12 +78,12 @@ export default function ForgotPassword() {
 
         </div>
 
-        {/* RIGHT SIDE FORM */}
+        {}
         <div className="flex items-center justify-center px-6 py-10 relative z-10 overflow-y-auto">
 
           <div className="w-full max-w-md bg-white/60 backdrop-blur-2xl p-8 sm:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/80 my-auto">
 
-            {/* Back Button */}
+            {}
             <button 
               onClick={() => nav("/login")}
               className="flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-blue-600 transition-colors mb-6 group"
@@ -151,7 +151,7 @@ export default function ForgotPassword() {
 
       </div>
 
-      {/* FOOTER - Added to keep consistency with Login and Register */}
+      {}
       <footer className="bg-white/80 backdrop-blur-md border-t border-slate-200/50 py-5 text-center text-sm text-slate-500 font-medium fixed md:absolute bottom-0 w-full z-20">
         © {new Date().getFullYear()} H&P Solutions. All rights reserved.
         <div className="space-x-6 mt-2">
@@ -169,7 +169,7 @@ export default function ForgotPassword() {
   );
 }
 
-/* POLISHED INPUT FIELD COMPONENT */
+
 function InputField({ label, icon: Icon, type, placeholder, value, onChange }) {
   return (
     <div>

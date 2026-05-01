@@ -1,15 +1,15 @@
-// src/api/api.js
+
 import axios from "axios";
 import { getToken, clearAuth } from "../utils/auth";
 
 let isLoggingOut = false;
 
 const api = axios.create({
-  // 🔥 THE MAGIC LINK: Ab tera Frontend is live server se baat karega
+  
   baseURL: "https://hp-backend-ec7x.onrender.com/api", 
 });
 
-/* ================= REQUEST ================= */
+
 api.interceptors.request.use(
   (config) => {
     const token = getToken();
@@ -21,7 +21,7 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-/* ================= RESPONSE ================= */
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -30,7 +30,7 @@ api.interceptors.response.use(
 
       clearAuth();
 
-      // notify other tabs
+      
       localStorage.setItem("app_logout", Date.now().toString());
 
       if (!window.location.pathname.includes("/login")) {

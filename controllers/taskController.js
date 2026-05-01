@@ -1,7 +1,7 @@
 const Task = require("../models/Task");
 const AuditLog = require("../models/AuditLog");
 
-/* ================= CREATE TASK ================= */
+
 
 const createTask = async (req, res) => {
   try {
@@ -38,7 +38,7 @@ const createTask = async (req, res) => {
   }
 };
 
-/* ================= USER TASKS ================= */
+
 
 const getMyTasks = async (req, res) => {
   try {
@@ -53,7 +53,7 @@ const getMyTasks = async (req, res) => {
   }
 };
 
-/* ================= ALL TASKS (ADMIN / MANAGER) ================= */
+
 
 const getAllTasks = async (req, res) => {
   try {
@@ -69,7 +69,7 @@ const getAllTasks = async (req, res) => {
   }
 };
 
-/* ================= UPDATE TASK ================= */
+
 
 const updateTaskStatus = async (req, res) => {
   try {
@@ -109,7 +109,7 @@ const updateTaskStatus = async (req, res) => {
   }
 };
 
-/* ================= TASK ANALYTICS ================= */
+
 
 const getTaskAnalytics = async (req, res) => {
   try {

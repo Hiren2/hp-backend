@@ -10,7 +10,7 @@ import {
 import { useCart } from "../context/CartContext";
 
 export default function Cart() {
-  // NOTE: Make sure you have removeFromCart in your CartContext!
+  
   const { cart, removeFromCart } = useCart(); 
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ export default function Cart() {
   return (
     <div className="max-w-7xl mx-auto mt-8 px-4 pb-12 font-sans antialiased animate-fadeIn">
       
-      {/* 🔥 PREMIUM HERO HEADER */}
+      {}
       <div className="relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white p-6 sm:p-8 rounded-[1.5rem] shadow-xl shadow-blue-500/20 overflow-hidden mb-6">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full mix-blend-overlay filter blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -39,7 +39,7 @@ export default function Cart() {
 
       <div className="grid lg:grid-cols-3 gap-6">
 
-        {/* LEFT COLUMN: CART ITEMS */}
+        {}
         <div className="lg:col-span-2 bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100">
           
           <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
@@ -102,7 +102,7 @@ export default function Cart() {
           )}
         </div>
 
-        {/* RIGHT COLUMN: PRICE SUMMARY */}
+        {}
         <div className="bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 h-fit lg:sticky lg:top-24">
 
           <h2 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2 pb-4 border-b border-slate-100">
@@ -139,7 +139,7 @@ export default function Cart() {
                 Proceed to Payment <ArrowRight size={18} />
               </button>
 
-              {/* Trust Badge */}
+              {}
               <div className="mt-5 flex items-center justify-center gap-2 text-slate-400 text-xs font-semibold">
                 <ShieldCheck size={14} className="text-emerald-500" />
                 Secure & Encrypted Checkout

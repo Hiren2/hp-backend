@@ -1,10 +1,10 @@
 const User = require("../models/User");
 const AuditLog = require("../models/AuditLog");
-const Notification = require("../models/Notification"); // 🔥 NEW: Imported Notification Model
+const Notification = require("../models/Notification"); 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-/* ================= 🔥 HELPER: CALCULATE AGE & GET AVATAR ================= */
+
 const getSmartAvatar = (name, dob) => {
   try {
     const birthDate = new Date(dob);
@@ -30,7 +30,7 @@ const getSmartAvatar = (name, dob) => {
   }
 };
 
-/* ================= REGISTER ================= */
+
 const register = async (req, res) => {
   try {
     let { name, email, password, dob } = req.body;
@@ -67,7 +67,7 @@ const register = async (req, res) => {
       severity: "info",
     });
 
-    // 🔥 SMART RBAC: Notify Admins & Superadmins about new registration
+    
     try {
       const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
       for (let admin of systemAdmins) {
@@ -99,7 +99,7 @@ const register = async (req, res) => {
   }
 };
 
-/* ================= LOGIN ================= */
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -154,7 +154,7 @@ const login = async (req, res) => {
       severity: "info",
     });
 
-    // 🔥 SMART RBAC: Send "You have logged in" alert to Superadmin/Admin
+    
     if (user.role === "superadmin" || user.role === "admin") {
       try {
         await Notification.create({
@@ -185,7 +185,7 @@ const login = async (req, res) => {
   }
 };
 
-/* ================= DOB VERIFY ================= */
+
 const verifyDob = async (req, res) => {
   try {
     const { email, dob } = req.body;
@@ -207,7 +207,7 @@ const verifyDob = async (req, res) => {
   }
 };
 
-/* ================= RESET PASSWORD ================= */
+
 const resetPasswordWithDob = async (req, res) => {
   try {
     const { email, newPassword } = req.body;
@@ -238,7 +238,7 @@ const resetPasswordWithDob = async (req, res) => {
   }
 };
 
-/* ================= GET WISHLIST ================= */
+
 const getWishlist = async (req, res) => {
   try {
     if (!req.user) return res.status(401).json({ message: "Not authenticated" });
@@ -253,7 +253,7 @@ const getWishlist = async (req, res) => {
   }
 };
 
-/* ================= TOGGLE WISHLIST ================= */
+
 const toggleWishlist = async (req, res) => {
   try {
     if (!req.user) return res.status(401).json({ message: "Not authenticated" });
@@ -285,7 +285,7 @@ const toggleWishlist = async (req, res) => {
   }
 };
 
-/* ================= 🔥 UPDATE PROFILE ================= */
+
 const updateProfile = async (req, res) => {
   try {
     if (!req.user) return res.status(401).json({ message: "Not authenticated" });
@@ -316,7 +316,7 @@ const updateProfile = async (req, res) => {
   }
 };
 
-/* ================= 🔥 SECURE CHANGE PASSWORD ================= */
+
 const changePassword = async (req, res) => {
   try {
     if (!req.user) return res.status(401).json({ message: "Not authenticated" });

@@ -6,7 +6,7 @@ const { authenticate, authorizeRoles } = require("../middleware/authMiddleware")
 const multer = require("multer");
 const path = require("path");
 
-/* 🔥 MULTER SETUP */
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -28,7 +28,7 @@ const {
   getRelatedServices 
 } = require("../controllers/serviceController");
 
-/* ================= PUBLIC / USER ROUTES ================= */
+
 
 router.get(
   "/",
@@ -36,14 +36,14 @@ router.get(
   getServices
 );
 
-// 🔥 RELATED SERVICES (Must be above /:id admin routes)
+
 router.get(
   "/:id/related",
   authenticate,
   getRelatedServices
 );
 
-/* ================= ADMIN ================= */
+
 
 router.post(
   "/",

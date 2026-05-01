@@ -23,7 +23,7 @@ export default function Wishlist() {
 
   const fetchWishlistDetails = async () => {
     try {
-      // 🔥 FIX 1: Updated API path to the secure auth route
+      
       const res = await api.get("/auth/wishlist");
       const allServicesRes = await api.get("/services");
       const allServices = allServicesRes.data;
@@ -56,13 +56,13 @@ export default function Wishlist() {
     }
   };
 
-  // Default Remove Function (Just deletes from wishlist)
+  
   const handleRemoveFromWishlist = async (serviceId) => {
     setWishlistServices((prev) => prev.filter((s) => s._id !== serviceId));
     showToast("Removed from wishlist 🗑️", "info");
 
     try {
-      // 🔥 FIX 2: Updated API path for toggle
+      
       await api.put("/auth/wishlist/toggle", { serviceId });
     } catch (err) {
       fetchWishlistDetails(); 
@@ -70,9 +70,9 @@ export default function Wishlist() {
     }
   };
 
-  // 🔥 ENTERPRISE UX LOGIC: Add to Cart + Remove from Wishlist simultaneously
+  
   const handleMoveToCart = async (service) => {
-    // 1. Add to Cart Context
+    
     addToCart({
       _id: service._id,
       name: service.name,
@@ -81,16 +81,16 @@ export default function Wishlist() {
     
     showToast("Moved to cart 🛒", "success");
 
-    // 2. Optimistically remove from Wishlist UI
+    
     setWishlistServices((prev) => prev.filter((s) => s._id !== service._id));
 
-    // 3. Inform Backend to remove from Wishlist DB
+    
     try {
-      // 🔥 FIX 3: Updated API path for toggle
+      
       await api.put("/auth/wishlist/toggle", { serviceId: service._id });
     } catch (err) {
       console.warn("Failed to sync wishlist deletion in background.");
-      // We don't bother the user with an error toast here if cart addition was successful
+      
     }
   };
 
@@ -187,7 +187,7 @@ export default function Wishlist() {
                        <button 
                          onClick={(e) => {
                            e.stopPropagation();
-                           if(!exists) handleMoveToCart(service); // 🔥 MOVES TO CART & DELETES FROM WISHLIST
+                           if(!exists) handleMoveToCart(service); 
                          }}
                          className={`font-bold px-6 py-2.5 rounded-full transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 flex items-center gap-2 text-sm shadow-xl
                            ${exists ? "bg-white text-emerald-600" : "bg-blue-600 text-white hover:bg-blue-500"}`}
@@ -230,7 +230,7 @@ export default function Wishlist() {
 
                       <button
                         disabled={exists}
-                        onClick={() => handleMoveToCart(service)} // 🔥 THE MASTER LOGIC HERE TOO
+                        onClick={() => handleMoveToCart(service)} 
                         className={`px-4 py-2 flex items-center justify-center rounded-xl font-bold transition-all duration-300 text-sm
                         ${
                           exists

@@ -2,9 +2,9 @@ const User = require("../models/User");
 const Order = require("../models/Order");
 const Service = require("../models/Service");
 const AuditLog = require("../models/AuditLog");
-const Notification = require("../models/Notification"); // 🔥 NEW: Imported Notification Model
+const Notification = require("../models/Notification"); 
 
-/* ================= ADMIN ANALYTICS DASHBOARD ================= */
+
 exports.getAdminStats = async (req, res) => {
   try {
     const today = new Date();
@@ -100,7 +100,7 @@ exports.getAdminStats = async (req, res) => {
   }
 };
 
-/* ================= USERS LIST ================= */
+
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find()
@@ -114,7 +114,7 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-/* ================= UPDATE USER ROLE ================= */
+
 exports.updateUserRole = async (req, res) => {
   try {
     const { role } = req.body;
@@ -161,7 +161,7 @@ exports.updateUserRole = async (req, res) => {
       severity: "warning"
     });
 
-    // 🔥 SMART RBAC: Notify Superadmin/Admins about Role Change
+    
     try {
       const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
       for (let admin of systemAdmins) {
@@ -187,7 +187,7 @@ exports.updateUserRole = async (req, res) => {
   }
 };
 
-/* ================= 🔥 KILL SWITCH (SUSPEND/ACTIVATE USER) ================= */
+
 exports.updateUserStatus = async (req, res) => {
   try {
     const { status } = req.body; 
@@ -218,7 +218,7 @@ exports.updateUserStatus = async (req, res) => {
       severity: status === "suspended" ? "critical" : "info",
     });
 
-    // 🔥 SMART RBAC: Notify Superadmin/Admins about Suspend/Activate
+    
     try {
       const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
       for (let admin of systemAdmins) {
@@ -243,7 +243,7 @@ exports.updateUserStatus = async (req, res) => {
   }
 };
 
-/* ================= AUDIT LOGS ================= */
+
 exports.getAuditLogs = async (req, res) => {
   try {
     const logs = await AuditLog.find()

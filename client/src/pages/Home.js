@@ -26,7 +26,7 @@ export default function Home() {
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const [termsOpen, setTermsOpen] = useState(false);
 
-  // 🔥 SMART SCROLL LOGIC: Button pe click karte hi "What We Provide" pe le jayega
+  
   const scrollToExpertise = () => {
     const section = document.getElementById("expertise-section");
     if (section) {
@@ -37,7 +37,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans overflow-x-hidden">
       
-      {/* ================= PUBLIC NAVBAR ================= */}
+      {}
       <nav className="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/50 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
@@ -69,7 +69,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* ================= HERO CAROUSEL ================= */}
+      {}
       <div className="pt-20">
         <Swiper
           modules={[Autoplay, EffectFade, Pagination]}
@@ -78,7 +78,7 @@ export default function Home() {
           pagination={{ clickable: true }}
           className="h-[600px] w-full"
         >
-          {/* SLIDE 1: Enterprise Focus */}
+          {}
           <SwiperSlide>
             <div className="relative w-full h-full flex items-center bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 overflow-hidden">
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
@@ -110,7 +110,7 @@ export default function Home() {
             </div>
           </SwiperSlide>
 
-          {/* SLIDE 2: Tech & AI Focus */}
+          {}
           <SwiperSlide>
             <div className="relative w-full h-full flex items-center bg-gradient-to-br from-emerald-900 via-teal-900 to-slate-900 overflow-hidden">
               <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl"></div>
@@ -141,8 +141,8 @@ export default function Home() {
         </Swiper>
       </div>
 
-      {/* ================= WHAT WE OFFER SECTION ================= */}
-      {/* 🔥 ID 'expertise-section' IS USED FOR SMOOTH SCROLLING */}
+      {}
+      {}
       <div id="expertise-section" className="py-20 bg-slate-100 border-b border-slate-200 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-14">
@@ -184,7 +184,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ================= 🔥 NEW: CLIENT REVIEWS / TESTIMONIALS 🔥 ================= */}
+      {}
       <div className="py-24 bg-slate-900 text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -230,7 +230,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ================= FEATURES SECTION (The Tech Behind It) ================= */}
+      {}
       <div className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -266,7 +266,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ================= TRUST/CTA SECTION ================= */}
+      {}
       <div className="py-20 bg-slate-50 border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center justify-between text-white">
@@ -283,7 +283,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ================= FOOTER ================= */}
+      {}
       <footer className="bg-white border-t border-slate-200 pt-16 pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
@@ -308,7 +308,7 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* ================= MODALS ================= */}
+      {}
       {privacyOpen && (
         <Modal title="Privacy Policy" close={() => setPrivacyOpen(false)}>
           <p className="mb-3">At H&P Solutions, your privacy is our priority. We employ enterprise-grade encryption to protect your personal and operational data.</p>
@@ -335,7 +335,7 @@ export default function Home() {
   );
 }
 
-// 🔥 REUSABLE COMPONENTS
+
 
 function CategoryCard({ icon, title, desc, delay }) {
   return (
@@ -355,7 +355,7 @@ function CategoryCard({ icon, title, desc, delay }) {
   );
 }
 
-// 🔥 NEW: REVIEW CARD FOR INDIAN CLIENTS
+
 function ReviewCard({ name, role, text, delay }) {
   return (
     <motion.div 

@@ -46,7 +46,7 @@ const Chatbot = () => {
         
         if (langChoice) setSelectedLang(langChoice);
 
-        // Display user message neatly
+        
         setMessages(prev => [...prev, { text: msgText, isBot: false }]);
         setInput('');
         setIsTyping(true);
@@ -92,7 +92,7 @@ const Chatbot = () => {
                                 </div>
                                 {m.isLangSelect && !selectedLang && (
                                     <div className="flex gap-2 mt-3 flex-wrap">
-                                        {/* 🔥 EXTREMELY CLEAN BUTTONS */}
+                                        {}
                                         <button onClick={() => handleSend("English", "English")} className="bg-white border-2 border-blue-500 text-blue-600 px-5 py-1.5 rounded-full text-xs font-bold hover:bg-blue-600 hover:text-white transition-all">English</button>
                                         <button onClick={() => handleSend("Hindi", "Hindi")} className="bg-white border-2 border-blue-500 text-blue-600 px-5 py-1.5 rounded-full text-xs font-bold hover:bg-blue-600 hover:text-white transition-all">Hindi</button>
                                         <button onClick={() => handleSend("Gujarati", "Gujarati")} className="bg-white border-2 border-blue-500 text-blue-600 px-5 py-1.5 rounded-full text-xs font-bold hover:bg-blue-600 hover:text-white transition-all">Gujarati</button>

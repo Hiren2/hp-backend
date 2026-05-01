@@ -15,12 +15,12 @@ const {
 
 const { getAllOrders } = require("../controllers/orderController");
 
-/* TEST */
+
 router.get("/ping", (req, res) => {
   res.send("ADMIN ROUTE WORKING");
 });
 
-/* ADMIN DASHBOARD STATS */
+
 router.get(
   "/stats",
   authenticate,
@@ -28,7 +28,7 @@ router.get(
   getAdminStats
 );
 
-/* USERS */
+
 router.get(
   "/users",
   authenticate,
@@ -43,7 +43,7 @@ router.put(
   updateUserRole
 );
 
-/* 🔥 KILL SWITCH ROUTE */
+
 router.put(
   "/users/:id/status",
   authenticate,
@@ -51,7 +51,7 @@ router.put(
   updateUserStatus
 );
 
-/* ORDER HISTORY */
+
 router.get(
   "/orders",
   authenticate,
@@ -59,7 +59,7 @@ router.get(
   getAllOrders
 );
 
-/* AUDIT LOGS */
+
 router.get(
   "/audit-logs",
   authenticate,

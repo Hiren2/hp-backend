@@ -31,10 +31,10 @@ const userSchema = new mongoose.Schema(
 
     dob: {
       type: String,
-      required: true, // YYYY-MM-DD
+      required: true, 
     },
 
-    /* 🔥 NEW — analytics fields */
+    
     totalOrders: {
       type: Number,
       default: 0,
@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema(
       default: "active",
     },
 
-    /* 🔥 NEW — Wishlist Array (Amazon Style) */
+    
     wishlist: [
       {
         type: mongoose.Schema.Types.ObjectId,

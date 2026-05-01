@@ -27,7 +27,7 @@ const AdminTasks = () => {
 
   useEffect(() => {
     fetchAllTasks();
-    // eslint-disable-next-line
+    
   }, []);
 
   const updateStatus = async (id, status) => {

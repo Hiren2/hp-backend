@@ -9,7 +9,7 @@ const {
   updateOrderStatus
 } = require("../controllers/orderController");
 
-/* MANAGER - VIEW ORDERS */
+
 
 router.get(
   "/orders",
@@ -18,7 +18,7 @@ router.get(
   getAllOrders
 );
 
-/* MANAGER - UPDATE ORDER STATUS */
+
 
 router.put(
   "/orders/:id",

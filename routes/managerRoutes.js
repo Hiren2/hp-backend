@@ -9,9 +9,9 @@ const {
   getManagerStats
 } = require("../controllers/orderController");
 
-/* ================= MANAGER ================= */
 
-// ✅ Get all orders
+
+
 router.get(
   "/orders",
   authenticate,
@@ -19,7 +19,7 @@ router.get(
   getAllOrders
 );
 
-// ✅ Update order status
+
 router.put(
   "/orders/:id",
   authenticate,
@@ -27,7 +27,7 @@ router.put(
   updateOrderStatus
 );
 
-// ✅ Get manager stats (🔥 chart fix)
+
 router.get(
   "/stats",
   authenticate,

@@ -30,7 +30,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  /* 🔥 GREETING */
+  
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Let's get started 🚀";
@@ -38,7 +38,7 @@ export default function Register() {
     return "Welcome to the platform 🌙";
   };
 
-  /* 🔥 PASSWORD STRENGTH */
+  
   const getStrength = () => {
     if (form.password.length === 0) return "";
     if (form.password.length < 6) return "Weak";
@@ -53,7 +53,7 @@ export default function Register() {
     return "text-slate-400";
   };
 
-  /* LIVE STATS */
+  
   const [stats, setStats] = useState({
     users: 0,
     services: 0,
@@ -111,29 +111,29 @@ export default function Register() {
     <>
       <Toast message={toast.message} type={toast.type} />
 
-      {/* Premium Glassmorphism Background to match Login */}
+      {}
       <div className="min-h-screen grid md:grid-cols-2 bg-gradient-to-br from-indigo-50 via-blue-50/50 to-purple-100/60 font-sans pb-16 md:pb-0">
 
-        {/* LEFT HERO */}
+        {}
         <div className="hidden md:flex flex-col justify-center px-12 lg:px-20 relative">
           
-          {/* Subtle background blur circle */}
+          {}
           <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob pointer-events-none"></div>
 
           <div className="space-y-10 relative z-10">
 
             <div className="flex items-center gap-4">
-              {/* 🔥 NEW MODERN SVG MONOGRAM LOGO */}
+              {}
               <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-lg rounded-full">
                 <circle cx="24" cy="24" r="24" fill="url(#paint0_linear_register)"/>
-                {/* H Letter Path */}
+                {}
                 <path d="M14 14V34 M14 24H22 M22 14V34" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-                {/* P Letter Path */}
+                {}
                 <path d="M28 34V14H33C35.7614 14 38 16.2386 38 19C38 21.7614 35.7614 24 33 24H28" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                 <defs>
                   <linearGradient id="paint0_linear_register" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#2563EB"/> {/* Tailwind blue-600 */}
-                    <stop offset="1" stopColor="#4F46E5"/> {/* Tailwind indigo-600 */}
+                    <stop stopColor="#2563EB"/> {}
+                    <stop offset="1" stopColor="#4F46E5"/> {}
                   </linearGradient>
                 </defs>
               </svg>
@@ -142,7 +142,7 @@ export default function Register() {
               </h1>
             </div>
 
-            {/* Shield Box with Hover Effect */}
+            {}
             <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-blue-500/30 border border-white/20 transform hover:scale-105 transition-transform duration-300">
               <ShieldCheck size={64} className="text-white drop-shadow-md" />
             </div>
@@ -157,7 +157,7 @@ export default function Register() {
               <Feature icon={<Cpu size={30} />} title="Intelligent" />
             </div>
 
-            {/* Glassy Stats Box */}
+            {}
             <div className="grid grid-cols-4 gap-6 mt-4 bg-white/40 backdrop-blur-lg p-5 rounded-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
               <Stat number={`${stats.users}+`} label="Users" />
               <Stat number={`${stats.services}+`} label="Services" />
@@ -168,7 +168,7 @@ export default function Register() {
           </div>
         </div>
 
-        {/* REGISTER CARD */}
+        {}
         <div className="flex items-center justify-center px-6 py-10 relative z-10 overflow-y-auto">
 
           <div className="w-full max-w-md bg-white/60 backdrop-blur-2xl p-8 sm:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/80 my-auto">
@@ -205,7 +205,7 @@ export default function Register() {
                 onChange={(v) => setForm({ ...form, email: v })}
               />
 
-              {/* PASSWORD FIELD */}
+              {}
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
                   Password
@@ -229,7 +229,7 @@ export default function Register() {
                   </button>
                 </div>
 
-                {/* Password Strength Indicator */}
+                {}
                 <div className="h-4 mt-1.5 ml-1">
                   {form.password && (
                     <p className={`text-xs font-semibold ${strengthColor()} transition-colors`}>
@@ -278,7 +278,7 @@ export default function Register() {
 
       </div>
 
-      {/* FOOTER */}
+      {}
       <footer className="bg-white/80 backdrop-blur-md border-t border-slate-200/50 py-5 text-center text-sm text-slate-500 font-medium fixed md:absolute bottom-0 w-full z-20">
         © {new Date().getFullYear()} H&P Solutions. All rights reserved.
         <div className="space-x-6 mt-2">
@@ -297,7 +297,7 @@ export default function Register() {
   );
 }
 
-/* POLISHED INPUT FIELD COMPONENT */
+
 function InputField({ label, icon: Icon, type, placeholder, value, onChange }) {
   return (
     <div>
@@ -321,7 +321,7 @@ function InputField({ label, icon: Icon, type, placeholder, value, onChange }) {
   );
 }
 
-/* FEATURE */
+
 function Feature({ icon, title }) {
   return (
     <div className="flex flex-col items-start">
@@ -333,7 +333,7 @@ function Feature({ icon, title }) {
   );
 }
 
-/* STATS */
+
 function Stat({ number, label }) {
   return (
     <div className="text-center">
