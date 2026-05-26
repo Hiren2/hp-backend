@@ -1,9 +1,11 @@
-
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  
   darkMode: "class", 
   
-  content: ["./src*.{js,jsx,ts,tsx}"],
+  // FIXED: Added the missing '/' after src and `**` to check all subfolders
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}", 
+  ],
   
   theme: {
     extend: {
