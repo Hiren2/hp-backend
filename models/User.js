@@ -34,7 +34,6 @@ const userSchema = new mongoose.Schema(
       required: true, 
     },
 
-    
     totalOrders: {
       type: Number,
       default: 0,
@@ -51,13 +50,19 @@ const userSchema = new mongoose.Schema(
       default: "active",
     },
 
-    
     wishlist: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Service",
       }
-    ]
+    ],
+
+    // --- FAANG-LEVEL DEMO PROTECTION FLAG ---
+    // 'default: false' ensures existing live users are NEVER affected.
+    isDemo: {
+      type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true }
 );

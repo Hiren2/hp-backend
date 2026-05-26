@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const AuditLog = require("../models/AuditLog");
 
-
 const authenticate = async (req, res, next) => {
   try {
     let token;
@@ -26,7 +25,6 @@ const authenticate = async (req, res, next) => {
       return res.status(401).json({ message: "User not found" });
     }
 
-    
     if (user.accountStatus === "suspended") {
       return res.status(403).json({
         message: "Account suspended. Contact administrator.",
@@ -34,13 +32,30 @@ const authenticate = async (req, res, next) => {
     }
 
     req.user = user;
+
+    // --- FAANG-LEVEL DEMO PROTECTION LAYER START ---
+    // Protect the live database from being modified by Demo Accounts
+    if (req.user.isDemo && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+      
+      // EXCEPTION: Allow AI Chatbot requests to work in demo mode
+      // Modify '/chat' or '/bot' if your Gemini API route name is different
+      if (req.originalUrl.includes('/chat') || req.originalUrl.includes('/bot') || req.originalUrl.includes('/gemini')) {
+        return next();
+      }
+
+      // Block the modification but send a "Success-like" message for the Sandbox UI
+      return res.status(403).json({
+        message: "Sandbox Mode Active: Action simulated successfully. Live database modification is locked."
+      });
+    }
+    // --- DEMO PROTECTION LAYER END ---
+
     next();
   } catch (err) {
     console.error("AUTH ERROR:", err.message);
     res.status(401).json({ message: "Token invalid" });
   }
 };
-
 
 const authorizeRoles = (...roles) => {
   return async (req, res, next) => {
@@ -50,7 +65,6 @@ const authorizeRoles = (...roles) => {
       }
 
       if (!roles.includes(req.user.role)) {
-        
         try {
           await AuditLog.create({
             actor: req.user._id,
@@ -79,5 +93,5 @@ const authorizeRoles = (...roles) => {
 module.exports = {
   authenticate,
   protect: authenticate, 
-  authorizeRoles,
+  authorizeRoles, 
 };

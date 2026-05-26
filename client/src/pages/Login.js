@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../api/api";
 import Toast from "../components/Toast";
 import useToast from "../components/useToast";
@@ -16,6 +16,7 @@ import {
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation(); // Hook to catch the secret state from Home.js
   const { toast, showToast } = useToast();
 
   const [email, setEmail] = useState("");
@@ -32,7 +33,36 @@ export default function Login() {
     orders: 0
   });
 
-  
+  // --- DEMO AUTO-LOGIN LOGIC START ---
+  // Ensure these exact emails exist in your MongoDB Atlas!
+  const demoAccounts = {
+    user: { email: 'demo_user@hpsolutions.com', password: 'demoPassword123' },
+    manager: { email: 'demo_manager@hpsolutions.com', password: 'demoPassword123' },
+    admin: { email: 'demo_admin@hpsolutions.com', password: 'demoPassword123' },
+    superadmin: { email: 'demo_superadmin@hpsolutions.com', password: 'demoPassword123' }
+  };
+
+  useEffect(() => {
+    // Check if we arrived from the Home page Demo Modal
+    if (location.state?.autoLoginRole) {
+      const role = location.state.autoLoginRole;
+      const creds = demoAccounts[role];
+      
+      if (creds) {
+        setEmail(creds.email);
+        setPassword(creds.password);
+        
+        // Trigger login automatically
+        performLogin(creds.email, creds.password);
+        
+        // Clean up the location state so it doesn't loop on refresh
+        window.history.replaceState({}, document.title);
+      }
+    }
+  }, [location.state]);
+  // --- DEMO AUTO-LOGIN LOGIC END ---
+
+
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) return "Good Morning ☀️";
@@ -59,20 +89,19 @@ export default function Login() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Separated the core logic so auto-login can use it without an event object (e)
+  const performLogin = async (loginEmail, loginPassword) => {
     setLoading(true);
-
     try {
       const res = await api.post("/auth/login", {
-        email,
-        password
+        email: loginEmail,
+        password: loginPassword
       });
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      showToast("Login successful", "success");
+      showToast("Secure connection established.", "success");
 
       setTimeout(() => {
         navigate("/dashboard");
@@ -80,7 +109,7 @@ export default function Login() {
 
     } catch (err) {
       showToast(
-        err.response?.data?.message || "Invalid credentials",
+        err.response?.data?.message || "Invalid enterprise credentials.",
         "error"
       );
     } finally {
@@ -88,33 +117,33 @@ export default function Login() {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    performLogin(email, password);
+  };
+
   return (
     <>
       <Toast message={toast.message} type={toast.type} />
 
-      {}
       <div className="min-h-screen grid md:grid-cols-2 bg-gradient-to-br from-indigo-50 via-blue-50/50 to-purple-100/60 font-sans">
 
-        {}
+        {/* Left Side - Brand & Features */}
         <div className="hidden md:flex flex-col justify-center px-12 lg:px-20 relative">
           
-          {}
           <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob pointer-events-none"></div>
 
           <div className="space-y-10 relative z-10">
 
-            <div className="flex items-center gap-4">
-              {}
+            <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/')}>
               <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-lg rounded-full">
                 <circle cx="24" cy="24" r="24" fill="url(#paint0_linear_login)"/>
-                {}
                 <path d="M14 14V34 M14 24H22 M22 14V34" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-                {}
                 <path d="M28 34V14H33C35.7614 14 38 16.2386 38 19C38 21.7614 35.7614 24 33 24H28" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                 <defs>
                   <linearGradient id="paint0_linear_login" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#2563EB"/> {}
-                    <stop offset="1" stopColor="#4F46E5"/> {}
+                    <stop stopColor="#2563EB"/>
+                    <stop offset="1" stopColor="#4F46E5"/> 
                   </linearGradient>
                 </defs>
               </svg>
@@ -123,22 +152,20 @@ export default function Login() {
               </h1>
             </div>
 
-            {}
             <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-blue-500/30 border border-white/20 transform hover:scale-105 transition-transform duration-300">
               <ShieldCheck size={64} className="text-white drop-shadow-md" />
             </div>
 
             <p className="text-slate-600 text-xl font-medium leading-relaxed max-w-md">
-              Empowering enterprise operations with secure RBAC architecture and advanced analytics.
+              Empowering enterprise operations with secure RBAC architecture and isolated sandbox environments.
             </p>
 
             <div className="grid grid-cols-3 gap-8 pt-4">
               <Feature icon={<ShieldCheck size={30} />} title="Secure" />
-              <Feature icon={<Layers size={30} />} title="Scalable" />
-              <Feature icon={<Cpu size={30} />} title="Intelligent" />
+              <Feature icon={<Layers size={30} />} title="Isolated" />
+              <Feature icon={<Cpu size={30} />} title="AI-Driven" />
             </div>
 
-            {}
             <div className="grid grid-cols-4 gap-6 mt-4 bg-white/40 backdrop-blur-lg p-5 rounded-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
               <Stat number={`${stats.users}+`} label="Users" />
               <Stat number={`${stats.services}+`} label="Services" />
@@ -149,30 +176,35 @@ export default function Login() {
           </div>
         </div>
 
-        {}
+        {/* Right Side - Login Form */}
         <div className="flex items-center justify-center px-6 py-10 relative z-10">
           
-          {}
-          <div className="w-full max-w-md bg-white/60 backdrop-blur-2xl p-8 sm:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/80">
+          <div className="w-full max-w-md bg-white/60 backdrop-blur-2xl p-8 sm:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/80 relative overflow-hidden">
+            
+            {/* Show a subtle loading indicator if auto-login is happening */}
+            {loading && location.state?.autoLoginRole && (
+               <div className="absolute top-0 left-0 w-full h-1 bg-blue-100 overflow-hidden">
+                  <div className="w-1/2 h-full bg-blue-600 animate-pulse"></div>
+               </div>
+            )}
 
             <p className="text-center text-sm font-bold text-blue-600 uppercase tracking-wider mb-3">
               {getGreeting()}
             </p>
 
             <h2 className="text-3xl font-extrabold text-center mb-2 text-slate-800 tracking-tight">
-              Welcome Back
+              Access Portal
             </h2>
 
             <p className="text-center text-slate-500 mb-8 font-medium">
-              Secure login to your account 🔒
+              Enterprise Identity Verification 🔒
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-5">
 
-              {}
               <div>
                 <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
-                  Email Address
+                  Corporate Email
                 </label>
                 <div className="relative group">
                   <Mail size={18} className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
@@ -188,10 +220,9 @@ export default function Login() {
                 </div>
               </div>
 
-              {}
               <div>
                 <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
-                  Password
+                  Access Key
                 </label>
                 <div className="relative group">
                   <Lock size={18} className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
@@ -231,10 +262,10 @@ export default function Login() {
                 {loading ? (
                   <>
                     <span className="animate-spin h-5 w-5 border-2 border-white/40 border-t-white rounded-full"></span>
-                    Signing in...
+                    Authenticating...
                   </>
                 ) : (
-                  "Sign In"
+                  "Authenticate"
                 )}
               </button>
 
@@ -252,7 +283,6 @@ export default function Login() {
 
       </div>
 
-      {}
       <footer className="bg-white/80 backdrop-blur-md border-t border-slate-200/50 py-5 text-center text-sm text-slate-500 font-medium absolute bottom-0 w-full z-20">
         © {new Date().getFullYear()} H&P Solutions. All rights reserved.
         <div className="space-x-6 mt-2">
@@ -267,7 +297,6 @@ export default function Login() {
         </div>
       </footer>
 
-      {}
       {privacyOpen && (
         <Modal title="Privacy Policy" close={() => setPrivacyOpen(false)}>
           H&P Solutions respects your privacy. All authentication data is encrypted and securely stored.
@@ -276,7 +305,7 @@ export default function Login() {
 
       {termsOpen && (
         <Modal title="Terms of Service" close={() => setTermsOpen(false)}>
-          By using H&P Solutions you agree to follow RBAC security rules and system policies.
+          By using H&P Solutions you agree to follow RBAC security rules and system policies. Unauthorized access is monitored.
         </Modal>
       )}
     </>
