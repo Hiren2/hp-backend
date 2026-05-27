@@ -9,14 +9,18 @@ exports.getAdminStats = async (req, res) => {
     const today = new Date();
     today.setHours(0,0,0,0);
 
+    // 🔥 100% ISOLATION FIREWALL
     let userQuery = {};
     let orderQuery = {};
     
-    // 🔥 DEMO FIREWALL
     if (req.user && req.user.isDemo) {
       userQuery.isDemo = true;
       const demoUsers = await User.find({ isDemo: true }).select('_id');
       orderQuery.user = { $in: demoUsers.map(u => u._id) };
+    } else {
+      userQuery.isDemo = { $ne: true };
+      const realUsers = await User.find({ isDemo: { $ne: true } }).select('_id');
+      orderQuery.user = { $in: realUsers.map(u => u._id) };
     }
 
     const [
@@ -49,7 +53,9 @@ exports.getAdminStats = async (req, res) => {
     ]);
 
     const monthlyOrders = await Order.aggregate([
-      { $match: orderQuery },
+      { 
+        $match: orderQuery 
+      },
       {
         $group: {
           _id: { $month: "$createdAt" },
@@ -60,7 +66,9 @@ exports.getAdminStats = async (req, res) => {
     ]);
 
     const topServices = await Order.aggregate([
-      { $match: orderQuery },
+      { 
+        $match: orderQuery 
+      },
       {
         $group: {
           _id: "$service",
@@ -77,7 +85,9 @@ exports.getAdminStats = async (req, res) => {
     });
 
     const managerPerformance = await Order.aggregate([
-      { $match: { ...orderQuery, processedBy: { $ne: null } } },
+      { 
+        $match: { ...orderQuery, processedBy: { $ne: null } } 
+      },
       {
         $group: {
           _id: "$processedBy",
@@ -113,7 +123,7 @@ exports.getAdminStats = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const query = req.user && req.user.isDemo ? { isDemo: true } : {};
+    const query = (req.user && req.user.isDemo) ? { isDemo: true } : { isDemo: { $ne: true } };
     const users = await User.find(query)
       .select("name email role totalOrders createdAt lastLogin dob accountStatus isDemo");
 
@@ -148,9 +158,12 @@ exports.updateUserRole = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // 🔥 STRICT DEMO CHECK: Demo Admin cannot touch Real Users
+    // 🔥 CROSS-UNIVERSE BLOCK
     if (req.user.isDemo && !user.isDemo) {
       return res.status(403).json({ message: "Sandbox Mode: You cannot modify real user accounts." });
+    }
+    if (!req.user.isDemo && user.isDemo) {
+      return res.status(403).json({ message: "You cannot modify demo accounts from real dashboard." });
     }
 
     if (user.role === "superadmin") {
@@ -179,6 +192,7 @@ exports.updateUserRole = async (req, res) => {
     try {
       const adminQuery = req.user.isDemo ? { role: { $in: ["admin", "superadmin"] }, isDemo: true } : { role: { $in: ["admin", "superadmin"] }, isDemo: { $ne: true } };
       const systemAdmins = await User.find(adminQuery);
+      
       for (let admin of systemAdmins) {
         if (admin._id.toString() !== req.user._id.toString()) {
           await Notification.create({
@@ -206,18 +220,26 @@ exports.updateUserStatus = async (req, res) => {
   try {
     const { status } = req.body; 
     
-    if (!req.user) return res.status(401).json({ message: "Auth missing" });
+    if (!req.user) {
+      return res.status(401).json({ message: "Auth missing" });
+    }
 
     if (req.user._id.toString() === req.params.id) {
       return res.status(400).json({ message: "You cannot suspend your own account" });
     }
 
     const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    // 🔥 STRICT DEMO CHECK
+    // 🔥 CROSS-UNIVERSE BLOCK
     if (req.user.isDemo && !user.isDemo) {
       return res.status(403).json({ message: "Sandbox Mode: You cannot modify real user accounts." });
+    }
+    if (!req.user.isDemo && user.isDemo) {
+      return res.status(403).json({ message: "You cannot modify demo accounts from real dashboard." });
     }
 
     if (user.role === "superadmin") {
@@ -240,6 +262,7 @@ exports.updateUserStatus = async (req, res) => {
     try {
       const adminQuery = req.user.isDemo ? { role: { $in: ["admin", "superadmin"] }, isDemo: true } : { role: { $in: ["admin", "superadmin"] }, isDemo: { $ne: true } };
       const systemAdmins = await User.find(adminQuery);
+      
       for (let admin of systemAdmins) {
         if (admin._id.toString() !== req.user._id.toString()) {
           await Notification.create({
@@ -268,6 +291,9 @@ exports.getAuditLogs = async (req, res) => {
     if (req.user && req.user.isDemo) {
       const demoUsers = await User.find({ isDemo: true }).select('_id');
       query = { actor: { $in: demoUsers.map(u => u._id) } };
+    } else {
+      const realUsers = await User.find({ isDemo: { $ne: true } }).select('_id');
+      query = { actor: { $in: realUsers.map(u => u._id) } };
     }
 
     const logs = await AuditLog.find(query)

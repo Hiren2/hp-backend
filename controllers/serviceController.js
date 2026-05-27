@@ -5,7 +5,6 @@ const User = require("../models/User");
 const Notification = require("../models/Notification"); 
 const mongoose = require("mongoose");
 
-
 const ratingAggregation = [
   {
     $lookup: {
@@ -49,7 +48,6 @@ const ratingAggregation = [
   }
 ];
 
-
 exports.getServices = async (req, res) => {
   try {
     const services = await Service.aggregate([
@@ -75,9 +73,13 @@ exports.getServices = async (req, res) => {
   }
 };
 
-
 exports.createService = async (req, res) => {
   try {
+    // 🔥 SANDBOX BLOCK: Demo accounts cannot alter live catalog
+    if (req.user && req.user.isDemo) {
+      return res.status(403).json({ message: "Sandbox Mode: You cannot add services to the live catalog." });
+    }
+
     let imagePath = req.body.image;
 
     if (req.file) {
@@ -101,11 +103,10 @@ exports.createService = async (req, res) => {
       severity: "info"
     });
 
-    
     try {
-      const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
+      // Notify only real admins
+      const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] }, isDemo: { $ne: true } });
       for (let admin of systemAdmins) {
-        
         if (admin._id.toString() !== req.user._id.toString()) {
           await Notification.create({
             user: admin._id,
@@ -128,9 +129,13 @@ exports.createService = async (req, res) => {
   }
 };
 
-
 exports.updateService = async (req, res) => {
   try {
+    // 🔥 SANDBOX BLOCK
+    if (req.user && req.user.isDemo) {
+      return res.status(403).json({ message: "Sandbox Mode: You cannot edit live catalog services." });
+    }
+
     let updateData = { ...req.body };
 
     if (req.file) {
@@ -168,9 +173,13 @@ exports.updateService = async (req, res) => {
   }
 };
 
-
 exports.deleteService = async (req, res) => {
   try {
+    // 🔥 SANDBOX BLOCK
+    if (req.user && req.user.isDemo) {
+      return res.status(403).json({ message: "Sandbox Mode: You cannot delete live catalog services." });
+    }
+
     const serviceId = req.params.id;
     const serviceObjectId = new mongoose.Types.ObjectId(serviceId);
 
@@ -215,10 +224,22 @@ exports.deleteService = async (req, res) => {
   }
 };
 
-
 exports.getServiceAnalytics = async (req, res) => {
   try {
+    // 🔥 PARALLEL UNIVERSE LOGIC FOR ANALYTICS
+    let orderMatch = {};
+    if (req.user && req.user.isDemo) {
+      const demoUsers = await User.find({ isDemo: true }).select('_id');
+      orderMatch.user = { $in: demoUsers.map(u => u._id) };
+    } else {
+      const realUsers = await User.find({ isDemo: { $ne: true } }).select('_id');
+      orderMatch.user = { $in: realUsers.map(u => u._id) };
+    }
+
     const analytics = await Order.aggregate([
+      {
+        $match: orderMatch
+      },
       {
         $group: {
           _id: "$service",
@@ -242,7 +263,6 @@ exports.getServiceAnalytics = async (req, res) => {
     });
   }
 };
-
 
 exports.getRelatedServices = async (req, res) => {
   try {

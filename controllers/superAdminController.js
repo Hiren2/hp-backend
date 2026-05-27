@@ -10,6 +10,9 @@ exports.getAuditLogs = async (req, res) => {
     if (req.user && req.user.isDemo) {
       const demoUsers = await User.find({ isDemo: true }).select('_id');
       query = { actor: { $in: demoUsers.map(u => u._id) } };
+    } else {
+      const realUsers = await User.find({ isDemo: { $ne: true } }).select('_id');
+      query = { actor: { $in: realUsers.map(u => u._id) } };
     }
 
     const logs = await AuditLog.find(query)
@@ -37,6 +40,12 @@ exports.getSystemOverview = async (req, res) => {
       const demoIds = demoUsers.map(u => u._id);
       orderQuery.user = { $in: demoIds };
       logQuery.actor = { $in: demoIds };
+    } else {
+      userQuery.isDemo = { $ne: true };
+      const realUsers = await User.find({ isDemo: { $ne: true } }).select('_id');
+      const realIds = realUsers.map(u => u._id);
+      orderQuery.user = { $in: realIds };
+      logQuery.actor = { $in: realIds };
     }
 
     const [
@@ -76,9 +85,13 @@ exports.getSystemOverview = async (req, res) => {
 exports.getSecurityAlerts = async (req, res) => {
   try {
     let logQuery = { severity: { $in: ["warning", "critical"] } };
+    
     if (req.user && req.user.isDemo) {
       const demoUsers = await User.find({ isDemo: true }).select('_id');
       logQuery.actor = { $in: demoUsers.map(u => u._id) };
+    } else {
+      const realUsers = await User.find({ isDemo: { $ne: true } }).select('_id');
+      logQuery.actor = { $in: realUsers.map(u => u._id) };
     }
 
     const alerts = await AuditLog.find(logQuery)
@@ -95,8 +108,9 @@ exports.getSecurityAlerts = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const query = req.user && req.user.isDemo ? { isDemo: true } : {};
+    const query = (req.user && req.user.isDemo) ? { isDemo: true } : { isDemo: { $ne: true } };
     const users = await User.find(query).select("-password -passwordHash").sort({ createdAt: -1 });
+    
     res.json(users);
   } catch (err) {
     console.error("GET USERS ERROR:", err);
@@ -110,16 +124,23 @@ exports.updateUserRole = async (req, res) => {
     const userId = req.params.id;
 
     const validRoles = ['user', 'manager', 'admin'];
+    
     if (!validRoles.includes(role)) {
         return res.status(400).json({ message: "Invalid role specified." });
     }
 
     const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
 
-    // 🔥 STRICT DEMO CHECK
+    // 🔥 CROSS-UNIVERSE BLOCK
     if (req.user.isDemo && !user.isDemo) {
       return res.status(403).json({ message: "Sandbox Mode: Real users cannot be modified." });
+    }
+    if (!req.user.isDemo && user.isDemo) {
+      return res.status(403).json({ message: "You cannot modify demo accounts from real dashboard." });
     }
 
     if (user.role === 'superadmin') {
@@ -149,6 +170,7 @@ exports.updateUserRole = async (req, res) => {
     try {
       const adminQuery = req.user.isDemo ? { role: "admin", isDemo: true } : { role: "admin", isDemo: { $ne: true } };
       const systemAdmins = await User.find(adminQuery);
+      
       for (let admin of systemAdmins) {
         await Notification.create({
           user: admin._id,

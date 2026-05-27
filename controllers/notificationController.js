@@ -9,10 +9,13 @@ const Notification = require("../models/Notification");
 const buildQuery = (user) => {
   // 🛑 PARALLEL UNIVERSE RULE: Demo users ONLY see direct notifications. No global leaks.
   if (user.isDemo) {
-    return { user: user._id }; 
+      return { user: user._id }; 
   }
 
-  const globalCondition = [{ user: null }, { user: { $exists: false } }];
+  const globalCondition = [
+      { user: null },
+      { user: { $exists: false } }
+  ];
 
   if (user.role === "user") {
     return { user: user._id }; 
@@ -49,9 +52,12 @@ const buildQuery = (user) => {
   return { user: user._id }; 
 };
 
+
 exports.getNotifications = async (req, res) => {
   try {
-    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
 
     const query = buildQuery(req.user);
 
@@ -68,9 +74,12 @@ exports.getNotifications = async (req, res) => {
   }
 };
 
+
 exports.markAllRead = async (req, res) => {
   try {
-    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
 
     const query = buildQuery(req.user);
 
@@ -96,11 +105,14 @@ exports.markAllRead = async (req, res) => {
   }
 };
 
+
 exports.deleteNotification = async (req, res) => {
   try {
     const notification = await Notification.findById(req.params.id);
     
-    if (!notification) return res.status(404).json({ message: "Not found" });
+    if (!notification) {
+        return res.status(404).json({ message: "Not found" });
+    }
     
     if (notification.user && notification.user.toString() !== req.user._id.toString() && !["admin", "superadmin"].includes(req.user.role)) {
       return res.status(403).json({ message: "Unauthorized" });

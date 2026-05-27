@@ -48,7 +48,9 @@ const fixOldShippedOrders = async () => {
       }
     );
 
-    if(updated.modifiedCount > 0) console.log("🔥 OLD SHIPPED FIXED:", updated.modifiedCount);
+    if(updated.modifiedCount > 0) {
+        console.log("🔥 OLD SHIPPED FIXED:", updated.modifiedCount);
+    }
   } catch (err) {
     console.error("OLD FIX ERROR:", err.message);
   }
@@ -155,13 +157,17 @@ const createOrder = async (req, res) => {
   try {
     const { serviceId, priority, address, paymentMethod, couponCode, discountValue } = req.body;
 
-    if (!serviceId) return res.status(400).json({ message: "serviceId is required" });
+    if (!serviceId) {
+        return res.status(400).json({ message: "serviceId is required" });
+    }
     if (!address || !address.fullName || !address.phone || !address.city) {
       return res.status(400).json({ message: "Complete address is required" });
     }
 
     const service = await Service.findById(serviceId);
-    if (!service) return res.status(404).json({ message: "Service not found" });
+    if (!service) {
+        return res.status(404).json({ message: "Service not found" });
+    }
 
     const basePrice = service.price || service.basePrice || 0;
     const discount = Number(discountValue) || 0;
@@ -198,13 +204,14 @@ const createOrder = async (req, res) => {
       order._id
     );
 
-    // 🔥 PARALLEL UNIVERSE FIX: Notify respective managers based on universe
+    // 🔥 STRICT UNIVERSE NOTIFICATIONS
     const managerQuery = { role: "manager" };
     if (req.user && req.user.isDemo) {
-      managerQuery.isDemo = true; // Send to Demo Managers
+      managerQuery.isDemo = true; 
     } else {
-      managerQuery.isDemo = { $ne: true }; // Send to Real Managers
+      managerQuery.isDemo = { $ne: true }; 
     }
+    
     const managers = await User.find(managerQuery);
     
     for (let m of managers) {
@@ -242,10 +249,13 @@ const getAllOrders = async (req, res) => {
   try {
     let query = {};
     
-    // DEMO FILTER: Protect Real Data
+    // 🔥 ISOLATION
     if (req.user && req.user.isDemo) {
       const demoUsers = await User.find({ isDemo: true }).select('_id');
       query.user = { $in: demoUsers.map(u => u._id) };
+    } else {
+      const realUsers = await User.find({ isDemo: { $ne: true } }).select('_id');
+      query.user = { $in: realUsers.map(u => u._id) };
     }
 
     const orders = await Order.find(query)
@@ -264,17 +274,22 @@ const getAllOrders = async (req, res) => {
 const updateOrderStatus = async (req, res) => {
   try {
     const { status, managerNotes } = req.body;
-    if (!req.user) return res.status(401).json({ message: "User not authenticated" });
+    if (!req.user) {
+        return res.status(401).json({ message: "User not authenticated" });
+    }
 
     const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).json({ message: "Order not found" });
+    if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+    }
 
-    // DEMO FILTER: Prevent Demo managers from modifying real orders if they guess the ID
-    if (req.user.isDemo) {
-      const orderOwner = await User.findById(order.user);
-      if (!orderOwner || !orderOwner.isDemo) {
+    // 🔥 CROSS-UNIVERSE BLOCK
+    const orderOwner = await User.findById(order.user);
+    if (req.user.isDemo && (!orderOwner || !orderOwner.isDemo)) {
         return res.status(403).json({ message: "Sandbox Mode: You cannot modify real user orders." });
-      }
+    }
+    if (!req.user.isDemo && (orderOwner && orderOwner.isDemo)) {
+        return res.status(403).json({ message: "Real managers cannot modify demo sandbox orders." });
     }
 
     if (order.status !== "Pending") {
@@ -317,7 +332,9 @@ const updateOrderStatus = async (req, res) => {
     }
 
     try {
-      const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
+      const adminQuery = req.user.isDemo ? { role: { $in: ["admin", "superadmin"] }, isDemo: true } : { role: { $in: ["admin", "superadmin"] }, isDemo: { $ne: true } };
+      const systemAdmins = await User.find(adminQuery);
+      
       for (let admin of systemAdmins) {
         if (admin._id.toString() !== req.user._id.toString()) { 
           await Notification.create({
@@ -345,8 +362,13 @@ const updateOrderStatus = async (req, res) => {
 const deleteMyOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).json({ message: "Order not found" });
-    if (order.user.toString() !== req.user._id.toString()) return res.status(403).json({ message: "Unauthorized" });
+    
+    if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+    }
+    if (order.user.toString() !== req.user._id.toString()) {
+        return res.status(403).json({ message: "Unauthorized" });
+    }
 
     if (order.status !== "Completed") {
       return res.status(400).json({ message: "Only delivered orders can be deleted" });
@@ -367,6 +389,9 @@ const getManagerStats = async (req, res) => {
     if (req.user && req.user.isDemo) {
       const demoUsers = await User.find({ isDemo: true }).select('_id');
       query.user = { $in: demoUsers.map(u => u._id) };
+    } else {
+      const realUsers = await User.find({ isDemo: { $ne: true } }).select('_id');
+      query.user = { $in: realUsers.map(u => u._id) };
     }
 
     const stats = await Promise.all([
@@ -379,12 +404,19 @@ const getManagerStats = async (req, res) => {
         Order.countDocuments({ ...query, status: "Completed" })
     ]);
 
-    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const today = new Date(); 
+    today.setHours(0, 0, 0, 0);
     const todayOrders = await Order.countDocuments({ ...query, createdAt: { $gte: today } });
 
     res.json({
-      totalOrders: stats[0], todayOrders, pendingOrders: stats[1], approvedOrders: stats[2],
-      rejectedOrders: stats[3], processingOrders: stats[4], shippedOrders: stats[5], completedOrders: stats[6]
+      totalOrders: stats[0],
+      todayOrders,
+      pendingOrders: stats[1],
+      approvedOrders: stats[2],
+      rejectedOrders: stats[3],
+      processingOrders: stats[4],
+      shippedOrders: stats[5],
+      completedOrders: stats[6]
     });
 
   } catch (err) {
@@ -402,6 +434,10 @@ const getAdminStats = async (req, res) => {
       const demoUsers = await User.find({ isDemo: true }).select('_id');
       userQuery.isDemo = true;
       orderQuery.user = { $in: demoUsers.map(u => u._id) };
+    } else {
+      const realUsers = await User.find({ isDemo: { $ne: true } }).select('_id');
+      userQuery.isDemo = { $ne: true };
+      orderQuery.user = { $in: realUsers.map(u => u._id) };
     }
 
     const [totalUsers, totalServices, totalOrders] = await Promise.all([
@@ -419,7 +455,8 @@ const getAdminStats = async (req, res) => {
         Order.countDocuments({ ...orderQuery, status: "Completed" })
     ]);
 
-    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const today = new Date(); 
+    today.setHours(0, 0, 0, 0);
     const todayOrders = await Order.countDocuments({ ...orderQuery, createdAt: { $gte: today } });
 
     const ordersWithService = await Order.find({
@@ -460,9 +497,16 @@ const getAdminStats = async (req, res) => {
     ];
 
     res.json({
-      totalUsers, totalServices, totalOrders, todayOrders,
-      pendingOrders: stats[0], approvedOrders: stats[1], rejectedOrders: stats[2], 
-      processingOrders: stats[3], shippedOrders: stats[4], completedOrders: stats[5], 
+      totalUsers,
+      totalServices,
+      totalOrders,
+      todayOrders,
+      pendingOrders: stats[0],
+      approvedOrders: stats[1],
+      rejectedOrders: stats[2], 
+      processingOrders: stats[3],
+      shippedOrders: stats[4],
+      completedOrders: stats[5], 
       revenueTrend: sortedRevenueTrend
     });
 
@@ -477,7 +521,9 @@ const capturePayment = async (req, res) => {
     const { orderId, status } = req.body;
     const order = await Order.findById(orderId);
 
-    if (!order) return res.status(404).json({ message: "Order not found" });
+    if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+    }
 
     if (status === "success") {
       order.paymentStatus = "Paid";
@@ -487,7 +533,9 @@ const capturePayment = async (req, res) => {
       await order.save({ validateBeforeSave: false });
 
       await createNotification(
-        order.user, "user", "PAYMENT_SUCCESS", 
+        order.user,
+        "user",
+        "PAYMENT_SUCCESS", 
         "💳 Payment Successful! Your order has been placed and is waiting for manager approval.", 
         order._id
       );
@@ -508,6 +556,12 @@ fixOldShippedOrders();
 startAutoDeliveryChecker();
 
 module.exports = {
-  createOrder, getMyOrders, getAllOrders, updateOrderStatus,
-  deleteMyOrder, getManagerStats, getAdminStats, capturePayment 
+  createOrder,
+  getMyOrders,
+  getAllOrders,
+  updateOrderStatus,
+  deleteMyOrder,
+  getManagerStats,
+  getAdminStats,
+  capturePayment 
 };
