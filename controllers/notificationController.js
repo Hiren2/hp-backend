@@ -4,17 +4,20 @@ const Notification = require("../models/Notification");
  * 🔥 100% STRICT ROLE-BASED QUERY LOGIC (LEAK-PROOF FIREWALL)
  * User: Sirf apni private notifications dekhega.
  * Manager: Apni personal + Manager-specific global alerts.
- * Admin/Superadmin: Apni personal + Admin global alerts (MANAGER KI ALERTS STRICTLY BLOCKED HAIN).
+ * Admin/Superadmin: Apni personal + Admin global alerts.
  */
 const buildQuery = (user) => {
+  // 🛑 PARALLEL UNIVERSE RULE: Demo users ONLY see direct notifications. No global leaks.
+  if (user.isDemo) {
+    return { user: user._id }; 
+  }
+
   const globalCondition = [{ user: null }, { user: { $exists: false } }];
 
-  
   if (user.role === "user") {
     return { user: user._id }; 
   }
 
-  
   if (user.role === "manager") {
     return { 
       $or: [
@@ -30,7 +33,6 @@ const buildQuery = (user) => {
     };
   }
 
-  
   if (user.role === "admin" || user.role === "superadmin") {
     return {
       $or: [
@@ -44,10 +46,8 @@ const buildQuery = (user) => {
     };
   }
 
-  
   return { user: user._id }; 
 };
-
 
 exports.getNotifications = async (req, res) => {
   try {
@@ -67,7 +67,6 @@ exports.getNotifications = async (req, res) => {
     res.status(500).json({ message: "Failed to load notifications" });
   }
 };
-
 
 exports.markAllRead = async (req, res) => {
   try {
@@ -96,7 +95,6 @@ exports.markAllRead = async (req, res) => {
     res.status(500).json({ message: "Failed to update notifications" });
   }
 };
-
 
 exports.deleteNotification = async (req, res) => {
   try {

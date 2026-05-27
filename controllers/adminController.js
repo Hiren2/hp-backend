@@ -4,11 +4,20 @@ const Service = require("../models/Service");
 const AuditLog = require("../models/AuditLog");
 const Notification = require("../models/Notification"); 
 
-
 exports.getAdminStats = async (req, res) => {
   try {
     const today = new Date();
     today.setHours(0,0,0,0);
+
+    let userQuery = {};
+    let orderQuery = {};
+    
+    // 🔥 DEMO FIREWALL
+    if (req.user && req.user.isDemo) {
+      userQuery.isDemo = true;
+      const demoUsers = await User.find({ isDemo: true }).select('_id');
+      orderQuery.user = { $in: demoUsers.map(u => u._id) };
+    }
 
     const [
       totalUsers,
@@ -22,24 +31,25 @@ exports.getAdminStats = async (req, res) => {
       processingOrders,
       shippedOrders
     ] = await Promise.all([
-      User.countDocuments(),
+      User.countDocuments(userQuery),
       Service.countDocuments({
         $or: [
           { isActive: true },
           { isActive: { $exists: false } }
         ]
       }),
-      Order.countDocuments(),
-      Order.countDocuments({ status: "Pending" }),
-      Order.countDocuments({ status: "Approved" }),
-      Order.countDocuments({ status: "Rejected" }),
-      Order.countDocuments({ status: "Completed" }),
-      Order.countDocuments({ createdAt: { $gte: today } }),
-      Order.countDocuments({ status: "Processing" }),
-      Order.countDocuments({ status: "Shipped" })
+      Order.countDocuments(orderQuery),
+      Order.countDocuments({ ...orderQuery, status: "Pending" }),
+      Order.countDocuments({ ...orderQuery, status: "Approved" }),
+      Order.countDocuments({ ...orderQuery, status: "Rejected" }),
+      Order.countDocuments({ ...orderQuery, status: "Completed" }),
+      Order.countDocuments({ ...orderQuery, createdAt: { $gte: today } }),
+      Order.countDocuments({ ...orderQuery, status: "Processing" }),
+      Order.countDocuments({ ...orderQuery, status: "Shipped" })
     ]);
 
     const monthlyOrders = await Order.aggregate([
+      { $match: orderQuery },
       {
         $group: {
           _id: { $month: "$createdAt" },
@@ -50,6 +60,7 @@ exports.getAdminStats = async (req, res) => {
     ]);
 
     const topServices = await Order.aggregate([
+      { $match: orderQuery },
       {
         $group: {
           _id: "$service",
@@ -66,7 +77,7 @@ exports.getAdminStats = async (req, res) => {
     });
 
     const managerPerformance = await Order.aggregate([
-      { $match: { processedBy: { $ne: null } } },
+      { $match: { ...orderQuery, processedBy: { $ne: null } } },
       {
         $group: {
           _id: "$processedBy",
@@ -100,11 +111,11 @@ exports.getAdminStats = async (req, res) => {
   }
 };
 
-
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find()
-      .select("name email role totalOrders createdAt lastLogin dob accountStatus");
+    const query = req.user && req.user.isDemo ? { isDemo: true } : {};
+    const users = await User.find(query)
+      .select("name email role totalOrders createdAt lastLogin dob accountStatus isDemo");
 
     res.json(users);
 
@@ -113,7 +124,6 @@ exports.getAllUsers = async (req, res) => {
     res.status(500).json({ message: "Failed to load users" });
   }
 };
-
 
 exports.updateUserRole = async (req, res) => {
   try {
@@ -136,6 +146,11 @@ exports.updateUserRole = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    // 🔥 STRICT DEMO CHECK: Demo Admin cannot touch Real Users
+    if (req.user.isDemo && !user.isDemo) {
+      return res.status(403).json({ message: "Sandbox Mode: You cannot modify real user accounts." });
     }
 
     if (user.role === "superadmin") {
@@ -161,9 +176,9 @@ exports.updateUserRole = async (req, res) => {
       severity: "warning"
     });
 
-    
     try {
-      const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
+      const adminQuery = req.user.isDemo ? { role: { $in: ["admin", "superadmin"] }, isDemo: true } : { role: { $in: ["admin", "superadmin"] }, isDemo: { $ne: true } };
+      const systemAdmins = await User.find(adminQuery);
       for (let admin of systemAdmins) {
         if (admin._id.toString() !== req.user._id.toString()) {
           await Notification.create({
@@ -187,7 +202,6 @@ exports.updateUserRole = async (req, res) => {
   }
 };
 
-
 exports.updateUserStatus = async (req, res) => {
   try {
     const { status } = req.body; 
@@ -200,6 +214,11 @@ exports.updateUserStatus = async (req, res) => {
 
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ message: "User not found" });
+
+    // 🔥 STRICT DEMO CHECK
+    if (req.user.isDemo && !user.isDemo) {
+      return res.status(403).json({ message: "Sandbox Mode: You cannot modify real user accounts." });
+    }
 
     if (user.role === "superadmin") {
       return res.status(403).json({ message: "Cannot modify superadmin status" });
@@ -218,9 +237,9 @@ exports.updateUserStatus = async (req, res) => {
       severity: status === "suspended" ? "critical" : "info",
     });
 
-    
     try {
-      const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
+      const adminQuery = req.user.isDemo ? { role: { $in: ["admin", "superadmin"] }, isDemo: true } : { role: { $in: ["admin", "superadmin"] }, isDemo: { $ne: true } };
+      const systemAdmins = await User.find(adminQuery);
       for (let admin of systemAdmins) {
         if (admin._id.toString() !== req.user._id.toString()) {
           await Notification.create({
@@ -243,10 +262,15 @@ exports.updateUserStatus = async (req, res) => {
   }
 };
 
-
 exports.getAuditLogs = async (req, res) => {
   try {
-    const logs = await AuditLog.find()
+    let query = {};
+    if (req.user && req.user.isDemo) {
+      const demoUsers = await User.find({ isDemo: true }).select('_id');
+      query = { actor: { $in: demoUsers.map(u => u._id) } };
+    }
+
+    const logs = await AuditLog.find(query)
       .populate("actor","name email role") 
       .sort({ createdAt:-1 })
       .limit(300); 

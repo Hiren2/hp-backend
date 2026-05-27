@@ -198,7 +198,15 @@ const createOrder = async (req, res) => {
       order._id
     );
 
-    const managers = await User.find({ role: "manager" });
+    // 🔥 PARALLEL UNIVERSE FIX: Notify respective managers based on universe
+    const managerQuery = { role: "manager" };
+    if (req.user && req.user.isDemo) {
+      managerQuery.isDemo = true; // Send to Demo Managers
+    } else {
+      managerQuery.isDemo = { $ne: true }; // Send to Real Managers
+    }
+    const managers = await User.find(managerQuery);
+    
     for (let m of managers) {
         await Notification.create({
             user: m._id,
