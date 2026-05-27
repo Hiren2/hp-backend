@@ -14,8 +14,6 @@ const {
   capturePayment 
 } = require("../controllers/orderController");
 
-
-
 router.get(
   "/admin/stats",
   authenticate,
@@ -30,17 +28,12 @@ router.get(
   getManagerStats
 );
 
-
-
-
 router.post(
   "/payment",
   authenticate,
   authorizeRoles("user", "manager", "admin", "superadmin"),
   capturePayment
 );
-
-
 
 router.post(
   "/",
@@ -63,8 +56,22 @@ router.delete(
   deleteMyOrder
 );
 
+// FRONTEND MATCHING ROUTES: Added these so ManagerOrders.js doesn't get 403 error
+router.get(
+  "/manager/orders",
+  authenticate,
+  authorizeRoles("manager", "admin", "superadmin"),
+  getAllOrders
+);
 
+router.put(
+  "/manager/orders/:id",
+  authenticate,
+  authorizeRoles("manager", "admin", "superadmin"),
+  updateOrderStatus
+);
 
+// Fallback old routes
 router.get(
   "/admin",
   authenticate,

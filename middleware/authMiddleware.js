@@ -34,18 +34,16 @@ const authenticate = async (req, res, next) => {
     req.user = user;
 
     // --- FAANG-LEVEL DEMO PROTECTION LAYER START ---
-    // Protect the live database from being modified by Demo Accounts
-    if (req.user.isDemo && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+    // Allowed POST/PUT so demo users can test the platform with their own fake data.
+    // Only DELETE operations are blocked to prevent accidental data wipes.
+    if (req.user.isDemo && ['DELETE'].includes(req.method)) {
       
-      // EXCEPTION: Allow AI Chatbot requests to work in demo mode
-      // Modify '/chat' or '/bot' if your Gemini API route name is different
       if (req.originalUrl.includes('/chat') || req.originalUrl.includes('/bot') || req.originalUrl.includes('/gemini')) {
         return next();
       }
 
-      // Block the modification but send a "Success-like" message for the Sandbox UI
       return res.status(403).json({
-        message: "Sandbox Mode Active: Action simulated successfully. Live database modification is locked."
+        message: "Sandbox Mode Active: Deletion is locked in demo mode."
       });
     }
     // --- DEMO PROTECTION LAYER END ---

@@ -4,7 +4,6 @@ const User = require("../models/User");
 const AuditLog = require("../models/AuditLog");
 const Notification = require("../models/Notification"); 
 
-
 const createNotification = async (userId, role, action, message, orderId) => {
   try {
     await Notification.create({
@@ -33,7 +32,6 @@ const getCatchyTitle = (action) => {
   };
   return titles[action] || "Notification Update";
 };
-
 
 const fixOldShippedOrders = async () => {
   try {
@@ -87,7 +85,6 @@ const startAutoDeliveryChecker = () => {
     }
   }, 20000); 
 };
-
 
 const startOrderLifecycle = (order) => {
   setTimeout(async () => {
@@ -154,7 +151,6 @@ const startOrderLifecycle = (order) => {
   }, 20000); 
 };
 
-
 const createOrder = async (req, res) => {
   try {
     const { serviceId, priority, address, paymentMethod, couponCode, discountValue } = req.body;
@@ -202,8 +198,6 @@ const createOrder = async (req, res) => {
       order._id
     );
 
-    
-    
     const managers = await User.find({ role: "manager" });
     for (let m of managers) {
         await Notification.create({
@@ -223,7 +217,6 @@ const createOrder = async (req, res) => {
   }
 };
 
-
 const getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user._id })
@@ -237,11 +230,18 @@ const getMyOrders = async (req, res) => {
   }
 };
 
-
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find()
-      .populate("user", "email name")
+    let query = {};
+    
+    // DEMO FILTER: Protect Real Data
+    if (req.user && req.user.isDemo) {
+      const demoUsers = await User.find({ isDemo: true }).select('_id');
+      query.user = { $in: demoUsers.map(u => u._id) };
+    }
+
+    const orders = await Order.find(query)
+      .populate("user", "email name isDemo")
       .populate("service")
       .populate("processedBy", "email role")
       .sort({ createdAt: -1 });
@@ -253,7 +253,6 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-
 const updateOrderStatus = async (req, res) => {
   try {
     const { status, managerNotes } = req.body;
@@ -261,6 +260,14 @@ const updateOrderStatus = async (req, res) => {
 
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ message: "Order not found" });
+
+    // DEMO FILTER: Prevent Demo managers from modifying real orders if they guess the ID
+    if (req.user.isDemo) {
+      const orderOwner = await User.findById(order.user);
+      if (!orderOwner || !orderOwner.isDemo) {
+        return res.status(403).json({ message: "Sandbox Mode: You cannot modify real user orders." });
+      }
+    }
 
     if (order.status !== "Pending") {
       return res.status(400).json({ message: "Order already processed" });
@@ -276,7 +283,6 @@ const updateOrderStatus = async (req, res) => {
 
     await order.save({ validateBeforeSave: false });
 
-    
     if (status === "Approved") {
       await createNotification(
         order.user,
@@ -302,7 +308,6 @@ const updateOrderStatus = async (req, res) => {
       );
     }
 
-    
     try {
       const systemAdmins = await User.find({ role: { $in: ["admin", "superadmin"] } });
       for (let admin of systemAdmins) {
@@ -329,7 +334,6 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-
 const deleteMyOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -349,21 +353,26 @@ const deleteMyOrder = async (req, res) => {
   }
 };
 
-
 const getManagerStats = async (req, res) => {
   try {
+    let query = {};
+    if (req.user && req.user.isDemo) {
+      const demoUsers = await User.find({ isDemo: true }).select('_id');
+      query.user = { $in: demoUsers.map(u => u._id) };
+    }
+
     const stats = await Promise.all([
-        Order.countDocuments(),
-        Order.countDocuments({ status: "Pending" }),
-        Order.countDocuments({ status: "Approved" }),
-        Order.countDocuments({ status: "Rejected" }),
-        Order.countDocuments({ status: "Processing" }),
-        Order.countDocuments({ status: "Shipped" }),
-        Order.countDocuments({ status: "Completed" })
+        Order.countDocuments(query),
+        Order.countDocuments({ ...query, status: "Pending" }),
+        Order.countDocuments({ ...query, status: "Approved" }),
+        Order.countDocuments({ ...query, status: "Rejected" }),
+        Order.countDocuments({ ...query, status: "Processing" }),
+        Order.countDocuments({ ...query, status: "Shipped" }),
+        Order.countDocuments({ ...query, status: "Completed" })
     ]);
 
     const today = new Date(); today.setHours(0, 0, 0, 0);
-    const todayOrders = await Order.countDocuments({ createdAt: { $gte: today } });
+    const todayOrders = await Order.countDocuments({ ...query, createdAt: { $gte: today } });
 
     res.json({
       totalOrders: stats[0], todayOrders, pendingOrders: stats[1], approvedOrders: stats[2],
@@ -376,28 +385,37 @@ const getManagerStats = async (req, res) => {
   }
 };
 
-
 const getAdminStats = async (req, res) => {
   try {
+    let userQuery = {};
+    let orderQuery = {};
+    
+    if (req.user && req.user.isDemo) {
+      const demoUsers = await User.find({ isDemo: true }).select('_id');
+      userQuery.isDemo = true;
+      orderQuery.user = { $in: demoUsers.map(u => u._id) };
+    }
+
     const [totalUsers, totalServices, totalOrders] = await Promise.all([
-        User.countDocuments(),
+        User.countDocuments(userQuery),
         Service.countDocuments(),
-        Order.countDocuments()
+        Order.countDocuments(orderQuery)
     ]);
 
     const stats = await Promise.all([
-        Order.countDocuments({ status: "Pending" }),
-        Order.countDocuments({ status: "Approved" }),
-        Order.countDocuments({ status: "Rejected" }),
-        Order.countDocuments({ status: "Processing" }),
-        Order.countDocuments({ status: "Shipped" }),
-        Order.countDocuments({ status: "Completed" })
+        Order.countDocuments({ ...orderQuery, status: "Pending" }),
+        Order.countDocuments({ ...orderQuery, status: "Approved" }),
+        Order.countDocuments({ ...orderQuery, status: "Rejected" }),
+        Order.countDocuments({ ...orderQuery, status: "Processing" }),
+        Order.countDocuments({ ...orderQuery, status: "Shipped" }),
+        Order.countDocuments({ ...orderQuery, status: "Completed" })
     ]);
 
     const today = new Date(); today.setHours(0, 0, 0, 0);
-    const todayOrders = await Order.countDocuments({ createdAt: { $gte: today } });
+    const todayOrders = await Order.countDocuments({ ...orderQuery, createdAt: { $gte: today } });
 
     const ordersWithService = await Order.find({
+      ...orderQuery,
       status: { $in: ["Approved", "Processing", "Shipped", "Completed"] } 
     }).populate("service");
 
@@ -446,7 +464,6 @@ const getAdminStats = async (req, res) => {
   }
 };
 
-
 const capturePayment = async (req, res) => {
   try {
     const { orderId, status } = req.body;
@@ -478,7 +495,6 @@ const capturePayment = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 fixOldShippedOrders();
 startAutoDeliveryChecker();
