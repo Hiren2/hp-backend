@@ -2,15 +2,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Layout from "./components/Layout";
 import Chatbot from "./components/Chatbot"; 
 
-
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 
-
 import Home from "./pages/Home";
-
 
 import Dashboard from "./pages/Dashboard";
 import Services from "./pages/Services";
@@ -23,17 +20,14 @@ import Support from "./pages/Support";
 import Wishlist from "./pages/Wishlist"; 
 import ChangePassword from "./pages/ChangePassword"; 
 
-
 import AdminServices from "./pages/AdminServices";
 import AdminManagers from "./pages/AdminManagers";
 import AdminStats from "./pages/AdminStats";
 import AdminOrderHistory from "./pages/AdminOrderHistory";
 import SystemActivity from "./pages/SystemActivity";
 
-
 import ManagerDashboard from "./pages/ManagerDashboard";
 import ManagerOrders from "./pages/ManagerOrders";
-
 
 import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import SuperAdminAuditLogs from "./pages/SuperAdminAuditLogs";
@@ -41,13 +35,16 @@ import SuperAdminManageAdmins from "./pages/SuperAdminManageAdmins";
 
 import { getUser } from "./utils/auth";
 
-
+// 🔥 MULTI-TAB INSTANT SYNC LOGIC
+// Agar kisi aur tab me login, logout, ya token change hua, toh ye tab instantly reload ho jayegi.
 window.addEventListener("storage", (e) => {
-  if (e.key === "logout") {
-    window.location.replace("/login");
+  if (e.key === "token" || e.key === "user" || e.key === "app_logout" || e.key === "logout") {
+    // Agar login page pe nahi hai, toh hi reload karo
+    if (!window.location.pathname.includes("/login")) {
+      window.location.reload();
+    }
   }
 });
-
 
 const RequireAuth = ({ children }) => {
   const user = getUser();
@@ -79,20 +76,19 @@ const RequireSuperAdmin = ({ children }) => {
   return children;
 };
 
-
 export default function App() {
   return (
     <Router>
       <Routes>
 
-        {}
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
 
-        {}
+        {/* Protected Customer Routes */}
         <Route
           element={
             <RequireAuth>
@@ -101,8 +97,6 @@ export default function App() {
             </RequireAuth>
           }
         >
-
-          {}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
@@ -114,7 +108,7 @@ export default function App() {
           <Route path="/support" element={<Support />} />
           <Route path="/change-password" element={<ChangePassword />} />
 
-          {}
+          {/* Manager Routes */}
           <Route
             path="/manager/dashboard"
             element={
@@ -132,7 +126,7 @@ export default function App() {
             }
           />
 
-          {}
+          {/* Admin Routes */}
           <Route
             path="/admin/dashboard"
             element={
@@ -174,7 +168,7 @@ export default function App() {
             }
           />
 
-          {}
+          {/* Super Admin Routes */}
           <Route
             path="/superadmin/dashboard"
             element={
@@ -202,7 +196,7 @@ export default function App() {
 
         </Route>
 
-        {}
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>
