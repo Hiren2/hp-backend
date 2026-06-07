@@ -28,7 +28,7 @@ import {
 export default function Home() {
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const [termsOpen, setTermsOpen] = useState(false);
-  const [demoOpen, setDemoOpen] = useState(false); // New Demo State
+  const [demoOpen, setDemoOpen] = useState(false); 
   const navigate = useNavigate();
 
   const scrollToExpertise = () => {
@@ -38,22 +38,26 @@ export default function Home() {
     }
   };
 
-  // Logic to handle Demo Selection
   const handleDemoSelect = (role) => {
     setDemoOpen(false);
-    // Passing the selected role to the login page securely via state
     navigate('/login', { state: { autoLoginRole: role } });
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#0B0F19] font-sans overflow-x-hidden selection:bg-blue-500 selection:text-white">
       
+      {/* Background Ambient Glows */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] mix-blend-screen animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
+
       {/* Premium Navbar */}
-      <nav className="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/50 transition-all duration-300">
+      <nav className="fixed w-full z-50 bg-[#0B0F19]/80 backdrop-blur-xl border-b border-white/10 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo(0,0)}>
-              <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-lg rounded-full">
+            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => window.scrollTo(0,0)}>
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-[0_0_20px_rgba(37,99,235,0.5)] rounded-full transition-transform group-hover:scale-105">
                 <circle cx="24" cy="24" r="24" fill="url(#paint0_linear)"/>
                 <path d="M14 14V34 M14 24H22 M22 14V34" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M28 34V14H33C35.7614 14 38 16.2386 38 19C38 21.7614 35.7614 24 33 24H28" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -64,22 +68,21 @@ export default function Home() {
                   </linearGradient>
                 </defs>
               </svg>
-              <span className="font-extrabold text-2xl text-slate-800 tracking-tight">
+              <span className="font-black text-2xl text-white tracking-tight">
                 H&P Solutions
               </span>
             </div>
-            <div className="flex items-center gap-4">
-              <Link to="/login" className="hidden sm:block text-slate-600 font-bold hover:text-blue-600 transition-colors">
+            <div className="flex items-center gap-6">
+              <Link to="/login" className="hidden sm:block text-slate-300 font-semibold hover:text-white transition-colors">
                 Sign In
               </Link>
-              {/* Intelligent Interactive Demo Button */}
               <button 
                 onClick={() => setDemoOpen(true)} 
-                className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-bold text-gray-900 rounded-full group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/30 transform hover:-translate-y-0.5 transition-all mt-2"
+                className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-bold text-white rounded-full group bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 focus:ring-4 focus:outline-none focus:ring-blue-800 shadow-[0_0_20px_rgba(37,99,235,0.4)] transform hover:-translate-y-0.5 transition-all"
               >
-                <span className="relative px-6 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 flex items-center gap-2">
-                  <Zap size={16} className="text-blue-600 group-hover:text-white" />
-                  Live Interactive Demo
+                <span className="relative px-6 py-2.5 bg-[#0B0F19] rounded-full group-hover:bg-opacity-0 flex items-center gap-2 transition-all duration-300">
+                  <Zap size={16} className="text-blue-400 group-hover:text-white" />
+                  Live Sandbox
                 </span>
               </button>
             </div>
@@ -88,43 +91,46 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <div className="pt-20">
+      <div className="pt-20 relative z-10">
         <Swiper
           modules={[Autoplay, EffectFade, Pagination]}
           effect="fade"
-          autoplay={{ delay: 5000, disableOnInteraction: false }}
+          autoplay={{ delay: 6000, disableOnInteraction: false }}
           pagination={{ clickable: true }}
-          className="h-[600px] w-full"
+          className="h-[85vh] min-h-[600px] w-full"
         >
           <SwiperSlide>
-            <div className="relative w-full h-full flex items-center bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 overflow-hidden">
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
-              <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"></div>
+            <div className="relative w-full h-full flex items-center bg-transparent overflow-hidden">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.03]"></div>
               
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full mt-10">
                 <motion.div 
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8 }}
-                  className="max-w-2xl text-white"
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  className="max-w-3xl text-white"
                 >
-                  <span className="inline-block py-1 px-3 rounded-full bg-blue-500/20 text-blue-300 text-sm font-bold tracking-widest uppercase mb-4 border border-blue-500/30">
-                    Premium B2B SaaS Platform
-                  </span>
-                  <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
-                    Deploy Your Own <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">Enterprise Marketplace</span>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-bold tracking-widest uppercase mb-6 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                    Enterprise RBAC Engine
+                  </div>
+                  <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
+                    Deploy Your <br/>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
+                      SaaS Marketplace
+                    </span>
                   </h1>
-                  <p className="text-lg text-slate-300 mb-8 font-medium max-w-xl leading-relaxed">
-                    H&P Solutions delivers a ready-to-scale, highly secure 4-Tier RBAC architecture. Experience full control, immutable audit logs, and AI-driven automation.
+                  <p className="text-xl text-slate-400 mb-10 font-medium max-w-2xl leading-relaxed">
+                    H&P Solutions delivers a ready-to-scale, highly secure 4-Tier RBAC architecture. Experience full isolation, immutable audit logs, and instant scalability.
                   </p>
                   <div className="flex flex-wrap gap-4">
                     <button 
                       onClick={() => setDemoOpen(true)} 
-                      className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:scale-105"
+                      className="bg-white hover:bg-slate-100 text-[#0B0F19] px-8 py-4 rounded-full font-black text-lg flex items-center gap-2 transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:scale-105"
                     >
-                      Try Live Sandbox <ArrowRight size={20} />
+                      Enter Sandbox <ArrowRight size={20} />
                     </button>
-                    <button onClick={scrollToExpertise} className="bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-all border border-slate-700">
+                    <button onClick={scrollToExpertise} className="bg-white/5 hover:bg-white/10 text-white px-8 py-4 rounded-full font-bold text-lg transition-all border border-white/10 backdrop-blur-md">
                       Explore Architecture
                     </button>
                   </div>
@@ -135,25 +141,27 @@ export default function Home() {
 
           {/* Slide 2 */}
           <SwiperSlide>
-            <div className="relative w-full h-full flex items-center bg-gradient-to-br from-emerald-900 via-teal-900 to-slate-900 overflow-hidden">
-              <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl"></div>
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center flex flex-col items-center">
+            <div className="relative w-full h-full flex items-center bg-transparent overflow-hidden">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center flex flex-col items-center mt-10">
                 <motion.div 
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.8 }}
-                  className="max-w-3xl text-white"
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  className="max-w-4xl text-white"
                 >
-                  <div className="w-20 h-20 bg-emerald-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-emerald-400/30">
-                    <Zap size={40} className="text-emerald-400" />
+                  <div className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-[0_0_40px_rgba(52,211,153,0.3)]">
+                    <Cpu size={48} className="text-white" />
                   </div>
-                  <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
-                    Built-in <span className="text-emerald-400">Smart AI & Automation</span>
+                  <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
+                    Powered by <br/>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
+                      Smart Automation
+                    </span>
                   </h1>
-                  <p className="text-xl text-emerald-100/80 mb-8 font-medium">
-                    Experience advanced Role-Based Access Control, Gemini API AI Chatbots, and automated workflows right out of the box.
+                  <p className="text-xl text-slate-400 mb-10 font-medium max-w-2xl mx-auto leading-relaxed">
+                    Built-in Gemini AI integration, real-time telemetry, and autonomous workflows that save hundreds of operational hours.
                   </p>
-                  <button onClick={() => setDemoOpen(true)} className="bg-white text-emerald-900 hover:bg-emerald-50 px-8 py-4 rounded-full font-extrabold text-lg flex items-center gap-2 transition-all shadow-xl hover:scale-105 mx-auto w-max">
+                  <button onClick={() => setDemoOpen(true)} className="bg-emerald-500 hover:bg-emerald-400 text-white px-10 py-4 rounded-full font-black text-lg flex items-center gap-2 transition-all shadow-[0_0_30px_rgba(16,185,129,0.4)] hover:scale-105 mx-auto w-max">
                     Launch Demo Environment
                   </button>
                 </motion.div>
@@ -164,65 +172,62 @@ export default function Home() {
       </div>
 
       {/* Services Section */}
-      <div id="expertise-section" className="py-20 bg-slate-100 border-b border-slate-200 scroll-mt-20">
+      <div id="expertise-section" className="py-32 bg-[#0F1523] border-y border-white/5 relative z-10 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <h2 className="text-sm font-bold text-indigo-600 tracking-widest uppercase mb-2">Enterprise Solutions</h2>
-            <h3 className="text-3xl font-extrabold text-slate-800 sm:text-4xl">
-              The Complete E-Commerce Ecosystem
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <h2 className="text-sm font-black text-indigo-400 tracking-widest uppercase mb-3">Enterprise Core</h2>
+            <h3 className="text-4xl font-black text-white sm:text-5xl">
+              The Complete Ecosystem
             </h3>
-            <p className="mt-4 text-lg text-slate-500 font-medium">
-              When you acquire the H&P Solutions architecture, you receive a full-stack, white-label ecosystem engineered for scalability.
+            <p className="mt-6 text-xl text-slate-400 font-medium leading-relaxed">
+              When you acquire the H&P Solutions architecture, you receive a full-stack, white-label ecosystem engineered for global scale.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <CategoryCard 
-              icon={<Code size={36} className="text-blue-500 group-hover:text-white transition-colors" />}
-              title="White-label Storefront"
-              desc="Sell physical products and services directly through a high-conversion, responsive UI."
+              icon={<Code size={32} className="text-blue-400" />}
+              title="White-label Ready"
+              desc="Deploy your own branded storefront instantly with highly optimized conversion funnels."
               delay={0.1}
             />
             <CategoryCard 
-              icon={<ShieldCheck size={36} className="text-emerald-500 group-hover:text-white transition-colors" />}
-              title="4-Tier RBAC System"
-              desc="Strictly isolated authorization layers (SuperAdmin, Admin, Manager, User) preventing role bleed."
+              icon={<ShieldCheck size={32} className="text-emerald-400" />}
+              title="4-Tier RBAC"
+              desc="Military-grade authorization layers preventing data bleed across enterprise roles."
               delay={0.2}
             />
             <CategoryCard 
-              icon={<Zap size={36} className="text-purple-500 group-hover:text-white transition-colors" />}
-              title="AI Gemini Integration"
-              desc="Deploy our intelligent NLP ServiceBot to handle customer queries 24/7 autonomously."
+              icon={<Zap size={32} className="text-purple-400" />}
+              title="AI Integration"
+              desc="Embedded NLP Gemini ServiceBot for autonomous 24/7 customer support."
               delay={0.3}
             />
             <CategoryCard 
-              icon={<LineChart size={36} className="text-rose-500 group-hover:text-white transition-colors" />}
-              title="Live Telemetry & Audits"
-              desc="Real-time monitoring and immutable backend audit logs for 100% operational accountability."
+              icon={<LineChart size={32} className="text-rose-400" />}
+              title="Live Telemetry"
+              desc="Real-time performance monitoring and immutable blockchain-style audit logs."
               delay={0.4}
             />
           </div>
         </div>
       </div>
 
-      {/* Reviews (Kept Intact as requested) */}
-      <div className="py-24 bg-slate-900 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+      {/* Reviews */}
+      <div className="py-32 bg-[#0B0F19] text-white relative overflow-hidden z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-6">
             <div className="max-w-2xl">
-              <h2 className="text-sm font-bold text-blue-400 tracking-widest uppercase mb-2">Trusted By Global Tech</h2>
-              <h3 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-                What CTOs Are Saying
+              <h2 className="text-sm font-black text-blue-400 tracking-widest uppercase mb-3">Trusted Infrastructure</h2>
+              <h3 className="text-4xl font-black tracking-tight sm:text-5xl">
+                Validated by CTOs
               </h3>
             </div>
-            <div className="flex items-center gap-1 bg-white/10 border border-white/20 px-4 py-2 rounded-xl">
-              <span className="font-extrabold text-2xl mr-2">4.9</span>
-              <Star size={20} fill="#FBBF24" className="text-yellow-400" />
-              <Star size={20} fill="#FBBF24" className="text-yellow-400" />
-              <Star size={20} fill="#FBBF24" className="text-yellow-400" />
-              <Star size={20} fill="#FBBF24" className="text-yellow-400" />
-              <Star size={20} fill="#FBBF24" className="text-yellow-400" />
+            <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-6 py-3 rounded-2xl backdrop-blur-sm">
+              <span className="font-black text-3xl mr-2 text-white">4.9</span>
+              <div className="flex gap-1">
+                {[1,2,3,4,5].map(i => <Star key={i} size={20} fill="#FBBF24" className="text-yellow-400" />)}
+              </div>
             </div>
           </div>
 
@@ -230,19 +235,19 @@ export default function Home() {
             <ReviewCard 
               name="David Mitchell"
               role="Tech Lead, Silicon Valley"
-              text="H&P Solutions completely transformed our architecture. The automated workflows and the MERN RBAC system are flawlessly coded."
+              text="H&P Solutions completely transformed our architecture. The automated workflows and the MERN RBAC system are flawlessly coded. A true enterprise asset."
               delay={0.1}
             />
             <ReviewCard 
               name="Sarah Jenkins"
               role="Product Manager, UK"
-              text="We needed a secure white-label platform fast. H&P delivered a scalable product. The live telemetry dashboard is a game-changer!"
+              text="We needed a secure white-label platform fast. H&P delivered a scalable product. The strict data isolation in the sandbox is a game-changer!"
               delay={0.2}
             />
             <ReviewCard 
               name="Amit Patel"
               role="Managing Director, India"
-              text="The AI ServiceBot integration saved our support team hundreds of hours. Exceptional B2B SaaS architecture and clean codebase."
+              text="The AI ServiceBot integration saved our support team hundreds of hours. Exceptional B2B SaaS architecture and an incredibly clean codebase."
               delay={0.3}
             />
           </div>
@@ -250,15 +255,16 @@ export default function Home() {
       </div>
 
       {/* CTA Footer Section */}
-      <div className="py-20 bg-slate-50 border-t border-slate-200">
+      <div className="py-24 bg-[#0F1523] border-t border-white/5 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center justify-between text-white">
-            <div className="max-w-xl mb-8 md:mb-0">
-              <h2 className="text-3xl font-extrabold mb-4">Ready to test the architecture?</h2>
-              <p className="text-blue-100 text-lg font-medium mb-6">Enter our Sandbox Environment to experience Data Isolation and Role Management in real-time.</p>
+          <div className="bg-gradient-to-br from-blue-600 to-indigo-800 rounded-[2.5rem] p-10 md:p-16 shadow-[0_20px_50px_rgba(37,99,235,0.3)] flex flex-col md:flex-row items-center justify-between text-white relative overflow-hidden border border-white/10">
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
+            <div className="max-w-2xl mb-10 md:mb-0 relative z-10">
+              <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight">Ready to stress-test the architecture?</h2>
+              <p className="text-blue-100 text-xl font-medium mb-0">Enter our Sandbox Environment to experience Data Isolation, Real-time Sync, and Role Management live.</p>
             </div>
-            <div>
-              <button onClick={() => setDemoOpen(true)} className="bg-white text-indigo-700 px-8 py-4 rounded-full font-extrabold text-lg transition-all shadow-xl hover:scale-105 hover:bg-slate-50 inline-block">
+            <div className="relative z-10 w-full md:w-auto">
+              <button onClick={() => setDemoOpen(true)} className="w-full md:w-auto bg-white text-[#0B0F19] px-10 py-5 rounded-full font-black text-xl transition-all shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-105 hover:bg-slate-100 inline-block text-center">
                 Launch Live Demo
               </button>
             </div>
@@ -267,63 +273,67 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 pt-16 pb-8">
+      <footer className="bg-[#0B0F19] border-t border-white/10 pt-16 pb-8 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-slate-800 tracking-tight">H&P Solutions Architecture © {new Date().getFullYear()}</span>
+            <span className="font-black text-white text-lg tracking-tight">H&P Solutions © {new Date().getFullYear()}</span>
           </div>
-          <div className="flex gap-6 text-sm font-semibold text-slate-500">
-            <button onClick={() => setDemoOpen(true)} className="hover:text-blue-600 transition-colors">Test Sandbox</button>
-            <button onClick={() => setPrivacyOpen(true)} className="hover:text-blue-600 transition-colors">Privacy Policy</button>
-            <button onClick={() => setTermsOpen(true)} className="hover:text-blue-600 transition-colors">Terms of Service</button>
+          <div className="flex gap-8 text-sm font-semibold text-slate-400">
+            <button onClick={() => setDemoOpen(true)} className="hover:text-blue-400 transition-colors">Test Sandbox</button>
+            <button onClick={() => setPrivacyOpen(true)} className="hover:text-blue-400 transition-colors">Privacy Policy</button>
+            <button onClick={() => setTermsOpen(true)} className="hover:text-blue-400 transition-colors">Terms of Service</button>
           </div>
         </div>
       </footer>
 
       {/* --- THE NEW DEMO SELECTION MODAL --- */}
       {demoOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center z-[100] p-4 animate-fadeIn">
+        <div className="fixed inset-0 bg-[#0B0F19]/80 backdrop-blur-xl flex items-center justify-center z-[100] p-4 animate-fadeIn">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full border border-slate-100 overflow-hidden"
+            className="bg-[#151C2C] rounded-[2rem] shadow-2xl max-w-3xl w-full border border-white/10 overflow-hidden"
           >
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 relative">
-              <button onClick={() => setDemoOpen(false)} className="absolute top-6 right-6 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
-                <X size={18} />
+            <div className="bg-gradient-to-r from-blue-600/20 to-indigo-600/20 border-b border-white/5 p-8 relative">
+              <button onClick={() => setDemoOpen(false)} className="absolute top-8 right-8 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full w-10 h-10 flex items-center justify-center transition-colors">
+                <X size={20} />
               </button>
-              <h2 className="font-extrabold text-3xl text-white mb-2">Select Sandbox Environment</h2>
-              <p className="text-blue-100 font-medium">Experience our 4-Tier RBAC architecture. Select a role below to auto-login into the isolated demo database.</p>
+              <h2 className="font-black text-3xl text-white mb-3">Select Sandbox Environment</h2>
+              <p className="text-slate-400 font-medium text-lg">Experience our 4-Tier RBAC architecture. Select a role below to auto-login into the isolated database.</p>
             </div>
             
-            <div className="p-8 grid sm:grid-cols-2 gap-4">
+            <div className="p-8 grid sm:grid-cols-2 gap-5">
               <DemoCard 
-                icon={<User size={24} className="text-emerald-500" />}
+                icon={<User size={28} className="text-emerald-400" />}
                 title="Client / User"
                 desc="Browse catalog, manage cart, and chat with AI Bot."
                 onClick={() => handleDemoSelect('user')}
-                bg="bg-emerald-50 hover:bg-emerald-100 border-emerald-100"
+                bg="bg-white/5 hover:bg-emerald-500/10 border-white/5 hover:border-emerald-500/30"
+                glow="group-hover:shadow-[0_0_20px_rgba(52,211,153,0.2)]"
               />
               <DemoCard 
-                icon={<Users size={24} className="text-blue-500" />}
+                icon={<Users size={28} className="text-blue-400" />}
                 title="Manager Level"
                 desc="Review orders, approve workflows, and add notes."
                 onClick={() => handleDemoSelect('manager')}
-                bg="bg-blue-50 hover:bg-blue-100 border-blue-100"
+                bg="bg-white/5 hover:bg-blue-500/10 border-white/5 hover:border-blue-500/30"
+                glow="group-hover:shadow-[0_0_20px_rgba(59,130,246,0.2)]"
               />
               <DemoCard 
-                icon={<Shield size={24} className="text-purple-500" />}
+                icon={<Shield size={28} className="text-purple-400" />}
                 title="Admin Level"
                 desc="Manage user accounts, activations, and system metrics."
                 onClick={() => handleDemoSelect('admin')}
-                bg="bg-purple-50 hover:bg-purple-100 border-purple-100"
+                bg="bg-white/5 hover:bg-purple-500/10 border-white/5 hover:border-purple-500/30"
+                glow="group-hover:shadow-[0_0_20px_rgba(168,85,247,0.2)]"
               />
               <DemoCard 
-                icon={<Key size={24} className="text-rose-500" />}
+                icon={<Key size={28} className="text-rose-400" />}
                 title="Super Admin"
                 desc="Full system override and Immutable Audit Log access."
                 onClick={() => handleDemoSelect('superadmin')}
-                bg="bg-rose-50 hover:bg-rose-100 border-rose-100"
+                bg="bg-white/5 hover:bg-rose-500/10 border-white/5 hover:border-rose-500/30"
+                glow="group-hover:shadow-[0_0_20px_rgba(244,63,94,0.2)]"
               />
             </div>
           </motion.div>
@@ -342,133 +352,97 @@ export default function Home() {
           <p className="mb-3">By accessing the H&P Solutions Enterprise Portal, you agree to comply with our organizational security policies.</p>
         </Modal>
       )}
-
     </div>
   );
 }
 
-// Sub-components
-function DemoCard({ icon, title, desc, onClick, bg }) {
+function DemoCard({ icon, title, desc, onClick, bg, glow }) {
   return (
     <div 
       onClick={onClick}
-      className={`p-5 rounded-2xl border cursor-pointer transition-all duration-300 transform hover:-translate-y-1 ${bg}`}
+      className={`p-6 rounded-[1.5rem] border cursor-pointer transition-all duration-300 transform hover:-translate-y-1 group ${bg} ${glow}`}
     >
-      <div className="bg-white w-12 h-12 rounded-xl flex items-center justify-center mb-4 shadow-sm">
+      <div className="bg-[#0B0F19] w-14 h-14 rounded-2xl flex items-center justify-center mb-5 border border-white/5">
         {icon}
       </div>
-      <h4 className="font-extrabold text-slate-800 text-lg mb-1">{title}</h4>
-      <p className="text-sm text-slate-600 font-medium leading-relaxed">{desc}</p>
+      <h4 className="font-black text-white text-xl mb-2">{title}</h4>
+      <p className="text-sm text-slate-400 font-medium leading-relaxed">{desc}</p>
     </div>
   );
 }
 
 function CategoryCard({ icon, title, desc, delay }) {
-  // Existing logic kept exactly same
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
       viewport={{ once: true }}
-      className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+      className="bg-white/5 p-8 rounded-[2rem] border border-white/10 hover:border-white/20 hover:bg-white/10 transition-all duration-300 group cursor-pointer backdrop-blur-sm"
     >
-      <div className="w-16 h-16 rounded-2xl bg-slate-50 group-hover:bg-indigo-600 flex items-center justify-center mb-5 transition-colors duration-300 border border-slate-100 group-hover:border-indigo-600">
+      <div className="w-16 h-16 rounded-2xl bg-[#0B0F19] flex items-center justify-center mb-6 border border-white/5 group-hover:scale-110 transition-transform duration-300">
         {icon}
       </div>
-      <h3 className="text-xl font-extrabold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">{title}</h3>
-      <p className="text-sm text-slate-500 font-medium leading-relaxed">{desc}</p>
+      <h3 className="text-xl font-black text-white mb-3">{title}</h3>
+      <p className="text-slate-400 font-medium leading-relaxed">{desc}</p>
     </motion.div>
   );
 }
 
 function ReviewCard({ name, role, text, delay }) {
-   // Existing logic kept exactly same
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
       viewport={{ once: true }}
-      className="bg-slate-800 border border-slate-700 p-8 rounded-3xl relative hover:bg-slate-800/80 transition-colors"
+      className="bg-[#151C2C] border border-white/5 p-10 rounded-[2rem] relative hover:border-white/10 transition-colors group"
     >
-      <MessageSquareQuote size={40} className="absolute top-6 right-6 text-slate-700 opacity-50" />
-      <div className="flex text-yellow-400 mb-4">
-        <Star size={16} fill="currentColor" /><Star size={16} fill="currentColor" />
-        <Star size={16} fill="currentColor" /><Star size={16} fill="currentColor" />
-        <Star size={16} fill="currentColor" />
-      </div>
-      <p className="text-slate-300 italic mb-6 leading-relaxed">"{text}"</p>
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-full flex items-center justify-center text-white font-black text-lg shadow-inner">
+      <MessageSquareQuote size={48} className="absolute top-8 right-8 text-white/5 group-hover:text-blue-500/10 transition-colors" />
+      <p className="text-slate-300 font-medium mb-8 leading-relaxed text-lg">"{text}"</p>
+      <div className="flex items-center gap-4 pt-6 border-t border-white/5">
+        <div className="w-14 h-14 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-full flex items-center justify-center text-white font-black text-xl shadow-inner">
           {name.charAt(0)}
         </div>
         <div>
-          <h4 className="font-extrabold text-white">{name}</h4>
-          <p className="text-xs text-slate-400 font-medium">{role}</p>
+          <h4 className="font-black text-white text-lg">{name}</h4>
+          <p className="text-sm text-blue-400 font-bold">{role}</p>
         </div>
       </div>
-    </motion.div>
-  );
-}
-
-function FeatureCard({ icon, title, desc, delay }) {
-  // Existing logic kept exactly same
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay }}
-      viewport={{ once: true }}
-      className="bg-white p-8 rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-shadow duration-300"
-    >
-      <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center mb-6 border border-slate-100">
-        {icon}
-      </div>
-      <h3 className="text-xl font-extrabold text-slate-800 mb-3">{title}</h3>
-      <p className="text-slate-500 font-medium leading-relaxed">{desc}</p>
-      <ul className="mt-6 space-y-2">
-        {['Real-time updates', 'Secure architecture', '24/7 AI Support'].map((item, i) => (
-          <li key={i} className="flex items-center gap-2 text-sm font-bold text-slate-600">
-            <CheckCircle2 size={16} className="text-emerald-500" /> {item}
-          </li>
-        ))}
-      </ul>
     </motion.div>
   );
 }
 
 function Modal({ title, children, close }) {
-   // Existing logic kept exactly same
   return (
-    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-[110] p-4 animate-fadeIn">
+    <div className="fixed inset-0 bg-[#0B0F19]/80 backdrop-blur-md flex items-center justify-center z-[110] p-4 animate-fadeIn">
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white p-8 rounded-3xl shadow-2xl max-w-lg w-full border border-slate-100 relative"
+        className="bg-[#151C2C] p-8 rounded-[2rem] shadow-2xl max-w-lg w-full border border-white/10 relative"
       >
         <button 
           onClick={close}
-          className="absolute top-6 right-6 text-slate-400 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-full w-8 h-8 flex items-center justify-center transition-colors"
+          className="absolute top-6 right-6 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full w-10 h-10 flex items-center justify-center transition-colors"
         >
-          <X size={18} />
+          <X size={20} />
         </button>
         
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
-            <ShieldCheck size={20} />
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center border border-blue-500/30">
+            <ShieldCheck size={24} />
           </div>
-          <h2 className="font-extrabold text-2xl text-slate-800">{title}</h2>
+          <h2 className="font-black text-2xl text-white">{title}</h2>
         </div>
         
-        <div className="text-slate-600 font-medium leading-relaxed">
+        <div className="text-slate-400 font-medium leading-relaxed">
           {children}
         </div>
         
         <div className="mt-8">
           <button 
             onClick={close}
-            className="w-full bg-slate-900 text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition-colors shadow-md"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl transition-colors shadow-[0_0_20px_rgba(37,99,235,0.3)]"
           >
             I Understand & Agree
           </button>

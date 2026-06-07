@@ -16,7 +16,7 @@ import {
 
 export default function Login() {
   const navigate = useNavigate();
-  const location = useLocation(); // Hook to catch the secret state from Home.js
+  const location = useLocation(); 
   const { toast, showToast } = useToast();
 
   const [email, setEmail] = useState("");
@@ -34,7 +34,6 @@ export default function Login() {
   });
 
   // --- DEMO AUTO-LOGIN LOGIC START ---
-  // Ensure these exact emails exist in your MongoDB Atlas!
   const demoAccounts = {
     user: { email: 'demo_user@hpsolutions.com', password: 'demoPassword123' },
     manager: { email: 'demo_manager@hpsolutions.com', password: 'demoPassword123' },
@@ -43,7 +42,6 @@ export default function Login() {
   };
 
   useEffect(() => {
-    // Check if we arrived from the Home page Demo Modal
     if (location.state?.autoLoginRole) {
       const role = location.state.autoLoginRole;
       const creds = demoAccounts[role];
@@ -51,17 +49,12 @@ export default function Login() {
       if (creds) {
         setEmail(creds.email);
         setPassword(creds.password);
-        
-        // Trigger login automatically
         performLogin(creds.email, creds.password);
-        
-        // Clean up the location state so it doesn't loop on refresh
         window.history.replaceState({}, document.title);
       }
     }
   }, [location.state]);
   // --- DEMO AUTO-LOGIN LOGIC END ---
-
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -89,7 +82,6 @@ export default function Login() {
     }
   };
 
-  // Separated the core logic so auto-login can use it without an event object (e)
   const performLogin = async (loginEmail, loginPassword) => {
     setLoading(true);
     try {
@@ -126,17 +118,18 @@ export default function Login() {
     <>
       <Toast message={toast.message} type={toast.type} />
 
-      <div className="min-h-screen grid md:grid-cols-2 bg-gradient-to-br from-indigo-50 via-blue-50/50 to-purple-100/60 font-sans">
+      <div className="min-h-screen grid md:grid-cols-2 bg-[#0B0F19] font-sans selection:bg-blue-500 selection:text-white">
 
         {/* Left Side - Brand & Features */}
-        <div className="hidden md:flex flex-col justify-center px-12 lg:px-20 relative">
+        <div className="hidden md:flex flex-col justify-center px-12 lg:px-20 relative overflow-hidden border-r border-white/5">
           
-          <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob pointer-events-none"></div>
+          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/20 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
+          <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/20 rounded-full blur-[100px] pointer-events-none animate-pulse" style={{ animationDelay: '2s' }}></div>
 
-          <div className="space-y-10 relative z-10">
+          <div className="space-y-12 relative z-10">
 
-            <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/')}>
-              <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-lg rounded-full">
+            <div className="flex items-center gap-4 cursor-pointer group" onClick={() => navigate('/')}>
+              <svg width="56" height="56" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-[0_0_20px_rgba(37,99,235,0.5)] rounded-full transition-transform group-hover:scale-105">
                 <circle cx="24" cy="24" r="24" fill="url(#paint0_linear_login)"/>
                 <path d="M14 14V34 M14 24H22 M22 14V34" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M28 34V14H33C35.7614 14 38 16.2386 38 19C38 21.7614 35.7614 24 33 24H28" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -147,26 +140,26 @@ export default function Login() {
                   </linearGradient>
                 </defs>
               </svg>
-              <h1 className="text-4xl font-extrabold text-slate-800 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-slate-600">
+              <h1 className="text-4xl font-black text-white tracking-tight">
                 H&P Solutions
               </h1>
             </div>
 
-            <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-blue-500/30 border border-white/20 transform hover:scale-105 transition-transform duration-300">
-              <ShieldCheck size={64} className="text-white drop-shadow-md" />
+            <div className="w-28 h-28 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-[2rem] flex items-center justify-center border border-white/10 backdrop-blur-xl">
+              <ShieldCheck size={56} className="text-blue-400 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
             </div>
 
-            <p className="text-slate-600 text-xl font-medium leading-relaxed max-w-md">
+            <p className="text-slate-400 text-xl font-medium leading-relaxed max-w-md">
               Empowering enterprise operations with secure RBAC architecture and isolated sandbox environments.
             </p>
 
-            <div className="grid grid-cols-3 gap-8 pt-4">
-              <Feature icon={<ShieldCheck size={30} />} title="Secure" />
-              <Feature icon={<Layers size={30} />} title="Isolated" />
-              <Feature icon={<Cpu size={30} />} title="AI-Driven" />
+            <div className="grid grid-cols-3 gap-6 pt-4">
+              <Feature icon={<ShieldCheck size={28} />} title="Secure" />
+              <Feature icon={<Layers size={28} />} title="Isolated" />
+              <Feature icon={<Cpu size={28} />} title="AI-Driven" />
             </div>
 
-            <div className="grid grid-cols-4 gap-6 mt-4 bg-white/40 backdrop-blur-lg p-5 rounded-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <div className="grid grid-cols-4 gap-6 mt-6 bg-white/5 backdrop-blur-md p-6 rounded-[2rem] border border-white/5 shadow-2xl">
               <Stat number={`${stats.users}+`} label="Users" />
               <Stat number={`${stats.services}+`} label="Services" />
               <Stat number={`${stats.orders}+`} label="Orders" />
@@ -177,78 +170,76 @@ export default function Login() {
         </div>
 
         {/* Right Side - Login Form */}
-        <div className="flex items-center justify-center px-6 py-10 relative z-10">
+        <div className="flex items-center justify-center px-6 py-10 relative z-10 bg-[#0F1523]">
           
-          <div className="w-full max-w-md bg-white/60 backdrop-blur-2xl p-8 sm:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/80 relative overflow-hidden">
+          <div className="w-full max-w-md bg-[#151C2C] p-10 rounded-[2.5rem] shadow-2xl border border-white/5 relative overflow-hidden">
             
-            {/* Show a subtle loading indicator if auto-login is happening */}
             {loading && location.state?.autoLoginRole && (
-               <div className="absolute top-0 left-0 w-full h-1 bg-blue-100 overflow-hidden">
-                  <div className="w-1/2 h-full bg-blue-600 animate-pulse"></div>
+               <div className="absolute top-0 left-0 w-full h-1 bg-white/5 overflow-hidden">
+                  <div className="w-1/2 h-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.8)]"></div>
                </div>
             )}
 
-            <p className="text-center text-sm font-bold text-blue-600 uppercase tracking-wider mb-3">
+            <p className="text-center text-xs font-black text-blue-500 uppercase tracking-[0.2em] mb-4">
               {getGreeting()}
             </p>
 
-            <h2 className="text-3xl font-extrabold text-center mb-2 text-slate-800 tracking-tight">
+            <h2 className="text-3xl font-black text-center mb-2 text-white tracking-tight">
               Access Portal
             </h2>
 
-            <p className="text-center text-slate-500 mb-8 font-medium">
+            <p className="text-center text-slate-400 mb-10 font-medium">
               Enterprise Identity Verification 🔒
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-6">
 
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
+                <label htmlFor="email" className="block text-sm font-bold text-slate-300 mb-2 ml-1">
                   Corporate Email
                 </label>
                 <div className="relative group">
-                  <Mail size={18} className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+                  <Mail size={20} className="absolute left-4 top-3.5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
                   <input
                     id="email"
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-white/70 border border-slate-200/60 pl-11 pr-4 py-3 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-medium text-slate-800 placeholder-slate-400 shadow-sm"
-                    placeholder="Enter your email"
+                    className="w-full bg-[#0B0F19] border border-white/10 pl-12 pr-4 py-3.5 rounded-2xl focus:bg-[#0B0F19] focus:ring-2 focus:ring-blue-500/50 focus:border-transparent outline-none transition-all font-medium text-white placeholder-slate-600 shadow-inner"
+                    placeholder="name@company.com"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
+                <label htmlFor="password" className="block text-sm font-bold text-slate-300 mb-2 ml-1">
                   Access Key
                 </label>
                 <div className="relative group">
-                  <Lock size={18} className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+                  <Lock size={20} className="absolute left-4 top-3.5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-white/70 border border-slate-200/60 pl-11 pr-12 py-3 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-medium text-slate-800 placeholder-slate-400 shadow-sm"
+                    className="w-full bg-[#0B0F19] border border-white/10 pl-12 pr-12 py-3.5 rounded-2xl focus:bg-[#0B0F19] focus:ring-2 focus:ring-blue-500/50 focus:border-transparent outline-none transition-all font-medium text-white placeholder-slate-600 shadow-inner"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
-                    aria-label="Toggle password visibility"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-3.5 text-slate-400 hover:text-slate-600 transition-colors"
+                    className="absolute right-4 top-3.5 text-slate-500 hover:text-slate-300 transition-colors"
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
 
                 <div className="text-right mt-3">
                   <Link
                     to="/forgot-password"
-                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors"
+                    className="text-sm font-bold text-blue-500 hover:text-blue-400 transition-colors"
                   >
                     Forgot Password?
                   </Link>
@@ -257,7 +248,7 @@ export default function Login() {
 
               <button
                 disabled={loading}
-                className="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3.5 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 disabled:opacity-60 shadow-lg shadow-blue-500/30 mt-2"
+                className="w-full flex justify-center items-center gap-2 bg-blue-600 text-white font-black py-4 rounded-2xl hover:bg-blue-500 transition-all duration-300 disabled:opacity-50 shadow-[0_0_20px_rgba(37,99,235,0.3)] mt-4 hover:shadow-[0_0_30px_rgba(37,99,235,0.5)]"
               >
                 {loading ? (
                   <>
@@ -271,10 +262,10 @@ export default function Login() {
 
             </form>
 
-            <p className="text-sm text-center mt-8 text-slate-600 font-medium">
+            <p className="text-sm text-center mt-8 text-slate-400 font-medium">
               Don’t have an account?{" "}
-              <Link to="/register" className="text-blue-600 font-bold hover:underline transition-all">
-                Register
+              <Link to="/register" className="text-white font-black hover:text-blue-400 transition-all">
+                Register Workspace
               </Link>
             </p>
 
@@ -283,17 +274,17 @@ export default function Login() {
 
       </div>
 
-      <footer className="bg-white/80 backdrop-blur-md border-t border-slate-200/50 py-5 text-center text-sm text-slate-500 font-medium absolute bottom-0 w-full z-20">
+      <footer className="bg-[#0B0F19] border-t border-white/5 py-6 text-center text-sm text-slate-500 font-medium absolute bottom-0 w-full z-20">
         © {new Date().getFullYear()} H&P Solutions. All rights reserved.
         <div className="space-x-6 mt-2">
-          <button onClick={() => setPrivacyOpen(true)} className="hover:text-blue-600 transition-colors">
+          <button onClick={() => setPrivacyOpen(true)} className="hover:text-white transition-colors">
             Privacy Policy
           </button>
-          <button onClick={() => setTermsOpen(true)} className="hover:text-blue-600 transition-colors">
+          <button onClick={() => setTermsOpen(true)} className="hover:text-white transition-colors">
             Terms of Service
           </button>
-          <span className="hidden sm:inline text-slate-300">|</span>
-          <span className="block sm:inline mt-2 sm:mt-0">Support: support@hpsolutions.com</span>
+          <span className="hidden sm:inline text-slate-700">|</span>
+          <span className="block sm:inline mt-2 sm:mt-0 hover:text-white transition-colors cursor-pointer">Support: support@hpsolutions.com</span>
         </div>
       </footer>
 
@@ -315,10 +306,10 @@ export default function Login() {
 function Feature({ icon, title }) {
   return (
     <div className="flex flex-col items-start">
-      <div className="flex justify-center items-center w-12 h-12 bg-white/50 backdrop-blur-sm shadow-sm rounded-xl mb-3 text-blue-600 border border-white/60">
+      <div className="flex justify-center items-center w-14 h-14 bg-[#0B0F19] shadow-inner rounded-2xl mb-4 text-blue-400 border border-white/5 group-hover:border-blue-500/30 transition-colors">
         {icon}
       </div>
-      <p className="font-bold text-slate-700 tracking-wide">{title}</p>
+      <p className="font-black text-slate-300 tracking-wide">{title}</p>
     </div>
   );
 }
@@ -326,26 +317,26 @@ function Feature({ icon, title }) {
 function Stat({ number, label }) {
   return (
     <div className="text-center">
-      <p className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">{number}</p>
-      <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">{label}</p>
+      <p className="text-3xl font-black text-white">{number}</p>
+      <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mt-1">{label}</p>
     </div>
   );
 }
 
 function Modal({ title, children, close }) {
   return (
-    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white/90 backdrop-blur-xl p-8 rounded-3xl shadow-2xl max-w-lg w-full border border-white">
-        <div className="flex justify-between items-center mb-5">
-          <h2 className="font-extrabold text-xl text-slate-800">{title}</h2>
+    <div className="fixed inset-0 bg-[#0B0F19]/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
+      <div className="bg-[#151C2C] p-8 rounded-[2rem] shadow-2xl max-w-lg w-full border border-white/10">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="font-black text-2xl text-white">{title}</h2>
           <button 
             onClick={close}
-            className="text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors"
+            className="text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full w-10 h-10 flex items-center justify-center transition-colors"
           >
             ✕
           </button>
         </div>
-        <div className="text-slate-600 font-medium leading-relaxed">
+        <div className="text-slate-400 font-medium leading-relaxed">
           {children}
         </div>
       </div>

@@ -30,15 +30,13 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Let's get started 🚀";
-    if (hour < 18) return "Create your account ✨";
-    return "Welcome to the platform 🌙";
+    if (hour < 12) return "Initialize Workspace 🚀";
+    if (hour < 18) return "Create Operations Profile ✨";
+    return "Join the Network 🌙";
   };
 
-  
   const getStrength = () => {
     if (form.password.length === 0) return "";
     if (form.password.length < 6) return "Weak";
@@ -50,10 +48,9 @@ export default function Register() {
     if (getStrength() === "Weak") return "text-rose-500";
     if (getStrength() === "Medium") return "text-amber-500";
     if (getStrength() === "Strong") return "text-emerald-500";
-    return "text-slate-400";
+    return "text-slate-500";
   };
 
-  
   const [stats, setStats] = useState({
     users: 0,
     services: 0,
@@ -91,7 +88,7 @@ export default function Register() {
 
     try {
       await api.post("/auth/register", form);
-      showToast("Account created successfully", "success");
+      showToast("Workspace created successfully", "success");
 
       setTimeout(() => {
         navigate("/login");
@@ -111,54 +108,47 @@ export default function Register() {
     <>
       <Toast message={toast.message} type={toast.type} />
 
-      {}
-      <div className="min-h-screen grid md:grid-cols-2 bg-gradient-to-br from-indigo-50 via-blue-50/50 to-purple-100/60 font-sans pb-16 md:pb-0">
+      <div className="min-h-screen grid md:grid-cols-2 bg-[#0B0F19] font-sans pb-20 md:pb-0 selection:bg-blue-500 selection:text-white">
 
-        {}
-        <div className="hidden md:flex flex-col justify-center px-12 lg:px-20 relative">
+        {/* Left Side */}
+        <div className="hidden md:flex flex-col justify-center px-12 lg:px-20 relative overflow-hidden border-r border-white/5">
           
-          {}
-          <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-400/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob pointer-events-none"></div>
+          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/20 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
 
-          <div className="space-y-10 relative z-10">
+          <div className="space-y-12 relative z-10">
 
-            <div className="flex items-center gap-4">
-              {}
-              <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-lg rounded-full">
+            <div className="flex items-center gap-4 cursor-pointer group" onClick={() => navigate('/')}>
+              <svg width="56" height="56" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-[0_0_20px_rgba(37,99,235,0.5)] rounded-full transition-transform group-hover:scale-105">
                 <circle cx="24" cy="24" r="24" fill="url(#paint0_linear_register)"/>
-                {}
                 <path d="M14 14V34 M14 24H22 M22 14V34" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-                {}
                 <path d="M28 34V14H33C35.7614 14 38 16.2386 38 19C38 21.7614 35.7614 24 33 24H28" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                 <defs>
                   <linearGradient id="paint0_linear_register" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#2563EB"/> {}
-                    <stop offset="1" stopColor="#4F46E5"/> {}
+                    <stop stopColor="#2563EB"/> 
+                    <stop offset="1" stopColor="#4F46E5"/> 
                   </linearGradient>
                 </defs>
               </svg>
-              <h1 className="text-4xl font-extrabold text-slate-800 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-slate-600">
+              <h1 className="text-4xl font-black text-white tracking-tight">
                 H&P Solutions
               </h1>
             </div>
 
-            {}
-            <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-blue-500/30 border border-white/20 transform hover:scale-105 transition-transform duration-300">
-              <ShieldCheck size={64} className="text-white drop-shadow-md" />
+            <div className="w-28 h-28 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-[2rem] flex items-center justify-center border border-white/10 backdrop-blur-xl">
+              <ShieldCheck size={56} className="text-blue-400 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
             </div>
 
-            <p className="text-slate-600 text-xl font-medium leading-relaxed max-w-md">
-              Join the enterprise platform built with secure RBAC architecture and powerful analytics.
+            <p className="text-slate-400 text-xl font-medium leading-relaxed max-w-md">
+              Join the enterprise platform built with secure RBAC architecture and powerful operational analytics.
             </p>
 
-            <div className="grid grid-cols-3 gap-8 pt-4">
-              <Feature icon={<ShieldCheck size={30} />} title="Secure" />
-              <Feature icon={<Layers size={30} />} title="Scalable" />
-              <Feature icon={<Cpu size={30} />} title="Intelligent" />
+            <div className="grid grid-cols-3 gap-6 pt-4">
+              <Feature icon={<ShieldCheck size={28} />} title="Secure" />
+              <Feature icon={<Layers size={28} />} title="Scalable" />
+              <Feature icon={<Cpu size={28} />} title="Intelligent" />
             </div>
 
-            {}
-            <div className="grid grid-cols-4 gap-6 mt-4 bg-white/40 backdrop-blur-lg p-5 rounded-2xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <div className="grid grid-cols-4 gap-6 mt-6 bg-white/5 backdrop-blur-md p-6 rounded-[2rem] border border-white/5 shadow-2xl">
               <Stat number={`${stats.users}+`} label="Users" />
               <Stat number={`${stats.services}+`} label="Services" />
               <Stat number={`${stats.orders}+`} label="Orders" />
@@ -168,71 +158,69 @@ export default function Register() {
           </div>
         </div>
 
-        {}
-        <div className="flex items-center justify-center px-6 py-10 relative z-10 overflow-y-auto">
+        {/* Right Side */}
+        <div className="flex items-center justify-center px-6 py-10 relative z-10 overflow-y-auto bg-[#0F1523]">
 
-          <div className="w-full max-w-md bg-white/60 backdrop-blur-2xl p-8 sm:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/80 my-auto">
+          <div className="w-full max-w-md bg-[#151C2C] p-10 rounded-[2.5rem] shadow-2xl border border-white/5 my-auto">
 
-            <p className="text-center text-sm font-bold text-blue-600 uppercase tracking-wider mb-3">
+            <p className="text-center text-xs font-black text-blue-500 uppercase tracking-[0.2em] mb-4">
               {getGreeting()}
             </p>
 
-            <h2 className="text-3xl font-extrabold text-center mb-2 text-slate-800 tracking-tight">
-              Create Account
+            <h2 className="text-3xl font-black text-center mb-2 text-white tracking-tight">
+              Create Profile
             </h2>
 
-            <p className="text-center text-slate-500 mb-8 font-medium">
-              Register your workspace profile
+            <p className="text-center text-slate-400 mb-10 font-medium">
+              Register your enterprise workspace
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
 
               <InputField
                 label="Full Name"
                 icon={User}
                 type="text"
-                placeholder="Name"
+                placeholder="John Doe"
                 value={form.name}
                 onChange={(v) => setForm({ ...form, name: v })}
               />
 
               <InputField
-                label="Email Address"
+                label="Corporate Email"
                 icon={Mail}
                 type="email"
-                placeholder="email@example.com"
+                placeholder="name@company.com"
                 value={form.email}
                 onChange={(v) => setForm({ ...form, email: v })}
               />
 
-              {}
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
-                  Password
+                <label className="block text-sm font-bold text-slate-300 mb-2 ml-1">
+                  Access Key (Password)
                 </label>
                 <div className="relative group">
-                  <Lock size={18} className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-blue-600 transition-colors z-10" />
+                  <Lock size={20} className="absolute left-4 top-3.5 text-slate-500 group-focus-within:text-blue-400 transition-colors z-10" />
                   <input
                     type={showPassword ? "text" : "password"}
                     required
                     placeholder="••••••••"
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    className="w-full bg-white/70 border border-slate-200/60 pl-11 pr-12 py-3 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-medium text-slate-800 placeholder-slate-400 shadow-sm relative z-0"
+                    className="w-full bg-[#0B0F19] border border-white/10 pl-12 pr-12 py-3.5 rounded-2xl focus:bg-[#0B0F19] focus:ring-2 focus:ring-blue-500/50 focus:border-transparent outline-none transition-all font-medium text-white placeholder-slate-600 shadow-inner relative z-0"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-3.5 text-slate-400 hover:text-slate-600 transition-colors z-10"
+                    className="absolute right-4 top-3.5 text-slate-500 hover:text-slate-300 transition-colors z-10"
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
 
-                {}
-                <div className="h-4 mt-1.5 ml-1">
+                <div className="h-4 mt-2 ml-1">
                   {form.password && (
-                    <p className={`text-xs font-semibold ${strengthColor()} transition-colors`}>
+                    <p className={`text-xs font-bold ${strengthColor()} transition-colors`}>
                       Strength: {getStrength()}
                     </p>
                   )}
@@ -249,25 +237,25 @@ export default function Register() {
 
               <button
                 disabled={loading}
-                className="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3.5 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 disabled:opacity-60 shadow-lg shadow-blue-500/30 mt-4"
+                className="w-full flex justify-center items-center gap-2 bg-blue-600 text-white font-black py-4 rounded-2xl hover:bg-blue-500 transition-all duration-300 disabled:opacity-50 shadow-[0_0_20px_rgba(37,99,235,0.3)] mt-6 hover:shadow-[0_0_30px_rgba(37,99,235,0.5)]"
               >
                 {loading ? (
                   <>
                     <span className="animate-spin h-5 w-5 border-2 border-white/40 border-t-white rounded-full"></span>
-                    Creating...
+                    Initializing...
                   </>
                 ) : (
-                  "Register Account"
+                  "Register Workspace"
                 )}
               </button>
 
             </form>
 
-            <p className="text-sm text-center mt-8 text-slate-600 font-medium">
+            <p className="text-sm text-center mt-8 text-slate-400 font-medium">
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-blue-600 font-bold hover:underline transition-all"
+                className="text-white font-black hover:text-blue-400 transition-all"
               >
                 Sign In
               </Link>
@@ -278,18 +266,17 @@ export default function Register() {
 
       </div>
 
-      {}
-      <footer className="bg-white/80 backdrop-blur-md border-t border-slate-200/50 py-5 text-center text-sm text-slate-500 font-medium fixed md:absolute bottom-0 w-full z-20">
+      <footer className="bg-[#0B0F19] border-t border-white/5 py-6 text-center text-sm text-slate-500 font-medium fixed md:absolute bottom-0 w-full z-20">
         © {new Date().getFullYear()} H&P Solutions. All rights reserved.
         <div className="space-x-6 mt-2">
-          <span className="hover:text-blue-600 cursor-pointer transition-colors">
+          <span className="hover:text-white cursor-pointer transition-colors">
             Privacy Policy
           </span>
-          <span className="hover:text-blue-600 cursor-pointer transition-colors">
+          <span className="hover:text-white cursor-pointer transition-colors">
             Terms of Service
           </span>
-          <span className="hidden sm:inline text-slate-300">|</span>
-          <span className="block sm:inline mt-2 sm:mt-0">Support: support@hpsolutions.com</span>
+          <span className="hidden sm:inline text-slate-700">|</span>
+          <span className="block sm:inline mt-2 sm:mt-0 hover:text-white transition-colors cursor-pointer">Support: support@hpsolutions.com</span>
         </div>
       </footer>
 
@@ -297,48 +284,45 @@ export default function Register() {
   );
 }
 
-
 function InputField({ label, icon: Icon, type, placeholder, value, onChange }) {
   return (
     <div>
       {label && (
-        <label className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
+        <label className="block text-sm font-bold text-slate-300 mb-2 ml-1">
           {label}
         </label>
       )}
       <div className="relative group">
-        <Icon size={18} className="absolute left-4 top-3.5 text-slate-400 group-focus-within:text-blue-600 transition-colors z-10" />
+        <Icon size={20} className="absolute left-4 top-3.5 text-slate-500 group-focus-within:text-blue-400 transition-colors z-10" />
         <input
           type={type}
           required
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full bg-white/70 border border-slate-200/60 pl-11 pr-4 py-3 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-medium text-slate-800 placeholder-slate-400 shadow-sm relative z-0"
+          className="w-full bg-[#0B0F19] border border-white/10 pl-12 pr-4 py-3.5 rounded-2xl focus:bg-[#0B0F19] focus:ring-2 focus:ring-blue-500/50 focus:border-transparent outline-none transition-all font-medium text-white placeholder-slate-600 shadow-inner relative z-0"
         />
       </div>
     </div>
   );
 }
 
-
 function Feature({ icon, title }) {
   return (
     <div className="flex flex-col items-start">
-      <div className="flex justify-center items-center w-12 h-12 bg-white/50 backdrop-blur-sm shadow-sm rounded-xl mb-3 text-blue-600 border border-white/60">
+      <div className="flex justify-center items-center w-14 h-14 bg-[#0B0F19] shadow-inner rounded-2xl mb-4 text-blue-400 border border-white/5 group-hover:border-blue-500/30 transition-colors">
         {icon}
       </div>
-      <p className="font-bold text-slate-700 tracking-wide">{title}</p>
+      <p className="font-black text-slate-300 tracking-wide">{title}</p>
     </div>
   );
 }
 
-
 function Stat({ number, label }) {
   return (
     <div className="text-center">
-      <p className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">{number}</p>
-      <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">{label}</p>
+      <p className="text-3xl font-black text-white">{number}</p>
+      <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mt-1">{label}</p>
     </div>
   );
 }
