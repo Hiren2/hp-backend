@@ -22,7 +22,10 @@ import {
   User,
   Users,
   Shield,
-  Key
+  Key,
+  Database,
+  Activity,
+  Server
 } from "lucide-react";
 
 export default function Home() {
@@ -46,7 +49,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#0B0F19] font-sans overflow-x-hidden selection:bg-blue-600 selection:text-white">
       
-      {/* Background Ambient Glows - Toned down for professional look */}
+      {/* Background Ambient Glows */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[150px] mix-blend-screen animate-pulse"></div>
         <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-indigo-600/10 rounded-full blur-[150px] mix-blend-screen animate-pulse" style={{ animationDelay: '3s' }}></div>
@@ -88,7 +91,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero Section with 4 Super High Rank Cinematic Posters */}
       <div className="pt-20 relative z-10">
         <Swiper
           modules={[Autoplay, EffectFade, Pagination]}
@@ -98,11 +101,10 @@ export default function Home() {
           pagination={{ clickable: true }}
           className="h-[85vh] min-h-[650px] w-full"
         >
-          {/* SLIDE 1 - FIXED OPACITY BUG BY ADDING SOLID BG [#0B0F19] */}
+          {/* POSTER 1: SaaS Marketplace & RBAC */}
           <SwiperSlide>
             <div className="relative w-full h-full flex items-center bg-[#0B0F19] overflow-hidden">
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.02]"></div>
-              
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full mt-10">
                 <motion.div 
                   initial={{ opacity: 0, y: 30 }}
@@ -112,16 +114,16 @@ export default function Home() {
                 >
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold tracking-widest uppercase mb-8">
                     <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                    Enterprise RBAC Engine
+                    Architecture Pillar 01
                   </div>
                   <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
-                    Deploy Your <br/>
+                    Deploy Your Next-Gen <br/>
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">
                       SaaS Marketplace
                     </span>
                   </h1>
                   <p className="text-xl text-slate-400 mb-10 font-medium max-w-2xl leading-relaxed">
-                    H&P Solutions delivers a ready-to-scale, highly secure 4-Tier RBAC architecture. Experience full isolation, immutable audit logs, and instant scalability.
+                    H&P Solutions delivers a ready-to-scale, highly secure 4-Tier RBAC architecture. Experience full white-label deployment, optimized conversion paths, and multi-layered protection layers.
                   </p>
                   <div className="flex flex-wrap gap-4">
                     <button 
@@ -139,11 +141,10 @@ export default function Home() {
             </div>
           </SwiperSlide>
 
-          {/* SLIDE 2 - FIXED OPACITY BUG BY ADDING SOLID BG [#0B0F19] */}
+          {/* POSTER 2: AI Automation & Gemini */}
           <SwiperSlide>
             <div className="relative w-full h-full flex items-center bg-[#0B0F19] overflow-hidden">
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.02]"></div>
-
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center flex flex-col items-center mt-10">
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -151,20 +152,83 @@ export default function Home() {
                   transition={{ duration: 0.8, ease: "easeOut" }}
                   className="max-w-4xl text-white"
                 >
-                  <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-                    <Cpu size={40} className="text-white" />
+                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                    <Cpu size={32} className="text-white" />
                   </div>
                   <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
-                    Powered by <br/>
+                    Autonomous Workflows <br/>
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">
-                      Smart Automation
+                      via Gemini NLP Engine
                     </span>
                   </h1>
                   <p className="text-xl text-slate-400 mb-10 font-medium max-w-2xl mx-auto leading-relaxed">
-                    Built-in Gemini AI integration, real-time telemetry, and autonomous workflows that save hundreds of operational hours.
+                    Integrated natural language processing bots handle customer requests, resolve order support queries, and optimize store management pipelines with zero human overhead.
                   </p>
                   <button onClick={() => setDemoOpen(true)} className="bg-emerald-500 hover:bg-emerald-400 text-white px-10 py-4 rounded-full font-bold text-lg flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:scale-105 mx-auto w-max">
-                    Launch Demo Environment
+                    Launch AI Sandbox
+                  </button>
+                </motion.div>
+              </div>
+            </div>
+          </SwiperSlide>
+
+          {/* POSTER 3: Parallel Universe Isolation */}
+          <SwiperSlide>
+            <div className="relative w-full h-full flex items-center bg-[#0B0F19] overflow-hidden">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.02]"></div>
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full mt-10">
+                <motion.div 
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  className="max-w-3xl text-white"
+                >
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold tracking-widest uppercase mb-8">
+                    <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+                    Architecture Pillar 03
+                  </div>
+                  <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
+                    Strict Sandbox <br/>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-300">
+                      & Data Isolation
+                    </span>
+                  </h1>
+                  <p className="text-xl text-slate-400 mb-10 font-medium max-w-2xl leading-relaxed">
+                    Never leak test actions into live production. Our custom Multi-Tenancy firewall ensures that demo purchases, logs, and notification flows remain securely inside a parallel sandbox universe.
+                  </p>
+                  <button onClick={() => setDemoOpen(true)} className="bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(147,51,234,0.3)] hover:scale-105">
+                    Test Isolation Firewall
+                  </button>
+                </motion.div>
+              </div>
+            </div>
+          </SwiperSlide>
+
+          {/* POSTER 4: Live Telemetry & Audits */}
+          <SwiperSlide>
+            <div className="relative w-full h-full flex items-center bg-[#0B0F19] overflow-hidden">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.02]"></div>
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center flex flex-col items-center mt-10">
+                <motion.div 
+                  initial={{ opacity: 0, y: -30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  className="max-w-4xl text-white"
+                >
+                  <div className="w-20 h-20 bg-gradient-to-br from-rose-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-[0_0_30px_rgba(244,63,94,0.2)]">
+                    <Activity size={40} className="text-white" />
+                  </div>
+                  <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
+                    Immutable Audit Logs <br/>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-orange-400">
+                      & Live Metric Telemetry
+                    </span>
+                  </h1>
+                  <p className="text-xl text-slate-400 mb-10 font-medium max-w-2xl mx-auto leading-relaxed">
+                    Monitor entire node activities instantly. Capture system security modifications, unauthorized penetration attempts, and financial workflows with deep aggregate analytical telemetry.
+                  </p>
+                  <button onClick={() => setDemoOpen(true)} className="bg-rose-500 hover:bg-rose-400 text-white px-10 py-4 rounded-full font-bold text-lg flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(244,63,94,0.3)] hover:scale-105 mx-auto w-max">
+                    View System Metrics
                   </button>
                 </motion.div>
               </div>
@@ -215,12 +279,90 @@ export default function Home() {
         </div>
       </div>
 
+      {/* --- NEW TECHNICAL SPECIFICATIONS & PILLARS SECTION --- */}
+      <div className="py-32 bg-[#0B0F19] border-b border-white/5 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold uppercase tracking-wider">
+                Full-Stack Architecture
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+                Engineered for High-Load <br/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-400">Business Infrastructures</span>
+              </h2>
+              <p className="text-slate-400 font-medium text-lg leading-relaxed">
+                The H&P Solutions core framework separates frontend presentation from data Mutation engines. It offers an airtight developer workspace environment ready for direct customization.
+              </p>
+              
+              <div className="space-y-4 pt-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 mt-1">
+                    <CheckCircle2 size={12} fill="currentColor" className="text-[#0B0F19]" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white text-base">Node.js Express Secure REST API</h4>
+                    <p className="text-slate-500 text-sm mt-0.5">Fully structured controller patterns with isolated middleware token parsing wrappers.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0 mt-1">
+                    <CheckCircle2 size={12} fill="currentColor" className="text-[#0B0F19]" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white text-base">State Tracking Multi-Tab Synchronizer</h4>
+                    <p className="text-slate-500 text-sm mt-0.5">Frontend contextual storage listening triggers matching instant backend pipeline mutations seamlessly.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 mt-1">
+                    <CheckCircle2 size={12} fill="currentColor" className="text-[#0B0F19]" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white text-base">MongoDB Optimized Aggregations</h4>
+                    <p className="text-slate-500 text-sm mt-0.5">Heavy relational lookup lookups handling profile metrics, order resolution telemetry, and item trends efficiently.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 bg-[#0F1523] p-6 rounded-[2.5rem] border border-white/5 shadow-2xl relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-[2.5rem] blur opacity-10 pointer-events-none"></div>
+              <div className="bg-[#151C2C] p-6 rounded-2xl border border-white/5 text-center flex flex-col items-center justify-center">
+                <Server size={32} className="text-blue-400 mb-3" />
+                <h3 className="font-black text-white text-2xl">MERN</h3>
+                <p className="text-xs text-slate-500 font-bold uppercase mt-1 tracking-wider">Tech Stack Base</p>
+              </div>
+              <div className="bg-[#151C2C] p-6 rounded-2xl border border-white/5 text-center flex flex-col items-center justify-center">
+                <Database size={32} className="text-purple-400 mb-3" />
+                <h3 className="font-black text-white text-2xl">NoSQL</h3>
+                <p className="text-xs text-slate-500 font-bold uppercase mt-1 tracking-wider">Data Segregation</p>
+              </div>
+              <div className="bg-[#151C2C] p-6 rounded-2xl border border-white/5 text-center flex flex-col items-center justify-center">
+                <Shield size={32} className="text-emerald-400 mb-3" />
+                <h3 className="font-black text-white text-2xl">JWT</h3>
+                <p className="text-xs text-slate-500 font-bold uppercase mt-1 tracking-wider">Cryptographic Token</p>
+              </div>
+              <div className="bg-[#151C2C] p-6 rounded-2xl border border-white/5 text-center flex flex-col items-center justify-center">
+                <Cpu size={32} className="text-rose-400 mb-3" />
+                <h3 className="font-black text-white text-2xl">LLM</h3>
+                <p className="text-xs text-slate-500 font-bold uppercase mt-1 tracking-wider">AI Integration</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
       {/* Reviews */}
       <div className="py-32 bg-[#0B0F19] text-white relative overflow-hidden z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-6">
             <div className="max-w-2xl">
-              <h2 className="text-xs font-black text-blue-500 tracking-widest uppercase mb-3">Trusted Infrastructure</h2>
+              <h2 className="text-sm font-black text-blue-400 tracking-widest uppercase mb-3">Trusted Infrastructure</h2>
               <h3 className="text-4xl font-black tracking-tight sm:text-5xl">
                 Validated by CTOs
               </h3>
