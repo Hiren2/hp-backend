@@ -26,7 +26,6 @@ export default function Layout() {
 
   const fetchWishlistCount = async () => {
     try {
-      
       const res = await api.get("/auth/wishlist");
       if (res.data) {
         setWishlistCount(res.data.length);
@@ -98,7 +97,7 @@ export default function Layout() {
     });
   };
 
-  const navBase = "px-5 py-2.5 rounded-full flex items-center gap-2 text-sm font-bold transition-all duration-300 border border-transparent";
+  const navBase = "px-5 py-2.5 rounded-full flex items-center gap-2 text-sm font-bold transition-all duration-300 border border-transparent whitespace-nowrap";
   const navActive = "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/25";
   const navInactive = "hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300";
 
@@ -195,31 +194,35 @@ export default function Layout() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 transition-colors duration-300 font-sans">
       
-      {}
-      <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm border-b border-slate-200/50 dark:border-slate-800/50 px-6 py-4 flex items-center sticky top-0 z-40 transition-colors">
-        <button onClick={() => setOpen(true)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl transition-colors">
-          <Menu size={24} />
-        </button>
+      {/* 📱 Mobile & Desktop Premium Header */}
+      <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)] border-b border-slate-200/50 dark:border-slate-800/50 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between sticky top-0 z-40 transition-colors">
         
-        <div className="flex items-center gap-3 ml-4 cursor-pointer" onClick={() => navigate("/dashboard")}>
-          <img src={logo} className="h-10 w-10 object-contain drop-shadow-sm" alt="logo" />
-          <span className="hidden sm:block font-extrabold text-xl text-slate-800 dark:text-white tracking-tight">
-            H&P Solutions
-          </span>
+        <div className="flex items-center gap-3">
+          <button onClick={() => setOpen(true)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl transition-colors shrink-0">
+            <Menu size={24} />
+          </button>
+          
+          <div className="flex items-center gap-2 cursor-pointer shrink-0" onClick={() => navigate("/dashboard")}>
+            <img src={logo} className="h-8 w-8 sm:h-10 sm:w-10 object-contain drop-shadow-sm" alt="logo" />
+            <span className="hidden sm:block font-black text-xl text-slate-800 dark:text-white tracking-tight">
+              H&P Solutions
+            </span>
+          </div>
         </div>
         
-        <div className="hidden xl:flex gap-3 ml-10">
+        {/* 💻 Top Nav (Hidden on Mobile) */}
+        <div className="hidden xl:flex gap-3 overflow-x-auto custom-scrollbar px-2 mx-4 max-w-3xl">
           {renderTopNav()}
         </div>
 
-        <div className="ml-auto flex items-center gap-5">
-          <button onClick={toggleTheme} className="p-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-amber-400 transition-colors shadow-inner">
+        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+          <button onClick={toggleTheme} className="p-2 sm:p-2.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-amber-400 transition-colors shadow-inner">
             {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
           </button>
           
           <NotificationBell />
           
-          <div onClick={() => setOpen(true)} className="w-11 h-11 rounded-full text-white flex items-center justify-center font-black cursor-pointer shadow-md hover:shadow-lg transition-all hover:scale-105 border-2 border-white dark:border-slate-800 overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-600">
+          <div onClick={() => setOpen(true)} className="w-9 h-9 sm:w-11 sm:h-11 rounded-full text-white flex items-center justify-center font-black cursor-pointer shadow-md hover:shadow-lg transition-all hover:scale-105 border-2 border-white dark:border-slate-800 overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-600 shrink-0">
             {profileImage ? (
               <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
             ) : (
@@ -229,33 +232,33 @@ export default function Layout() {
         </div>
       </header>
 
-      {}
-      <div className={`fixed inset-y-0 left-0 w-80 bg-white dark:bg-slate-900 shadow-[20px_0_40px_rgb(0,0,0,0.1)] z-50 transform transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] flex flex-col ${open ? "translate-x-0" : "-translate-x-full"}`}>
+      {/* 📱 The Smart Sidebar Drawer */}
+      <div className={`fixed inset-y-0 left-0 w-[280px] sm:w-80 bg-white dark:bg-slate-900 shadow-[20px_0_40px_rgb(0,0,0,0.1)] z-50 transform transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] flex flex-col ${open ? "translate-x-0" : "-translate-x-full"}`}>
         
-        <div className="p-6 flex items-center justify-between border-b border-slate-100 dark:border-slate-800/60">
+        <div className="p-5 sm:p-6 flex items-center justify-between border-b border-slate-100 dark:border-slate-800/60">
           <div className="flex items-center gap-3">
-            <img src={logo} className="h-10 w-10 object-contain" alt="logo" />
-            <span className="font-extrabold text-xl text-slate-800 dark:text-white tracking-tight">H&P Solutions</span>
+            <img src={logo} className="h-8 w-8 sm:h-10 sm:w-10 object-contain" alt="logo" />
+            <span className="font-black text-lg sm:text-xl text-slate-800 dark:text-white tracking-tight">H&P Solutions</span>
           </div>
           <button onClick={() => setOpen(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-slate-400 dark:text-slate-500 transition-colors">
             <X size={20} />
           </button>
         </div>
 
-        <div className="p-6">
-          <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700/50 shadow-sm relative overflow-hidden group">
+        <div className="p-5 sm:p-6">
+          <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-800 rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700/50 shadow-sm relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl transform translate-x-1/2 -translate-y-1/2 group-hover:bg-blue-500/20 transition-all"></div>
-             <div className="flex items-center gap-4 relative z-10">
-                <div className="w-14 h-14 rounded-full text-white flex items-center justify-center font-black text-xl shadow-md border-2 border-white dark:border-slate-700 overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-600">
+             <div className="flex items-center gap-3 sm:gap-4 relative z-10">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-full text-white flex items-center justify-center font-black text-xl shadow-md border-2 border-white dark:border-slate-700 overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-600">
                   {profileImage ? (
                     <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
                     initial
                   )}
                 </div>
-                <div>
-                   <p className="font-extrabold text-slate-800 dark:text-white capitalize text-lg leading-tight">{user?.name}</p>
-                   <span className="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-500/20 px-2.5 py-1 rounded-md mt-1.5 inline-block border border-blue-200 dark:border-blue-500/30">
+                <div className="overflow-hidden">
+                   <p className="font-extrabold text-slate-800 dark:text-white capitalize text-base sm:text-lg leading-tight truncate">{user?.name}</p>
+                   <span className="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-500/20 px-2.5 py-1 rounded-md mt-1.5 inline-block border border-blue-200 dark:border-blue-500/30 truncate">
                      {user?.role}
                    </span>
                 </div>
@@ -263,15 +266,15 @@ export default function Layout() {
           </div>
         </div>
 
-        <div className="px-4 space-y-1.5 flex-1 overflow-y-auto custom-scrollbar pb-6">
-          <p className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-4 mb-3 mt-2">Main Menu</p>
+        <div className="px-3 sm:px-4 space-y-1.5 flex-1 overflow-y-auto custom-scrollbar pb-6">
+          <p className="text-[10px] sm:text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-4 mb-3 mt-2">Main Menu</p>
           
           {renderSidebarNav()}
           
           {userRole === "user" && (
             <>
               <div className="my-5 border-t border-slate-100 dark:border-slate-800/60 mx-4"></div>
-              <p className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-4 mb-3 mt-4">Help & Support</p>
+              <p className="text-[10px] sm:text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-4 mb-3 mt-4">Help & Support</p>
               <NavLink to="/support" onClick={() => setOpen(false)} className={({isActive}) => `${sidebarBase} justify-between ${isActive ? sidebarActive : sidebarInactive}`}>
                   <div className="flex items-center gap-3"><MessageSquare size={18} className="group-hover:scale-110 transition-transform" /> AI Support Chat</div>
                   <ChevronRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:translate-x-1 transition-transform" />
@@ -280,7 +283,7 @@ export default function Layout() {
           )}
 
           <div className="my-5 border-t border-slate-100 dark:border-slate-800/60 mx-4"></div>
-          <p className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-4 mb-3 mt-4">Account Settings</p>
+          <p className="text-[10px] sm:text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-4 mb-3 mt-4">Account Settings</p>
           
           <NavLink to="/profile" onClick={() => setOpen(false)} className={({isActive}) => `${sidebarBase} justify-between ${isActive ? sidebarActive : sidebarInactive}`}>
               <div className="flex items-center gap-3"><UserIcon size={18} className="group-hover:scale-110 transition-transform" /> Profile Overview</div>
@@ -295,16 +298,17 @@ export default function Layout() {
           )}
         </div>
 
-        <div className="w-full p-6 border-t border-slate-100 dark:border-slate-800/60 bg-slate-50 dark:bg-slate-900/50 mt-auto">
+        <div className="w-full p-5 sm:p-6 border-t border-slate-100 dark:border-slate-800/60 bg-slate-50 dark:bg-slate-900/50 mt-auto">
           <button onClick={handleLogoutClick} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold text-sm hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors border border-rose-100 dark:border-rose-500/20 shadow-sm">
             <LogOut size={18} /> Secure Logout
           </button>
         </div>
       </div>
 
-      {open && <div className="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm z-40 transition-opacity" onClick={() => setOpen(false)} />}
+      {/* 📱 Mobile Backdrop Overlay */}
+      {open && <div className="fixed inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm z-40 transition-opacity" onClick={() => setOpen(false)} />}
 
-      <main className="p-6 md:p-8 flex-1 transition-colors duration-300 max-w-[1600px] mx-auto w-full">
+      <main className="p-4 sm:p-6 md:p-8 flex-1 transition-colors duration-300 max-w-[1600px] mx-auto w-full overflow-x-hidden">
         <Outlet />
       </main>
 

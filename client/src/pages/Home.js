@@ -46,13 +46,11 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#0B0F19] font-sans overflow-x-hidden selection:bg-blue-500 selection:text-white">
       
-      {/* Background Ambient Glows */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] mix-blend-screen animate-pulse"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" style={{ animationDelay: '2s' }}></div>
       </div>
 
-      {/* Premium Navbar */}
       <nav className="fixed w-full z-50 bg-[#0B0F19]/80 backdrop-blur-xl border-b border-white/10 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
@@ -90,7 +88,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <div className="pt-20 relative z-10">
         <Swiper
           modules={[Autoplay, EffectFade, Pagination]}
@@ -139,7 +136,6 @@ export default function Home() {
             </div>
           </SwiperSlide>
 
-          {/* Slide 2 */}
           <SwiperSlide>
             <div className="relative w-full h-full flex items-center bg-transparent overflow-hidden">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center flex flex-col items-center mt-10">
@@ -171,7 +167,6 @@ export default function Home() {
         </Swiper>
       </div>
 
-      {/* Services Section */}
       <div id="expertise-section" className="py-32 bg-[#0F1523] border-y border-white/5 relative z-10 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
@@ -213,7 +208,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Reviews */}
       <div className="py-32 bg-[#0B0F19] text-white relative overflow-hidden z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-6">
@@ -254,7 +248,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* CTA Footer Section */}
       <div className="py-24 bg-[#0F1523] border-t border-white/5 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-br from-blue-600 to-indigo-800 rounded-[2.5rem] p-10 md:p-16 shadow-[0_20px_50px_rgba(37,99,235,0.3)] flex flex-col md:flex-row items-center justify-between text-white relative overflow-hidden border border-white/10">
@@ -272,7 +265,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Footer */}
       <footer className="bg-[#0B0F19] border-t border-white/10 pt-16 pb-8 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
@@ -286,7 +278,6 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* --- THE NEW DEMO SELECTION MODAL --- */}
       {demoOpen && (
         <div className="fixed inset-0 bg-[#0B0F19]/80 backdrop-blur-xl flex items-center justify-center z-[100] p-4 animate-fadeIn">
           <motion.div 
@@ -340,7 +331,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Standard Modals */}
       {privacyOpen && (
         <Modal title="Privacy Policy" close={() => setPrivacyOpen(false)}>
           <p className="mb-3">At H&P Solutions, your privacy is our priority. We employ enterprise-grade encryption to protect your personal and operational data.</p>

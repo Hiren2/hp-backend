@@ -110,7 +110,6 @@ export default function Register() {
 
       <div className="min-h-screen grid md:grid-cols-2 bg-[#0B0F19] font-sans pb-20 md:pb-0 selection:bg-blue-500 selection:text-white">
 
-        {/* Left Side */}
         <div className="hidden md:flex flex-col justify-center px-12 lg:px-20 relative overflow-hidden border-r border-white/5">
           
           <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/20 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
@@ -158,7 +157,6 @@ export default function Register() {
           </div>
         </div>
 
-        {/* Right Side */}
         <div className="flex items-center justify-center px-6 py-10 relative z-10 overflow-y-auto bg-[#0F1523]">
 
           <div className="w-full max-w-md bg-[#151C2C] p-10 rounded-[2.5rem] shadow-2xl border border-white/5 my-auto">

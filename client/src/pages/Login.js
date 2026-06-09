@@ -33,7 +33,6 @@ export default function Login() {
     orders: 0
   });
 
-  // --- DEMO AUTO-LOGIN LOGIC START ---
   const demoAccounts = {
     user: { email: 'demo_user@hpsolutions.com', password: 'demoPassword123' },
     manager: { email: 'demo_manager@hpsolutions.com', password: 'demoPassword123' },
@@ -54,7 +53,6 @@ export default function Login() {
       }
     }
   }, [location.state]);
-  // --- DEMO AUTO-LOGIN LOGIC END ---
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -120,7 +118,6 @@ export default function Login() {
 
       <div className="min-h-screen grid md:grid-cols-2 bg-[#0B0F19] font-sans selection:bg-blue-500 selection:text-white">
 
-        {/* Left Side - Brand & Features */}
         <div className="hidden md:flex flex-col justify-center px-12 lg:px-20 relative overflow-hidden border-r border-white/5">
           
           <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/20 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
@@ -169,7 +166,6 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Right Side - Login Form */}
         <div className="flex items-center justify-center px-6 py-10 relative z-10 bg-[#0F1523]">
           
           <div className="w-full max-w-md bg-[#151C2C] p-10 rounded-[2.5rem] shadow-2xl border border-white/5 relative overflow-hidden">
