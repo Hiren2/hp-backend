@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import api from "../api/api";
 import Toast from "../components/Toast";
 import useToast from "../components/useToast";
-import { Package, Inbox, CheckCircle, XCircle, Clock, X, Send } from "lucide-react";
+import { Package, Inbox, CheckCircle, XCircle, Clock, X, Send, Truck, Settings } from "lucide-react";
 
 export default function ManagerOrders() {
   const [orders, setOrders] = useState([]);
@@ -18,21 +18,18 @@ export default function ManagerOrders() {
     return Math.floor((now - created) / (1000 * 60 * 60 * 24));
   };
 
-  const displayStatus = (status) => {
-    if (["Approved", "Processing", "Shipped", "Completed"].includes(status)) {
-      return "Approved";
-    }
-    if (status === "Rejected") return "Rejected";
-    return "Pending";
-  };
-
   const fetchOrders = useCallback(async () => {
     try {
       const res = await api.get("/manager/orders");
       const sorted = [...res.data].sort((a, b) => {
-        if (a.status === "Pending" && b.status !== "Pending") return -1;
-        if (a.status !== "Pending" && b.status === "Pending") return 1;
-        if (a.status === "Pending" && b.status === "Pending") {
+        // Bring active working states to top
+        const activeStates = ["Pending", "Approved", "Processing", "Shipped"];
+        const aActive = activeStates.includes(a.status);
+        const bActive = activeStates.includes(b.status);
+        
+        if (aActive && !bActive) return -1;
+        if (!aActive && bActive) return 1;
+        if (aActive && bActive) {
           return getPendingDays(b.createdAt) - getPendingDays(a.createdAt);
         }
         return 0;
@@ -45,6 +42,9 @@ export default function ManagerOrders() {
 
   useEffect(() => {
     fetchOrders();
+    // Auto refresh every 10 seconds to catch auto-delivered statuses
+    const interval = setInterval(fetchOrders, 10000);
+    return () => clearInterval(interval);
   }, [fetchOrders]);
 
   const updateStatus = async (id, status, notes = "") => {
@@ -55,7 +55,7 @@ export default function ManagerOrders() {
     try {
       if (status === "Rejected") setIsSubmitting(true);
       await api.put(`/manager/orders/${id}`, { status, managerNotes: notes });
-      showToast(`Order ${status}`, "success");
+      showToast(`Order marked as ${status}`, "success");
       
       if (status === "Rejected") {
         setRejectModal({ show: false, orderId: null });
@@ -64,28 +64,41 @@ export default function ManagerOrders() {
       fetchOrders();
     } catch (err) {
       console.error(err);
-      showToast("Failed to update order", "error");
+      showToast(err.response?.data?.message || "Failed to update order", "error");
     } finally {
       if (status === "Rejected") setIsSubmitting(false);
     }
   };
 
   const badgeStyle = (status) => {
-    if (status === "Approved") return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800/50";
-    if (status === "Rejected") return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800/50";
-    return "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/50";
+    if (status === "Approved") return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50";
+    if (status === "Processing") return "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/50";
+    if (status === "Shipped") return "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 border border-purple-200 dark:border-purple-800/50";
+    if (status === "Completed") return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50";
+    if (status === "Rejected") return "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50";
+    return "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50";
+  };
+
+  const statusIcon = (status) => {
+    if (status === "Pending") return <Clock size={14} />;
+    if (status === "Approved") return <CheckCircle size={14} />;
+    if (status === "Processing") return <Settings size={14} />;
+    if (status === "Shipped") return <Truck size={14} />;
+    if (status === "Completed") return <CheckCircle size={14} />;
+    if (status === "Rejected") return <XCircle size={14} />;
+    return <Clock size={14} />;
   };
 
   const priorityBadge = (order) => {
-    if (["Approved", "Processing", "Shipped", "Completed"].includes(order.status)) {
-      return <span className="text-xs font-bold px-2.5 py-1 rounded bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">COMPLETED</span>;
+    if (["Completed"].includes(order.status)) {
+      return <span className="text-xs font-bold px-2.5 py-1 rounded bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">RESOLVED</span>;
     }
     if (order.status === "Rejected") {
       return <span className="text-xs font-bold px-2.5 py-1 rounded bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">CLOSED</span>;
     }
 
     const days = getPendingDays(order.createdAt);
-    if (days >= 5) return <span className="text-xs font-bold px-2.5 py-1 rounded bg-red-500 text-white shadow-sm">HIGH</span>;
+    if (days >= 5) return <span className="text-xs font-bold px-2.5 py-1 rounded bg-rose-500 text-white shadow-sm">HIGH</span>;
     if (days >= 2) return <span className="text-xs font-bold px-2.5 py-1 rounded bg-amber-500 text-white shadow-sm">MEDIUM</span>;
     return <span className="text-xs font-bold px-2.5 py-1 rounded bg-emerald-500 text-white shadow-sm">LOW</span>;
   };
@@ -100,10 +113,10 @@ export default function ManagerOrders() {
             <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl text-indigo-600 dark:text-indigo-400">
               <Package size={28} />
             </div>
-            Order Processing
+            Pipeline Management
           </h2>
           <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-4 py-2 rounded-lg text-base font-bold tracking-wide">
-            Total Pending: {orders.filter(o => o.status === "Pending").length}
+            Active Workflow: {orders.filter(o => ["Pending", "Approved", "Processing", "Shipped"].includes(o.status)).length}
           </span>
         </div>
 
@@ -111,7 +124,7 @@ export default function ManagerOrders() {
           <div className="text-center py-20 text-slate-400 dark:text-slate-500">
             <Inbox size={72} className="mx-auto mb-4 opacity-20" />
             <h3 className="text-xl font-bold text-slate-600 dark:text-slate-300">All caught up!</h3>
-            <p className="text-base mt-2">There are no orders waiting for processing.</p>
+            <p className="text-base mt-2">There are no active orders in the pipeline.</p>
           </div>
         ) : (
           <div className="overflow-x-auto custom-scrollbar">
@@ -120,15 +133,15 @@ export default function ManagerOrders() {
                 <tr>
                   <th className="p-4 rounded-tl-xl">Customer</th>
                   <th className="p-4">Service Details</th>
-                  <th className="p-4">Status</th>
+                  <th className="p-4">Current Status</th>
                   <th className="p-4">Priority</th>
-                  <th className="p-4 rounded-tr-xl">Action</th>
+                  <th className="p-4 rounded-tr-xl">Pipeline Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {orders.map((o) => {
                   const days = getPendingDays(o.createdAt);
-                  const status = displayStatus(o.status);
+                  const status = o.status;
 
                   return (
                     <tr key={o._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
@@ -138,40 +151,66 @@ export default function ManagerOrders() {
                       </td>
                       <td className="p-4">
                         <p className="font-semibold text-slate-800 dark:text-slate-200 text-base">{o.service?.name}</p>
-                        {o.status === "Pending" && (
+                        {status === "Pending" && (
                           <p className="text-xs font-medium text-amber-500 flex items-center gap-1 mt-1">
-                            <Clock size={14} /> Pending for {days} days
+                            <Clock size={14} /> Waiting {days > 0 ? `${days} days` : 'today'}
                           </p>
                         )}
                       </td>
                       <td className="p-4">
                         <span className={`px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 w-fit ${badgeStyle(status)}`}>
-                          {status === "Pending" && <Clock size={14} />}
-                          {status === "Approved" && <CheckCircle size={14} />}
-                          {status === "Rejected" && <XCircle size={14} />}
-                          {status}
+                          {statusIcon(status)} {status}
                         </span>
                       </td>
                       <td className="p-4">{priorityBadge(o)}</td>
                       <td className="p-4">
-                        {o.status === "Pending" ? (
+                        
+                        {/* THE STEP-BY-STEP FAANG ACTION BUTTONS */}
+                        {status === "Pending" && (
                           <div className="flex gap-2">
                             <button
                               onClick={() => updateStatus(o._id, "Approved")}
-                              className="px-4 py-2 rounded-lg text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-600 shadow-sm shadow-emerald-500/20 transition-all hover:-translate-y-0.5"
+                              className="px-4 py-2 rounded-lg text-sm font-bold text-white bg-blue-500 hover:bg-blue-600 shadow-sm shadow-blue-500/20 transition-all hover:-translate-y-0.5"
                             >
                               Approve
                             </button>
                             <button
                               onClick={() => setRejectModal({ show: true, orderId: o._id })}
-                              className="px-4 py-2 rounded-lg text-sm font-bold text-red-500 bg-red-50 hover:bg-red-500 hover:text-white dark:bg-red-900/20 dark:hover:bg-red-600 transition-all"
+                              className="px-4 py-2 rounded-lg text-sm font-bold text-rose-500 bg-rose-50 hover:bg-rose-500 hover:text-white dark:bg-rose-900/20 dark:hover:bg-rose-600 transition-all"
                             >
                               Reject
                             </button>
                           </div>
-                        ) : (
-                          <span className="text-sm font-bold text-slate-400 dark:text-slate-500">Processed</span>
                         )}
+
+                        {status === "Approved" && (
+                          <button
+                            onClick={() => updateStatus(o._id, "Processing")}
+                            className="px-4 py-2 rounded-lg text-sm font-bold text-white bg-indigo-500 hover:bg-indigo-600 shadow-sm shadow-indigo-500/20 transition-all hover:-translate-y-0.5 w-full sm:w-auto text-center"
+                          >
+                            Mark as Processing
+                          </button>
+                        )}
+
+                        {status === "Processing" && (
+                          <button
+                            onClick={() => updateStatus(o._id, "Shipped")}
+                            className="px-4 py-2 rounded-lg text-sm font-bold text-white bg-purple-500 hover:bg-purple-600 shadow-sm shadow-purple-500/20 transition-all hover:-translate-y-0.5 w-full sm:w-auto text-center flex items-center justify-center gap-2"
+                          >
+                            <Truck size={16} /> Dispatch Order
+                          </button>
+                        )}
+
+                        {status === "Shipped" && (
+                          <span className="text-sm font-bold text-slate-400 dark:text-slate-500 italic flex items-center gap-1.5">
+                            <Clock size={14} className="animate-spin-slow" /> Auto-Completing...
+                          </span>
+                        )}
+
+                        {["Completed", "Rejected"].includes(status) && (
+                          <span className="text-sm font-bold text-slate-400 dark:text-slate-500">Pipeline Finished</span>
+                        )}
+
                       </td>
                     </tr>
                   );

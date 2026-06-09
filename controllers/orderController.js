@@ -56,6 +56,7 @@ const fixOldShippedOrders = async () => {
   }
 };
 
+// 🔥 This handles the FINAL step automatically (Shipped -> Completed)
 const startAutoDeliveryChecker = () => {
   setInterval(async () => {
     try {
@@ -64,6 +65,7 @@ const startAutoDeliveryChecker = () => {
       for (const o of orders) {
         const timePassedMs = Date.now() - new Date(o.updatedAt).getTime();
         
+        // Auto-deliver 20 seconds after Manager marks as "Shipped"
         if (timePassedMs >= 20000) { 
           o.status = "Completed";
           o.completedAt = new Date();
@@ -84,71 +86,6 @@ const startAutoDeliveryChecker = () => {
       }
     } catch (err) {
       console.error("AUTO DELIVERY ERROR:", err.message);
-    }
-  }, 20000); 
-};
-
-const startOrderLifecycle = (order) => {
-  setTimeout(async () => {
-    try {
-      const o = await Order.findById(order._id);
-      if (!o || o.status !== "Approved") return;
-
-      o.status = "Processing";
-      await o.save({ validateBeforeSave: false });
-
-      await createNotification(
-        o.user,
-        "user",
-        "ORDER_PROCESSING",
-        "⚙️ Your order is now being processed by our experts. We're on it!",
-        o._id
-      );
-    } catch (err) {
-      console.error("PROCESSING ERROR:", err.message);
-    }
-  }, 5000); 
-
-  setTimeout(async () => {
-    try {
-      const o = await Order.findById(order._id);
-      if (!o || (o.status !== "Processing" && o.status !== "Approved")) return;
-
-      o.status = "Shipped";
-      await o.save({ validateBeforeSave: false });
-
-      await createNotification(
-        o.user,
-        "user",
-        "ORDER_SHIPPED",
-        "🚚 Your service order has been dispatched and is on the way to your location.",
-        o._id
-      );
-    } catch (err) {
-      console.error("SHIPPED ERROR:", err.message);
-    }
-  }, 12000); 
-
-  setTimeout(async () => {
-    try {
-      const o = await Order.findById(order._id);
-      if (!o || (o.status !== "Shipped" && o.status !== "Processing")) return;
-
-      o.status = "Completed";
-      o.completedAt = new Date();
-      o.resolutionTime = Math.round((o.completedAt - o.createdAt) / 1000);
-
-      await o.save({ validateBeforeSave: false });
-
-      await createNotification(
-        o.user,
-        "user",
-        "ORDER_DELIVERED",
-        "📦 Service Complete! We've successfully delivered your order. Rate your experience in the dashboard.",
-        o._id
-      );
-    } catch (err) {
-      console.error("DELIVERY ERROR:", err.message);
     }
   }, 20000); 
 };
@@ -204,7 +141,6 @@ const createOrder = async (req, res) => {
       order._id
     );
 
-    // 🔥 STRICT UNIVERSE NOTIFICATIONS
     const managerQuery = { role: "manager" };
     if (req.user && req.user.isDemo) {
       managerQuery.isDemo = true; 
@@ -249,7 +185,6 @@ const getAllOrders = async (req, res) => {
   try {
     let query = {};
     
-    // 🔥 ISOLATION
     if (req.user && req.user.isDemo) {
       const demoUsers = await User.find({ isDemo: true }).select('_id');
       query.user = { $in: demoUsers.map(u => u._id) };
@@ -283,7 +218,6 @@ const updateOrderStatus = async (req, res) => {
         return res.status(404).json({ message: "Order not found" });
     }
 
-    // 🔥 CROSS-UNIVERSE BLOCK
     const orderOwner = await User.findById(order.user);
     if (req.user.isDemo && (!orderOwner || !orderOwner.isDemo)) {
         return res.status(403).json({ message: "Sandbox Mode: You cannot modify real user orders." });
@@ -292,8 +226,15 @@ const updateOrderStatus = async (req, res) => {
         return res.status(403).json({ message: "Real managers cannot modify demo sandbox orders." });
     }
 
-    if (order.status !== "Pending") {
-      return res.status(400).json({ message: "Order already processed" });
+    // 🔥 SMART STATE MACHINE LOGIC
+    const validTransitions = {
+      "Pending": ["Approved", "Rejected"],
+      "Approved": ["Processing"],
+      "Processing": ["Shipped"]
+    };
+
+    if (!validTransitions[order.status] || !validTransitions[order.status].includes(status)) {
+       return res.status(400).json({ message: `Invalid action. Cannot change status from ${order.status} to ${status}` });
     }
 
     order.status = status;
@@ -306,28 +247,28 @@ const updateOrderStatus = async (req, res) => {
 
     await order.save({ validateBeforeSave: false });
 
+    // Send corresponding notifications to the user based on manual steps
     if (status === "Approved") {
       await createNotification(
-        order.user,
-        "user",
-        "ORDER_APPROVED",
-        "✅ Great news! Your order has been approved. We are preparing to start the service.",
-        order._id
+        order.user, "user", "ORDER_APPROVED",
+        "✅ Great news! Your order has been approved. We are preparing to start the service.", order._id
       );
-      startOrderLifecycle(order);
-    }
-
-    if (status === "Rejected") {
+    } else if (status === "Processing") {
+      await createNotification(
+        order.user, "user", "ORDER_PROCESSING",
+        "⚙️ Your order is now being processed by our experts. We're on it!", order._id
+      );
+    } else if (status === "Shipped") {
+      await createNotification(
+        order.user, "user", "ORDER_SHIPPED",
+        "🚚 Your service order has been dispatched and is on the way to your location.", order._id
+      );
+    } else if (status === "Rejected") {
       const rejectMessage = managerNotes 
         ? `❌ Order Rejected. Reason: ${managerNotes}`
         : "❌ We regret to inform you that your order was rejected. Please contact support for details.";
-
       await createNotification(
-        order.user,
-        "user",
-        "ORDER_REJECTED",
-        rejectMessage,
-        order._id
+        order.user, "user", "ORDER_REJECTED", rejectMessage, order._id
       );
     }
 
