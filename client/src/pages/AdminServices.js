@@ -4,6 +4,7 @@ import GlobalLoader from "../components/GlobalLoader";
 import EmptyState from "../components/EmptyState";
 import Toast from "../components/Toast";
 import useToast from "../components/useToast";
+import Swal from "sweetalert2"; // Added premium alerts
 
 import {
   Search,
@@ -31,7 +32,6 @@ export default function AdminServices() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  
   
   const [image, setImage] = useState(null); 
   const [imageUrl, setImageUrl] = useState(""); 
@@ -74,7 +74,6 @@ export default function AdminServices() {
     }
   };
 
-  
   const addService = async (e) => {
     e.preventDefault();
 
@@ -85,7 +84,6 @@ export default function AdminServices() {
       formData.append("description", description);
       formData.append("category", category);
 
-      
       if (imageUrl) {
           formData.append("image", imageUrl);
       } else if (image) {
@@ -109,10 +107,8 @@ export default function AdminServices() {
     }
   };
 
-  
   const startEdit = (s) => {
     setEditingId(s._id);
-    
     
     const isLink = s.image && s.image.startsWith("http") && !s.image.includes("localhost") && !s.image.includes("uploads");
     
@@ -155,16 +151,39 @@ export default function AdminServices() {
     }
   };
 
-  
   const deleteService = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this service? This action cannot be undone.")) return;
+    // Replaced standard confirm with SweetAlert
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "Do you want to deactivate this service? It won't be visible for new orders.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Yes, deactivate it!',
+      borderRadius: '1rem',
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
       await api.delete(`/services/${id}`);
       fetchServices();
-      showToast("Service deleted 🗑️", "success");
-    } catch {
-      showToast("Failed to delete", "error");
+      showToast("Service deactivated successfully 🗑️", "success");
+    } catch (err) {
+      // Improved error handling to show backend message
+      const errMsg = err.response?.data?.message || "Failed to delete service.";
+      showToast(errMsg, "error");
+      
+      // Also show a swal if it's the specific order blocking error
+      if (err.response?.status === 400) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Action Blocked',
+            text: errMsg,
+            confirmButtonColor: '#3b82f6',
+        });
+      }
     }
   };
 
@@ -176,7 +195,6 @@ export default function AdminServices() {
 
       <div className="max-w-7xl mx-auto mt-8 px-4 pb-12 space-y-6 font-sans antialiased animate-fadeIn">
 
-        {}
         <div className="relative bg-gradient-to-br from-indigo-600 via-blue-600 to-purple-700 text-white p-6 sm:p-8 rounded-[1.5rem] shadow-xl shadow-blue-500/20 overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full mix-blend-overlay filter blur-3xl transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
           
@@ -201,7 +219,6 @@ export default function AdminServices() {
           </button>
         </div>
 
-        {}
         <div className="bg-white/80 backdrop-blur-xl p-4 rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100">
           <div className="relative w-full group">
             <Search size={18} className="absolute left-4 top-3 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
@@ -214,7 +231,6 @@ export default function AdminServices() {
           </div>
         </div>
 
-        {}
         {showForm && (
           <form onSubmit={addService} className="bg-white/80 backdrop-blur-xl p-6 sm:p-8 rounded-[1.5rem] shadow-lg border border-slate-100 animate-fadeIn border-t-4 border-t-indigo-500">
             <h2 className="text-lg font-bold text-slate-800 mb-5 flex items-center gap-2">
@@ -247,7 +263,6 @@ export default function AdminServices() {
                 </div>
               </div>
 
-              {}
               <div className="space-y-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 ml-1 flex justify-between">
                   <span>Cover Image</span>
@@ -298,7 +313,6 @@ export default function AdminServices() {
           </form>
         )}
 
-        {}
         {filtered.length === 0 ? (
           <div className="pt-8">
             <EmptyState title="No services found" description="Adjust your search or add a new service to the catalog." />
@@ -311,12 +325,12 @@ export default function AdminServices() {
                 className="bg-white/80 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 overflow-hidden group flex flex-col hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
               >
                 
-                {}
                 <div className="relative h-40 overflow-hidden bg-slate-100 p-2 pb-0">
                   <img
                     src={s.image}
                     alt={s.name}
                     className="w-full h-full object-cover rounded-t-xl group-hover:scale-105 transition duration-500"
+                    // Add a reliable placeholder if image fails to load
                     onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?auto=format&fit=crop&w=800&q=80" }}
                   />
                   {s.category && (
@@ -331,7 +345,6 @@ export default function AdminServices() {
                 <div className="p-5 flex flex-col flex-1">
                   {editingId === s._id ? (
                     
-                    
                     <div className="flex flex-col gap-3 animate-fadeIn">
                       <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-1">
                         <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">Editing Service</span>
@@ -340,7 +353,6 @@ export default function AdminServices() {
                       <input value={editData.price} onChange={(e)=>setEditData({...editData, price:e.target.value})} placeholder="Price" type="number" className="w-full bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-indigo-500/20 outline-none" />
                       <input value={editData.category} onChange={(e)=>setEditData({...editData, category:e.target.value})} placeholder="Category" className="w-full bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-indigo-500/20 outline-none" />
                       
-                      {}
                       <input 
                         type="url" 
                         value={editData.imageUrl} 
@@ -364,7 +376,6 @@ export default function AdminServices() {
 
                   ) : (
                     
-                    
                     <>
                       <div className="flex-1">
                         <h2 className="text-lg font-bold text-slate-800 line-clamp-1 mb-1">
@@ -381,7 +392,6 @@ export default function AdminServices() {
                           <span className="text-xl font-extrabold text-slate-800 tracking-tight">{s.price}</span>
                         </div>
 
-                        {}
                         <div className="flex gap-2">
                           <button 
                             onClick={()=>startEdit(s)} 

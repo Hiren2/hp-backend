@@ -183,16 +183,20 @@ exports.deleteService = async (req, res) => {
     const serviceId = req.params.id;
     const serviceObjectId = new mongoose.Types.ObjectId(serviceId);
 
-    const orderExists = await Order.findOne({
-      service: serviceObjectId
+    // Smart Delete Logic: Check if there are active orders
+    const activeOrderExists = await Order.findOne({
+      service: serviceObjectId,
+      status: { $in: ["Pending", "Processing", "Shipped"] } // Orders still in progress
     });
 
-    if (orderExists) {
+    if (activeOrderExists) {
       return res.status(400).json({
-        message: "Service cannot be deleted because orders exist"
+        message: "Cannot deactivate: There are still active orders for this service being processed."
       });
     }
 
+    // If we reach here, it means orders are either Completed/Rejected or don't exist.
+    // Safe to soft-delete (deactivate).
     const service = await Service.findByIdAndUpdate(
       serviceId,
       { isActive: false },
