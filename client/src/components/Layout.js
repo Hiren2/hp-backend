@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 import { 
   Menu, X, User as UserIcon, LogOut, ChevronRight, Sun, Moon, 
   Home, ShoppingCart, Package, ClipboardList, Users, Settings, 
-  ShieldAlert, MessageSquare, Heart, ShieldCheck, KeyRound 
+  ShieldAlert, MessageSquare, Heart, ShieldCheck, KeyRound, Star 
 } from "lucide-react";
 import logo from "../assets/logo.png"; 
 
@@ -129,6 +129,8 @@ export default function Layout() {
             <NavLink to="/admin/services" className={({isActive})=>`${navBase} ${isActive?navActive:navInactive}`}>🛠 Services</NavLink>
             <NavLink to="/admin/orders" className={({isActive})=>`${navBase} ${isActive?navActive:navInactive}`}>📜 Orders</NavLink>
             <NavLink to="/admin/managers" className={({isActive})=>`${navBase} ${isActive?navActive:navInactive}`}>👥 Users</NavLink>
+            {/* 🔥 FEEDBACK HUB STRICTLY FOR ADMIN ONLY */}
+            <NavLink to="/admin/reviews" className={({isActive})=>`${navBase} ${isActive?navActive:navInactive}`}>⭐ Feedback</NavLink>
           </>
         );
       case "superadmin":
@@ -176,6 +178,8 @@ export default function Layout() {
             <NavLink to="/admin/services" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${isActive?sidebarActive:sidebarInactive}`}><Settings size={18} className="group-hover:scale-110 transition-transform"/> Manage Services</NavLink>
             <NavLink to="/admin/orders" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${isActive?sidebarActive:sidebarInactive}`}><ClipboardList size={18} className="group-hover:scale-110 transition-transform"/> All Orders</NavLink>
             <NavLink to="/admin/managers" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${isActive?sidebarActive:sidebarInactive}`}><Users size={18} className="group-hover:scale-110 transition-transform"/> Manage Users</NavLink>
+            {/* 🔥 FEEDBACK HUB STRICTLY FOR ADMIN ONLY */}
+            <NavLink to="/admin/reviews" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${isActive?sidebarActive:sidebarInactive}`}><Star size={18} className="group-hover:scale-110 transition-transform text-yellow-500"/> Feedback Hub</NavLink>
             <NavLink to="/admin/system-activity" onClick={()=>setOpen(false)} className={({isActive})=>`${sidebarBase} ${isActive?sidebarActive:sidebarInactive}`}><ShieldAlert size={18} className="group-hover:scale-110 transition-transform"/> System Activity</NavLink>
           </>
         );
@@ -194,7 +198,6 @@ export default function Layout() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 transition-colors duration-300 font-sans">
       
-      {/* 📱 Mobile & Desktop Premium Header */}
       <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)] border-b border-slate-200/50 dark:border-slate-800/50 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between sticky top-0 z-40 transition-colors">
         
         <div className="flex items-center gap-3">
@@ -210,7 +213,6 @@ export default function Layout() {
           </div>
         </div>
         
-        {/* 💻 Top Nav (Hidden on Mobile) */}
         <div className="hidden xl:flex gap-3 overflow-x-auto custom-scrollbar px-2 mx-4 max-w-3xl">
           {renderTopNav()}
         </div>
@@ -232,7 +234,6 @@ export default function Layout() {
         </div>
       </header>
 
-      {/* 📱 The Smart Sidebar Drawer */}
       <div className={`fixed inset-y-0 left-0 w-[280px] sm:w-80 bg-white dark:bg-slate-900 shadow-[20px_0_40px_rgb(0,0,0,0.1)] z-50 transform transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] flex flex-col ${open ? "translate-x-0" : "-translate-x-full"}`}>
         
         <div className="p-5 sm:p-6 flex items-center justify-between border-b border-slate-100 dark:border-slate-800/60">
@@ -305,7 +306,6 @@ export default function Layout() {
         </div>
       </div>
 
-      {/* 📱 Mobile Backdrop Overlay */}
       {open && <div className="fixed inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm z-40 transition-opacity" onClick={() => setOpen(false)} />}
 
       <main className="p-4 sm:p-6 md:p-8 flex-1 transition-colors duration-300 max-w-[1600px] mx-auto w-full overflow-x-hidden">

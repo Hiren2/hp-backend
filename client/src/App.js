@@ -25,7 +25,7 @@ import AdminManagers from "./pages/AdminManagers";
 import AdminStats from "./pages/AdminStats";
 import AdminOrderHistory from "./pages/AdminOrderHistory";
 import SystemActivity from "./pages/SystemActivity";
-import AdminReviews from "./pages/AdminReviews"; // 🔥 NEW IMPORT
+import AdminReviews from "./pages/AdminReviews"; // 🔥 IMPORTED REVIEW PAGE
 
 import ManagerDashboard from "./pages/ManagerDashboard";
 import ManagerOrders from "./pages/ManagerOrders";
@@ -125,7 +125,7 @@ export default function App() {
             }
           />
 
-          {/* Admin Routes */}
+          {/* Admin Routes (Business Level) */}
           <Route
             path="/admin/dashboard"
             element={
@@ -166,7 +166,7 @@ export default function App() {
               </RequireAdmin>
             }
           />
-          {/* 🔥 NEW FEEDBACK HUB ROUTE */}
+          {/* 🔥 FEEDBACK HUB STRICTLY FOR ADMIN ONLY */}
           <Route
             path="/admin/reviews"
             element={
@@ -176,7 +176,7 @@ export default function App() {
             }
           />
 
-          {/* Super Admin Routes */}
+          {/* Super Admin Routes (System Level) */}
           <Route
             path="/superadmin/dashboard"
             element={
