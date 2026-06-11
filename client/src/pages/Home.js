@@ -59,8 +59,8 @@ export default function Home() {
       <nav className="fixed w-full z-50 bg-[#0B0F19]/85 backdrop-blur-2xl border-b border-white/5 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => window.scrollTo(0,0)}>
-              <svg width="40" height="40" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="shadow-[0_0_15px_rgba(37,99,235,0.4)] rounded-xl transition-transform group-hover:scale-105">
+            <div className="flex items-center gap-2 sm:gap-3 cursor-pointer group" onClick={() => window.scrollTo(0,0)}>
+              <svg width="36" height="36" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:w-10 sm:h-10 shadow-[0_0_15px_rgba(37,99,235,0.4)] rounded-xl transition-transform group-hover:scale-105 shrink-0">
                 <rect width="48" height="48" rx="12" fill="url(#paint0_linear_logo)"/>
                 <path d="M14 14V34 M14 24H22 M22 14V34" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M28 34V14H33C35.7614 14 38 16.2386 38 19C38 21.7614 35.7614 24 33 24H28" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -71,19 +71,19 @@ export default function Home() {
                   </linearGradient>
                 </defs>
               </svg>
-              <span className="font-extrabold text-2xl text-white tracking-tight">
+              <span className="font-extrabold text-xl sm:text-2xl text-white tracking-tight">
                 H&P<span className="text-blue-500">.</span>Solutions
               </span>
             </div>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 sm:gap-6">
               <Link to="/login" className="hidden sm:block text-slate-300 font-semibold hover:text-white transition-colors">
                 Sign In
               </Link>
               <button 
                 onClick={() => setDemoOpen(true)} 
-                className="bg-white hover:bg-slate-100 text-[#0B0F19] px-6 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:scale-105"
+                className="bg-white hover:bg-slate-100 text-[#0B0F19] px-4 py-2 sm:px-6 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:scale-105 whitespace-nowrap"
               >
-                <Zap size={16} className="text-blue-600" />
+                <Zap size={14} className="text-blue-600 sm:w-4 sm:h-4" />
                 Live Sandbox
               </button>
             </div>
@@ -99,40 +99,40 @@ export default function Home() {
           fadeEffect={{ crossFade: true }}
           autoplay={{ delay: 5000, disableOnInteraction: false }}
           pagination={{ clickable: true }}
-          className="h-[85vh] min-h-[650px] w-full"
+          className="h-[85vh] min-h-[600px] sm:min-h-[650px] w-full"
         >
           {/* POSTER 1: SaaS Marketplace & RBAC */}
           <SwiperSlide>
-            <div className="relative w-full h-full flex items-center bg-[#0B0F19] overflow-hidden">
+            <div className="relative w-full h-full flex items-center justify-center sm:justify-start bg-[#0B0F19] overflow-hidden">
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.02]"></div>
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full mt-10">
+              <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 relative z-10 w-full mt-10 text-center sm:text-left">
                 <motion.div 
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="max-w-3xl text-white"
+                  className="max-w-3xl text-white mx-auto sm:mx-0"
                 >
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold tracking-widest uppercase mb-8">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] sm:text-xs font-bold tracking-widest uppercase mb-6 sm:mb-8">
                     <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
                     Architecture Pillar 01
                   </div>
-                  <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
-                    Deploy Your Next-Gen <br/>
+                  <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight mb-4 sm:mb-6 leading-[1.2] sm:leading-[1.1]">
+                    Deploy Your Next-Gen <br className="hidden sm:block"/>
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">
                       SaaS Marketplace
                     </span>
                   </h1>
-                  <p className="text-xl text-slate-400 mb-10 font-medium max-w-2xl leading-relaxed">
-                    H&P Solutions delivers a ready-to-scale, highly secure 4-Tier RBAC architecture. Experience full white-label deployment, optimized conversion paths, and multi-layered protection layers.
+                  <p className="text-base sm:text-xl text-slate-400 mb-8 sm:mb-10 font-medium max-w-2xl mx-auto sm:mx-0 leading-relaxed">
+                    H&P Solutions delivers a ready-to-scale, highly secure 4-Tier RBAC architecture. Experience full white-label deployment, optimized conversion paths, and multi-layered protection.
                   </p>
-                  <div className="flex flex-wrap gap-4">
+                  <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center sm:justify-start">
                     <button 
                       onClick={() => setDemoOpen(true)} 
-                      className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:scale-105"
+                      className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white px-8 py-3.5 sm:py-4 rounded-full font-bold text-base sm:text-lg flex justify-center items-center gap-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:scale-105"
                     >
-                      Enter Sandbox <ArrowRight size={20} />
+                      Enter Sandbox <ArrowRight size={18} />
                     </button>
-                    <button onClick={scrollToExpertise} className="bg-transparent hover:bg-white/5 text-white px-8 py-4 rounded-full font-bold text-lg transition-all border border-white/20">
+                    <button onClick={scrollToExpertise} className="w-full sm:w-auto bg-transparent hover:bg-white/5 text-white px-8 py-3.5 sm:py-4 rounded-full font-bold text-base sm:text-lg transition-all border border-white/20">
                       Explore Architecture
                     </button>
                   </div>
@@ -145,26 +145,26 @@ export default function Home() {
           <SwiperSlide>
             <div className="relative w-full h-full flex items-center bg-[#0B0F19] overflow-hidden">
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.02]"></div>
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center flex flex-col items-center mt-10">
+              <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 relative z-10 w-full text-center flex flex-col items-center mt-10">
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.95 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
                   className="max-w-4xl text-white"
                 >
-                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-                    <Cpu size={32} className="text-white" />
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6 sm:mb-8 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                    <Cpu className="text-white w-6 h-6 sm:w-8 sm:h-8" />
                   </div>
-                  <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
+                  <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight mb-4 sm:mb-6 leading-[1.2] sm:leading-[1.1]">
                     Autonomous Workflows <br/>
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">
                       via Gemini NLP Engine
                     </span>
                   </h1>
-                  <p className="text-xl text-slate-400 mb-10 font-medium max-w-2xl mx-auto leading-relaxed">
+                  <p className="text-base sm:text-xl text-slate-400 mb-8 sm:mb-10 font-medium max-w-2xl mx-auto leading-relaxed">
                     Integrated natural language processing bots handle customer requests, resolve order support queries, and optimize store management pipelines with zero human overhead.
                   </p>
-                  <button onClick={() => setDemoOpen(true)} className="bg-emerald-500 hover:bg-emerald-400 text-white px-10 py-4 rounded-full font-bold text-lg flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:scale-105 mx-auto w-max">
+                  <button onClick={() => setDemoOpen(true)} className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-white px-10 py-3.5 sm:py-4 rounded-full font-bold text-base sm:text-lg flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:scale-105 mx-auto">
                     Launch AI Sandbox
                   </button>
                 </motion.div>
@@ -174,29 +174,29 @@ export default function Home() {
 
           {/* POSTER 3: Parallel Universe Isolation */}
           <SwiperSlide>
-            <div className="relative w-full h-full flex items-center bg-[#0B0F19] overflow-hidden">
+            <div className="relative w-full h-full flex items-center justify-center sm:justify-start bg-[#0B0F19] overflow-hidden">
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.02]"></div>
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full mt-10">
+              <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 relative z-10 w-full mt-10 text-center sm:text-left">
                 <motion.div 
                   initial={{ opacity: 0, x: -30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="max-w-3xl text-white"
+                  className="max-w-3xl text-white mx-auto sm:mx-0"
                 >
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold tracking-widest uppercase mb-8">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] sm:text-xs font-bold tracking-widest uppercase mb-6 sm:mb-8">
                     <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
                     Architecture Pillar 03
                   </div>
-                  <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
-                    Strict Sandbox <br/>
+                  <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight mb-4 sm:mb-6 leading-[1.2] sm:leading-[1.1]">
+                    Strict Sandbox <br className="hidden sm:block"/>
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-300">
                       & Data Isolation
                     </span>
                   </h1>
-                  <p className="text-xl text-slate-400 mb-10 font-medium max-w-2xl leading-relaxed">
+                  <p className="text-base sm:text-xl text-slate-400 mb-8 sm:mb-10 font-medium max-w-2xl mx-auto sm:mx-0 leading-relaxed">
                     Never leak test actions into live production. Our custom Multi-Tenancy firewall ensures that demo purchases, logs, and notification flows remain securely inside a parallel sandbox universe.
                   </p>
-                  <button onClick={() => setDemoOpen(true)} className="bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(147,51,234,0.3)] hover:scale-105">
+                  <button onClick={() => setDemoOpen(true)} className="w-full sm:w-auto bg-purple-600 hover:bg-purple-500 text-white px-8 py-3.5 sm:py-4 rounded-full font-bold text-base sm:text-lg flex justify-center items-center gap-2 transition-all shadow-[0_0_20px_rgba(147,51,234,0.3)] hover:scale-105">
                     Test Isolation Firewall
                   </button>
                 </motion.div>
@@ -208,26 +208,26 @@ export default function Home() {
           <SwiperSlide>
             <div className="relative w-full h-full flex items-center bg-[#0B0F19] overflow-hidden">
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.02]"></div>
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center flex flex-col items-center mt-10">
+              <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 relative z-10 w-full text-center flex flex-col items-center mt-10">
                 <motion.div 
                   initial={{ opacity: 0, y: -30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
                   className="max-w-4xl text-white"
                 >
-                  <div className="w-20 h-20 bg-gradient-to-br from-rose-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-[0_0_30px_rgba(244,63,94,0.2)]">
-                    <Activity size={40} className="text-white" />
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-rose-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6 sm:mb-8 shadow-[0_0_30px_rgba(244,63,94,0.2)]">
+                    <Activity className="text-white w-6 h-6 sm:w-8 sm:h-8" />
                   </div>
-                  <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
+                  <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight mb-4 sm:mb-6 leading-[1.2] sm:leading-[1.1]">
                     Immutable Audit Logs <br/>
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-orange-400">
-                      & Live Metric Telemetry
+                      & Live Telemetry
                     </span>
                   </h1>
-                  <p className="text-xl text-slate-400 mb-10 font-medium max-w-2xl mx-auto leading-relaxed">
+                  <p className="text-base sm:text-xl text-slate-400 mb-8 sm:mb-10 font-medium max-w-2xl mx-auto leading-relaxed">
                     Monitor entire node activities instantly. Capture system security modifications, unauthorized penetration attempts, and financial workflows with deep aggregate analytical telemetry.
                   </p>
-                  <button onClick={() => setDemoOpen(true)} className="bg-rose-500 hover:bg-rose-400 text-white px-10 py-4 rounded-full font-bold text-lg flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(244,63,94,0.3)] hover:scale-105 mx-auto w-max">
+                  <button onClick={() => setDemoOpen(true)} className="w-full sm:w-auto bg-rose-500 hover:bg-rose-400 text-white px-10 py-3.5 sm:py-4 rounded-full font-bold text-base sm:text-lg flex justify-center items-center gap-2 transition-all shadow-[0_0_20px_rgba(244,63,94,0.3)] hover:scale-105 mx-auto">
                     View System Metrics
                   </button>
                 </motion.div>
@@ -238,19 +238,19 @@ export default function Home() {
       </div>
 
       {/* Services Section */}
-      <div id="expertise-section" className="py-32 bg-[#0A0D14] border-y border-white/5 relative z-10 scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-20">
+      <div id="expertise-section" className="py-20 sm:py-32 bg-[#0A0D14] border-y border-white/5 relative z-10 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-20">
             <h2 className="text-xs font-black text-blue-500 tracking-widest uppercase mb-3">Enterprise Core</h2>
-            <h3 className="text-4xl font-black text-white sm:text-5xl tracking-tight">
+            <h3 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
               The Complete Ecosystem
             </h3>
-            <p className="mt-6 text-lg text-slate-400 font-medium leading-relaxed">
+            <p className="mt-4 sm:mt-6 text-base sm:text-lg text-slate-400 font-medium leading-relaxed">
               When you acquire the H&P Solutions architecture, you receive a full-stack, white-label ecosystem engineered for global scale.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             <CategoryCard 
               icon={<Code size={28} className="text-blue-400" />}
               title="White-label Ready"
@@ -280,76 +280,76 @@ export default function Home() {
       </div>
 
       {/* --- NEW TECHNICAL SPECIFICATIONS & PILLARS SECTION --- */}
-      <div className="py-32 bg-[#0B0F19] border-b border-white/5 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="py-20 sm:py-32 bg-[#0B0F19] border-b border-white/5 relative z-10">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 items-center">
             
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
                 Full-Stack Architecture
               </div>
-              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
-                Engineered for High-Load <br/>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
+                Engineered for High-Load <br className="hidden sm:block"/>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-400">Business Infrastructures</span>
               </h2>
-              <p className="text-slate-400 font-medium text-lg leading-relaxed">
+              <p className="text-slate-400 font-medium text-base sm:text-lg leading-relaxed">
                 The H&P Solutions core framework separates frontend presentation from data Mutation engines. It offers an airtight developer workspace environment ready for direct customization.
               </p>
               
-              <div className="space-y-4 pt-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 mt-1">
-                    <CheckCircle2 size={12} fill="currentColor" className="text-[#0B0F19]" />
+              <div className="space-y-5 pt-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-6 h-6 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 mt-0.5">
+                    <CheckCircle2 size={14} fill="currentColor" className="text-[#0B0F19]" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-white text-base">Node.js Express Secure REST API</h4>
-                    <p className="text-slate-500 text-sm mt-0.5">Fully structured controller patterns with isolated middleware token parsing wrappers.</p>
+                    <h4 className="font-bold text-white text-sm sm:text-base">Node.js Express Secure REST API</h4>
+                    <p className="text-slate-500 text-xs sm:text-sm mt-1 leading-relaxed">Fully structured controller patterns with isolated middleware token parsing wrappers.</p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0 mt-1">
-                    <CheckCircle2 size={12} fill="currentColor" className="text-[#0B0F19]" />
+                <div className="flex items-start gap-4">
+                  <div className="w-6 h-6 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0 mt-0.5">
+                    <CheckCircle2 size={14} fill="currentColor" className="text-[#0B0F19]" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-white text-base">State Tracking Multi-Tab Synchronizer</h4>
-                    <p className="text-slate-500 text-sm mt-0.5">Frontend contextual storage listening triggers matching instant backend pipeline mutations seamlessly.</p>
+                    <h4 className="font-bold text-white text-sm sm:text-base">State Tracking Multi-Tab Synchronizer</h4>
+                    <p className="text-slate-500 text-xs sm:text-sm mt-1 leading-relaxed">Frontend contextual storage listening triggers matching instant backend pipeline mutations seamlessly.</p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 mt-1">
-                    <CheckCircle2 size={12} fill="currentColor" className="text-[#0B0F19]" />
+                <div className="flex items-start gap-4">
+                  <div className="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+                    <CheckCircle2 size={14} fill="currentColor" className="text-[#0B0F19]" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-white text-base">MongoDB Optimized Aggregations</h4>
-                    <p className="text-slate-500 text-sm mt-0.5">Heavy relational lookup lookups handling profile metrics, order resolution telemetry, and item trends efficiently.</p>
+                    <h4 className="font-bold text-white text-sm sm:text-base">MongoDB Optimized Aggregations</h4>
+                    <p className="text-slate-500 text-xs sm:text-sm mt-1 leading-relaxed">Heavy relational lookup lookups handling profile metrics, order resolution telemetry, and item trends efficiently.</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 bg-[#0F1523] p-6 rounded-[2.5rem] border border-white/5 shadow-2xl relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-[2.5rem] blur opacity-10 pointer-events-none"></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#0F1523] p-5 sm:p-6 rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 shadow-2xl relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-[2.5rem] blur opacity-10 pointer-events-none hidden sm:block"></div>
               <div className="bg-[#151C2C] p-6 rounded-2xl border border-white/5 text-center flex flex-col items-center justify-center">
                 <Server size={32} className="text-blue-400 mb-3" />
-                <h3 className="font-black text-white text-2xl">MERN</h3>
-                <p className="text-xs text-slate-500 font-bold uppercase mt-1 tracking-wider">Tech Stack Base</p>
+                <h3 className="font-black text-white text-xl sm:text-2xl">MERN</h3>
+                <p className="text-[10px] sm:text-xs text-slate-500 font-bold uppercase mt-1 tracking-wider">Tech Stack Base</p>
               </div>
               <div className="bg-[#151C2C] p-6 rounded-2xl border border-white/5 text-center flex flex-col items-center justify-center">
                 <Database size={32} className="text-purple-400 mb-3" />
-                <h3 className="font-black text-white text-2xl">NoSQL</h3>
-                <p className="text-xs text-slate-500 font-bold uppercase mt-1 tracking-wider">Data Segregation</p>
+                <h3 className="font-black text-white text-xl sm:text-2xl">NoSQL</h3>
+                <p className="text-[10px] sm:text-xs text-slate-500 font-bold uppercase mt-1 tracking-wider">Data Segregation</p>
               </div>
               <div className="bg-[#151C2C] p-6 rounded-2xl border border-white/5 text-center flex flex-col items-center justify-center">
                 <Shield size={32} className="text-emerald-400 mb-3" />
-                <h3 className="font-black text-white text-2xl">JWT</h3>
-                <p className="text-xs text-slate-500 font-bold uppercase mt-1 tracking-wider">Cryptographic Token</p>
+                <h3 className="font-black text-white text-xl sm:text-2xl">JWT</h3>
+                <p className="text-[10px] sm:text-xs text-slate-500 font-bold uppercase mt-1 tracking-wider">Cryptographic Token</p>
               </div>
               <div className="bg-[#151C2C] p-6 rounded-2xl border border-white/5 text-center flex flex-col items-center justify-center">
                 <Cpu size={32} className="text-rose-400 mb-3" />
-                <h3 className="font-black text-white text-2xl">LLM</h3>
-                <p className="text-xs text-slate-500 font-bold uppercase mt-1 tracking-wider">AI Integration</p>
+                <h3 className="font-black text-white text-xl sm:text-2xl">LLM</h3>
+                <p className="text-[10px] sm:text-xs text-slate-500 font-bold uppercase mt-1 tracking-wider">AI Integration</p>
               </div>
             </div>
 
@@ -358,24 +358,24 @@ export default function Home() {
       </div>
 
       {/* Reviews */}
-      <div className="py-32 bg-[#0B0F19] text-white relative overflow-hidden z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-6">
-            <div className="max-w-2xl">
-              <h2 className="text-sm font-black text-blue-400 tracking-widest uppercase mb-3">Trusted Infrastructure</h2>
-              <h3 className="text-4xl font-black tracking-tight sm:text-5xl">
+      <div className="py-20 sm:py-32 bg-[#0B0F19] text-white relative overflow-hidden z-10">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-20 gap-6">
+            <div className="max-w-2xl text-center md:text-left">
+              <h2 className="text-xs font-black text-blue-400 tracking-widest uppercase mb-3">Trusted Infrastructure</h2>
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight">
                 Validated by CTOs
               </h3>
             </div>
-            <div className="flex items-center gap-3 bg-[#151C2C] border border-white/5 px-6 py-4 rounded-2xl">
-              <span className="font-black text-3xl text-white">4.9</span>
+            <div className="flex items-center justify-center gap-3 bg-[#151C2C] border border-white/5 px-6 py-4 rounded-2xl mx-auto md:mx-0 w-max">
+              <span className="font-black text-2xl sm:text-3xl text-white">4.9</span>
               <div className="flex gap-1">
-                {[1,2,3,4,5].map(i => <Star key={i} size={18} fill="#FBBF24" className="text-yellow-400" />)}
+                {[1,2,3,4,5].map(i => <Star key={i} size={16} className="sm:w-5 sm:h-5 text-yellow-400" fill="#FBBF24" />)}
               </div>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
             <ReviewCard 
               name="David Mitchell"
               role="Tech Lead, Silicon Valley"
@@ -399,16 +399,16 @@ export default function Home() {
       </div>
 
       {/* CTA Footer Section */}
-      <div className="py-24 bg-[#0A0D14] border-t border-white/5 relative z-10">
+      <div className="py-20 sm:py-24 bg-[#0A0D14] border-t border-white/5 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[2rem] p-10 md:p-16 flex flex-col md:flex-row items-center justify-between text-white relative overflow-hidden border border-blue-500/20">
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/10 rounded-full blur-[80px] pointer-events-none"></div>
-            <div className="max-w-2xl mb-10 md:mb-0 relative z-10">
-              <h2 className="text-4xl md:text-5xl font-black mb-6 tracking-tight">Ready to stress-test the architecture?</h2>
-              <p className="text-blue-100 text-lg font-medium mb-0 leading-relaxed">Enter our Sandbox Environment to experience Data Isolation, Real-time Sync, and Role Management live.</p>
+          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[2rem] p-8 sm:p-10 md:p-16 flex flex-col md:flex-row items-center justify-between text-white relative overflow-hidden border border-blue-500/20">
+            <div className="absolute top-0 right-0 w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] bg-white/10 rounded-full blur-[60px] sm:blur-[80px] pointer-events-none"></div>
+            <div className="max-w-2xl mb-8 md:mb-0 relative z-10 text-center md:text-left">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 sm:mb-6 tracking-tight">Ready to stress-test the architecture?</h2>
+              <p className="text-blue-100 text-base sm:text-lg font-medium mb-0 leading-relaxed">Enter our Sandbox Environment to experience Data Isolation, Real-time Sync, and Role Management live.</p>
             </div>
             <div className="relative z-10 w-full md:w-auto">
-              <button onClick={() => setDemoOpen(true)} className="w-full md:w-auto bg-[#0B0F19] text-white border border-white/10 px-10 py-5 rounded-full font-bold text-lg transition-all hover:bg-white hover:text-[#0B0F19] inline-block text-center">
+              <button onClick={() => setDemoOpen(true)} className="w-full md:w-auto bg-[#0B0F19] text-white border border-white/10 px-8 py-4 sm:px-10 sm:py-5 rounded-full font-bold text-base sm:text-lg transition-all hover:bg-white hover:text-[#0B0F19] inline-block text-center">
                 Launch Live Demo
               </button>
             </div>
@@ -417,12 +417,12 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-[#0B0F19] border-t border-white/10 pt-12 pb-12 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+      <footer className="bg-[#0B0F19] border-t border-white/10 pt-10 pb-10 relative z-10">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
             <span className="font-bold text-slate-400 text-sm tracking-tight">H&P Solutions © {new Date().getFullYear()}</span>
           </div>
-          <div className="flex flex-wrap justify-center gap-8 text-sm font-semibold text-slate-500">
+          <div className="flex flex-wrap justify-center gap-6 sm:gap-8 text-xs sm:text-sm font-semibold text-slate-500">
             <button onClick={() => setDemoOpen(true)} className="hover:text-white transition-colors">Test Sandbox</button>
             <button onClick={() => setPrivacyOpen(true)} className="hover:text-white transition-colors">Privacy Policy</button>
             <button onClick={() => setTermsOpen(true)} className="hover:text-white transition-colors">Terms of Service</button>
@@ -436,17 +436,17 @@ export default function Home() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="bg-[#151C2C] rounded-[2rem] shadow-2xl max-w-4xl w-full border border-white/10 overflow-hidden"
+            className="bg-[#151C2C] rounded-[2rem] shadow-2xl max-w-4xl w-full border border-white/10 overflow-hidden flex flex-col max-h-[90vh]"
           >
-            <div className="bg-[#1A2235] border-b border-white/5 p-8 sm:p-10 relative">
-              <button onClick={() => setDemoOpen(false)} className="absolute top-8 right-8 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full w-10 h-10 flex items-center justify-center transition-colors">
+            <div className="bg-[#1A2235] border-b border-white/5 p-6 sm:p-8 relative shrink-0">
+              <button onClick={() => setDemoOpen(false)} className="absolute top-6 right-6 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-colors">
                 <X size={20} />
               </button>
-              <h2 className="font-black text-3xl text-white mb-3 tracking-tight">Select Sandbox Environment</h2>
-              <p className="text-slate-400 font-medium text-lg">Experience our 4-Tier RBAC architecture. Select a role below to auto-login into the isolated database.</p>
+              <h2 className="font-black text-2xl sm:text-3xl text-white mb-2 tracking-tight pr-10">Select Sandbox Environment</h2>
+              <p className="text-slate-400 font-medium text-sm sm:text-base">Experience our 4-Tier RBAC architecture. Select a role below to auto-login into the isolated database.</p>
             </div>
             
-            <div className="p-8 sm:p-10 grid sm:grid-cols-2 gap-6 bg-[#0B0F19]">
+            <div className="p-6 sm:p-10 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 bg-[#0B0F19] overflow-y-auto custom-scrollbar">
               <DemoCard 
                 icon={<User size={24} className="text-emerald-400" />}
                 title="Client / User"
@@ -483,13 +483,13 @@ export default function Home() {
       {/* Standard Modals */}
       {privacyOpen && (
         <Modal title="Privacy Policy" close={() => setPrivacyOpen(false)}>
-          <p className="mb-3">At H&P Solutions, your privacy is our priority. We employ enterprise-grade encryption to protect your personal and operational data.</p>
+          <p className="mb-3 text-sm sm:text-base">At H&P Solutions, your privacy is our priority. We employ enterprise-grade encryption to protect your personal and operational data.</p>
         </Modal>
       )}
 
       {termsOpen && (
         <Modal title="Terms of Service" close={() => setTermsOpen(false)}>
-          <p className="mb-3">By accessing the H&P Solutions Enterprise Portal, you agree to comply with our organizational security policies.</p>
+          <p className="mb-3 text-sm sm:text-base">By accessing the H&P Solutions Enterprise Portal, you agree to comply with our organizational security policies.</p>
         </Modal>
       )}
     </div>
@@ -500,15 +500,15 @@ function DemoCard({ icon, title, desc, onClick, bg }) {
   return (
     <div 
       onClick={onClick}
-      className={`p-6 rounded-[1.5rem] border cursor-pointer transition-all duration-300 group ${bg}`}
+      className={`p-5 sm:p-6 rounded-[1.5rem] border cursor-pointer transition-all duration-300 group ${bg}`}
     >
-      <div className="flex items-center gap-4 mb-4">
-        <div className="bg-[#0B0F19] w-12 h-12 rounded-xl flex items-center justify-center border border-white/5 shadow-inner">
+      <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+        <div className="bg-[#0B0F19] w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center border border-white/5 shadow-inner shrink-0">
           {icon}
         </div>
-        <h4 className="font-bold text-white text-xl">{title}</h4>
+        <h4 className="font-bold text-white text-lg sm:text-xl">{title}</h4>
       </div>
-      <p className="text-sm text-slate-400 font-medium leading-relaxed">{desc}</p>
+      <p className="text-xs sm:text-sm text-slate-400 font-medium leading-relaxed">{desc}</p>
     </div>
   );
 }
@@ -520,13 +520,13 @@ function CategoryCard({ icon, title, desc, delay }) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
       viewport={{ once: true }}
-      className="bg-[#151C2C] p-8 rounded-[2rem] border border-white/5 hover:border-white/10 transition-all duration-300 group"
+      className="bg-[#151C2C] p-6 sm:p-8 rounded-[2rem] border border-white/5 hover:border-white/10 transition-all duration-300 group text-center sm:text-left"
     >
-      <div className="w-14 h-14 rounded-xl bg-[#0B0F19] flex items-center justify-center mb-6 border border-white/5">
+      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-[#0B0F19] flex items-center justify-center mb-5 sm:mb-6 border border-white/5 mx-auto sm:mx-0">
         {icon}
       </div>
-      <h3 className="text-lg font-bold text-white mb-3">{title}</h3>
-      <p className="text-sm text-slate-400 font-medium leading-relaxed">{desc}</p>
+      <h3 className="text-base sm:text-lg font-bold text-white mb-2 sm:mb-3">{title}</h3>
+      <p className="text-xs sm:text-sm text-slate-400 font-medium leading-relaxed">{desc}</p>
     </motion.div>
   );
 }
@@ -538,17 +538,17 @@ function ReviewCard({ name, role, text, delay }) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
       viewport={{ once: true }}
-      className="bg-[#151C2C] border border-white/5 p-8 rounded-[2rem] relative hover:border-white/10 transition-colors"
+      className="bg-[#151C2C] border border-white/5 p-6 sm:p-8 rounded-[2rem] relative hover:border-white/10 transition-colors"
     >
-      <MessageSquareQuote size={40} className="absolute top-8 right-8 text-white/5" />
-      <p className="text-slate-300 font-medium mb-8 leading-relaxed">"{text}"</p>
-      <div className="flex items-center gap-4 pt-6 border-t border-white/5">
-        <div className="w-12 h-12 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+      <MessageSquareQuote size={32} className="absolute top-6 right-6 text-white/5 sm:w-10 sm:h-10 sm:top-8 sm:right-8" />
+      <p className="text-sm sm:text-base text-slate-300 font-medium mb-6 sm:mb-8 leading-relaxed">"{text}"</p>
+      <div className="flex items-center gap-3 sm:gap-4 pt-5 sm:pt-6 border-t border-white/5">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg shrink-0">
           {name.charAt(0)}
         </div>
-        <div>
-          <h4 className="font-bold text-white text-base">{name}</h4>
-          <p className="text-xs text-slate-400 mt-0.5">{role}</p>
+        <div className="overflow-hidden">
+          <h4 className="font-bold text-white text-sm sm:text-base truncate">{name}</h4>
+          <p className="text-[10px] sm:text-xs text-slate-400 mt-0.5 truncate">{role}</p>
         </div>
       </div>
     </motion.div>
@@ -561,30 +561,30 @@ function Modal({ title, children, close }) {
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-[#151C2C] p-8 rounded-[2rem] shadow-2xl max-w-lg w-full border border-white/10 relative"
+        className="bg-[#151C2C] p-6 sm:p-8 rounded-[2rem] shadow-2xl max-w-lg w-full border border-white/10 relative"
       >
         <button 
           onClick={close}
-          className="absolute top-6 right-6 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full w-10 h-10 flex items-center justify-center transition-colors"
+          className="absolute top-5 right-5 sm:top-6 sm:right-6 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center transition-colors"
         >
-          <X size={20} />
+          <X size={18} className="sm:w-5 sm:h-5" />
         </button>
         
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 bg-blue-500/10 text-blue-400 rounded-xl flex items-center justify-center border border-blue-500/20">
-            <ShieldCheck size={24} />
+        <div className="flex items-center gap-3 sm:gap-4 mb-5 sm:mb-6 pr-8">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500/10 text-blue-400 rounded-xl flex items-center justify-center border border-blue-500/20 shrink-0">
+            <ShieldCheck size={20} className="sm:w-6 sm:h-6" />
           </div>
-          <h2 className="font-bold text-2xl text-white">{title}</h2>
+          <h2 className="font-bold text-xl sm:text-2xl text-white truncate">{title}</h2>
         </div>
         
         <div className="text-slate-400 font-medium leading-relaxed">
           {children}
         </div>
         
-        <div className="mt-8">
+        <div className="mt-6 sm:mt-8">
           <button 
             onClick={close}
-            className="w-full bg-white text-[#0B0F19] font-bold py-3.5 rounded-xl hover:bg-slate-200 transition-colors"
+            className="w-full bg-white text-[#0B0F19] font-bold py-3 sm:py-3.5 rounded-xl hover:bg-slate-200 transition-colors text-sm sm:text-base"
           >
             I Understand & Agree
           </button>
