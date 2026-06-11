@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import api from "../api/api";
 import Toast from "../components/Toast";
 import useToast from "../components/useToast";
-import { Package, Inbox, CheckCircle, XCircle, Clock, X, Send, Truck, Settings } from "lucide-react";
+import { Package, Inbox, CheckCircle, XCircle, Clock, X, Send, Truck, Settings, CheckSquare } from "lucide-react";
 
 export default function ManagerOrders() {
   const [orders, setOrders] = useState([]);
@@ -84,7 +84,7 @@ export default function ManagerOrders() {
     if (status === "Approved") return <CheckCircle size={14} />;
     if (status === "Processing") return <Settings size={14} />;
     if (status === "Shipped") return <Truck size={14} />;
-    if (status === "Completed") return <CheckCircle size={14} />;
+    if (status === "Completed") return <CheckSquare size={14} />;
     if (status === "Rejected") return <XCircle size={14} />;
     return <Clock size={14} />;
   };
@@ -159,7 +159,8 @@ export default function ManagerOrders() {
                       </td>
                       <td className="p-4">
                         <span className={`px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 w-fit ${badgeStyle(status)}`}>
-                          {statusIcon(status)} {status}
+                          {statusIcon(status)} 
+                          {status === "Completed" ? "Delivered" : status}
                         </span>
                       </td>
                       <td className="p-4">{priorityBadge(o)}</td>
@@ -186,9 +187,9 @@ export default function ManagerOrders() {
                         {status === "Approved" && (
                           <button
                             onClick={() => updateStatus(o._id, "Processing")}
-                            className="px-4 py-2 rounded-lg text-sm font-bold text-white bg-indigo-500 hover:bg-indigo-600 shadow-sm shadow-indigo-500/20 transition-all hover:-translate-y-0.5 w-full sm:w-auto text-center"
+                            className="px-4 py-2 rounded-lg text-sm font-bold text-white bg-indigo-500 hover:bg-indigo-600 shadow-sm shadow-indigo-500/20 transition-all hover:-translate-y-0.5 w-full sm:w-auto text-center flex items-center justify-center gap-2"
                           >
-                            Mark as Processing
+                            <Settings size={16} /> Mark as Processing
                           </button>
                         )}
 
@@ -201,13 +202,23 @@ export default function ManagerOrders() {
                           </button>
                         )}
 
+                        {/* 🔥 NEW PREMIUM OUT FOR DELIVERY STATUS */}
                         {status === "Shipped" && (
-                          <span className="text-sm font-bold text-slate-400 dark:text-slate-500 italic flex items-center gap-1.5">
-                            <Clock size={14} className="animate-spin-slow" /> Auto-Completing...
-                          </span>
+                          <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 px-4 py-2 rounded-xl text-blue-600 dark:text-blue-400">
+                            <Truck size={16} className="animate-pulse" />
+                            <span className="text-sm font-bold italic tracking-wide">Out for Delivery... Arriving Shortly</span>
+                          </div>
                         )}
 
-                        {["Completed", "Rejected"].includes(status) && (
+                        {/* 🔥 NEW PREMIUM DELIVERED STATUS */}
+                        {status === "Completed" && (
+                          <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 px-4 py-2 rounded-xl text-emerald-600 dark:text-emerald-400">
+                            <CheckCircle size={16} />
+                            <span className="text-sm font-bold tracking-wide">Successfully Delivered</span>
+                          </div>
+                        )}
+                        
+                        {status === "Rejected" && (
                           <span className="text-sm font-bold text-slate-400 dark:text-slate-500">Pipeline Finished</span>
                         )}
 

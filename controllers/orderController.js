@@ -33,10 +33,32 @@ const getCatchyTitle = (action) => {
   return titles[action] || "Notification Update";
 };
 
+// 🔥 LEGACY MIGRATION: Purane atke hue orders ko automatically 'Completed' mark karne ke liye
+const migrateLegacyOrders = async () => {
+  try {
+    // 5 Minute se purane atke hue Approved/Processing orders
+    const fiveMinsAgo = new Date(Date.now() - 5 * 60 * 1000); 
+    const updated = await Order.updateMany(
+      {
+        status: { $in: ["Approved", "Processing"] },
+        updatedAt: { $lte: fiveMinsAgo },
+      },
+      {
+        status: "Completed",
+        completedAt: new Date(),
+      }
+    );
+    if(updated.modifiedCount > 0) {
+        console.log("🔥 LEGACY ORDERS MIGRATED TO COMPLETED (DELIVERED):", updated.modifiedCount);
+    }
+  } catch (err) {
+    console.error("LEGACY MIGRATION ERROR:", err.message);
+  }
+};
+
 const fixOldShippedOrders = async () => {
   try {
     const twoMinsAgo = new Date(Date.now() - 2 * 60 * 1000); 
-
     const updated = await Order.updateMany(
       {
         status: "Shipped",
@@ -47,7 +69,6 @@ const fixOldShippedOrders = async () => {
         completedAt: new Date(),
       }
     );
-
     if(updated.modifiedCount > 0) {
         console.log("🔥 OLD SHIPPED FIXED:", updated.modifiedCount);
     }
@@ -56,12 +77,11 @@ const fixOldShippedOrders = async () => {
   }
 };
 
-// 🔥 This handles the FINAL step automatically (Shipped -> Completed)
+// 🔥 FINAL AUTO-DELIVERY CHECKER (Shipped -> Completed after 20 seconds)
 const startAutoDeliveryChecker = () => {
   setInterval(async () => {
     try {
       const orders = await Order.find({ status: "Shipped" });
-
       for (const o of orders) {
         const timePassedMs = Date.now() - new Date(o.updatedAt).getTime();
         
@@ -247,7 +267,6 @@ const updateOrderStatus = async (req, res) => {
 
     await order.save({ validateBeforeSave: false });
 
-    // Send corresponding notifications to the user based on manual steps
     if (status === "Approved") {
       await createNotification(
         order.user, "user", "ORDER_APPROVED",
@@ -493,6 +512,8 @@ const capturePayment = async (req, res) => {
   }
 };
 
+// Initialize Background Workers
+migrateLegacyOrders();
 fixOldShippedOrders();
 startAutoDeliveryChecker();
 
