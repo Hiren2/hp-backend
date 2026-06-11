@@ -124,3 +124,23 @@ exports.deleteNotification = async (req, res) => {
     res.status(500).json({ message: "Failed to delete" });
   }
 };
+
+// 🔥 NEW: Enterprise Bulk Delete (Solves N+1 API Loop Issue)
+exports.clearAllNotifications = async (req, res) => {
+  try {
+    if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // Har role sirf apne rules ke mutabiq alerts clear kar sakta hai
+    const query = buildQuery(req.user);
+
+    await Notification.deleteMany(query);
+    
+    res.json({ message: "All notifications cleared successfully" });
+
+  } catch (err) {
+    console.error("🔥 CLEAR ALL ERROR:", err.message);
+    res.status(500).json({ message: "Failed to clear notifications" });
+  }
+};
