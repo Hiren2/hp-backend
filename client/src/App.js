@@ -25,6 +25,7 @@ import AdminManagers from "./pages/AdminManagers";
 import AdminStats from "./pages/AdminStats";
 import AdminOrderHistory from "./pages/AdminOrderHistory";
 import SystemActivity from "./pages/SystemActivity";
+import AdminReviews from "./pages/AdminReviews"; // 🔥 NEW IMPORT
 
 import ManagerDashboard from "./pages/ManagerDashboard";
 import ManagerOrders from "./pages/ManagerOrders";
@@ -36,10 +37,8 @@ import SuperAdminManageAdmins from "./pages/SuperAdminManageAdmins";
 import { getUser } from "./utils/auth";
 
 // 🔥 MULTI-TAB INSTANT SYNC LOGIC
-// Agar kisi aur tab me login, logout, ya token change hua, toh ye tab instantly reload ho jayegi.
 window.addEventListener("storage", (e) => {
   if (e.key === "token" || e.key === "user" || e.key === "app_logout" || e.key === "logout") {
-    // Agar login page pe nahi hai, toh hi reload karo
     if (!window.location.pathname.includes("/login")) {
       window.location.reload();
     }
@@ -164,6 +163,15 @@ export default function App() {
             element={
               <RequireAdmin>
                 <SystemActivity />
+              </RequireAdmin>
+            }
+          />
+          {/* 🔥 NEW FEEDBACK HUB ROUTE */}
+          <Route
+            path="/admin/reviews"
+            element={
+              <RequireAdmin>
+                <AdminReviews />
               </RequireAdmin>
             }
           />
