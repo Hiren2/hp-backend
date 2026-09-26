@@ -1,70 +1,126 @@
-# Getting Started with Create React App
+# 🚀 H&P Solutions: Enterprise SaaS Marketplace Engine
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Version](https://img.shields.io/badge/version-1.0.0--enterprise-blue.svg)
+![Stack](https://img.shields.io/badge/stack-MERN-green.svg)
+![AI](https://img.shields.io/badge/AI-Gemini_NLP-purple.svg)
+![License](https://img.shields.io/badge/license-Commercial-red.svg)
 
-## Available Scripts
+A high-performance, white-label B2B/B2C service marketplace engineered for scale. Built with a modern **MERN Stack**, this architecture features strict Role-Based Access Control (RBAC), multi-tenant data isolation, an autonomous AI support engine, and a scalable order processing pipeline.
 
-In the project directory, you can run:
+Perfect for agencies, service businesses, and SaaS founders looking for a turnkey, production-ready solution.
 
-### `npm start`
+## 📸 System Previews
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1.  Admin Control Center : <img width="1122" height="647" alt="image" src="https://github.com/user-attachments/assets/2175f130-a0cd-4eef-bacc-49390245bd47" />
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2. Checkout / Cart : <img width="1120" height="593" alt="image" src="https://github.com/user-attachments/assets/b1de194b-a76a-4805-ac38-cee6f13b94fe" />
 
-### `npm test`
+3. Manager Pipeline : <img width="1121" height="579" alt="image" src="https://github.com/user-attachments/assets/c3632ae3-c17e-492b-b2b1-8fc629dee9f6" />
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+4. Feedback Hub : <img width="1123" height="643" alt="image" src="https://github.com/user-attachments/assets/68d2afc8-088e-44cf-97e6-90a0ec89e6f6" />
 
-### `npm run build`
+5. AI Chatbot : <img width="1122" height="655" alt="image" src="https://github.com/user-attachments/assets/14a3cd26-f8e8-40c5-ba38-d665b8ae45f8" />
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## ✨ Enterprise-Grade Features
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 🔐 4-Tier Strict RBAC & Data Isolation
+- **Roles:** User, Manager, Admin, and Super Admin.
+- **Sandbox Firewall:** Parallel universe data routing ensures `Demo` accounts never leak or modify live production data.
+- **JWT Cryptography:** Fully secured routes with isolated middleware token parsing.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 🤖 Autonomous AI ServiceBot (Gemini NLP)
+- **Live Generative AI:** Handles customer queries, order tracking, and service guidance.
+- **Graceful Edge Fallback:** Advanced local RegEx-based knowledge engine takes over instantly if API limits are hit, ensuring 0% downtime in customer support.
+- **Multi-lingual:** Native query understanding (English, Hindi, Gujarati).
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 🛒 High-Converting Glassmorphism Checkout
+- **Premium UI:** Apple-like floating invoices, 3D interactive credit card verification UI, and smooth animations.
+- **Smart Gateway Integration:** Pre-configured simulated secure payment gateways (UPI / Cards / COD) with dynamic tax, discount, and shipping calculations.
 
-## Learn More
+### 📊 Smart Order Pipeline (State Machine)
+- **Manager Workflows:** `Pending` ➔ `Approved` ➔ `Processing` ➔ `Shipped`.
+- **Auto-Fulfillment Cron:** Orders are automatically marked as `Delivered` upon reaching destination timeframes, updating live metrics instantly.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 📈 Global Telemetry & Feedback Hub
+- **Admin Control Center:** Live analytics, revenue graphs, and system tracking.
+- **Feedback Hub:** Real-time customer insight dashboard allowing admins to filter, monitor, and moderate platform reviews.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## 💻 Technology Stack
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+* **Frontend:** React.js, Tailwind CSS V3, Framer Motion, Lucide Icons, Swiper.js
+* **Backend:** Node.js, Express.js
+* **Database:** MongoDB (with complex Aggregation Pipelines), Mongoose ORM
+* **Security:** Bcrypt.js, JSON Web Tokens (JWT)
+* **AI Engine:** Google Gemini AI API
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🗓️ Release & Development Sprint
+**Enterprise Stable Release Phase:** `30-05-2026 to 09-06-2026`
+This intensive development window successfully culminated in the finalization of the Sandbox Data Isolation modules, the offline AI fallback engine, and the multi-tier order state machine. The current build reflects the robust stability achieved during this sprint.
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 🛠️ Quick Start & Installation
 
-### Advanced Configuration
+### Prerequisites
+- Node.js (v16+)
+- MongoDB URI
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Setup Instructions
 
-### Deployment
+1. **Clone the repository:**
+   ```bash
+   
+   git clone [https://github.com/Hiren2/hp-solutions-marketplace.git](https://github.com/Hiren2/hp-solutions-marketplace.git)
+   cd hp-solutions-marketplace
+   Install Dependencies:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Bash
+# Install Backend Dependencies
+cd backend
+npm install
 
-### `npm run build` fails to minify
+# Install Frontend Dependencies
+cd ../frontend
+npm install
+Environment Configuration:
+Rename .env.example to .env in the backend folder and provide your keys:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Code snippet
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secure_jwt_secret
+GEMINI_API_KEY=your_gemini_api_key
+Run the Application:
+
+Bash
+# Run Backend (from /backend)
+npm run dev
+
+# Run Frontend (from /frontend)
+npm start
+
+
+💼 Commercial & Licensing
+This software architecture is a proprietary asset. It is available for Commercial Licensing or Full Exclusive Buyout.
+
+Single Deployment License: Ideal for agencies looking to deploy a white-label version for a client.
+
+Full IP Acquisition: Complete source code transfer and intellectual property handover for SaaS founders.
+📺 **Video Walkthrough:** [Watch the Full Demo Here](https://youtu.be/h-tCjuylb34)
+
+Contact for Demos, Pricing, and Acquisition:
+
+📧 Email: dev048338@gmail.com
+
+
+
+Built with precision and engineered for scale.
