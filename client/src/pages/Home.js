@@ -89,7 +89,7 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-300 to-fuchsia-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </div>
             <span className="font-black text-xl tracking-tighter text-white">
-              H&P<span className="text-cyan-400">.</span>
+              H&P<span className="text-cyan-400"></span>
             </span>
           </div>
           
