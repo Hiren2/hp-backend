@@ -27,7 +27,8 @@ import {
   Activity,
   Server,
   ChevronRight,
-  Globe
+  Globe,
+  Terminal
 } from "lucide-react";
 
 // --- Ultra-Premium Cinematic Animation Variants ---
@@ -49,6 +50,11 @@ const fadeUpVariant = {
 const floatAnim = {
   y: [0, -20, 0],
   transition: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+};
+
+const floatVariantReverse = {
+  y: [0, 20, 0],
+  transition: { duration: 5, repeat: Infinity, ease: "easeInOut" }
 };
 
 export default function Home() {
@@ -94,7 +100,7 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-300 to-fuchsia-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </div>
             <span className="font-black text-xl tracking-tighter text-white">
-              H&P<span className="text-cyan-400"></span>
+              H&P<span className="text-cyan-400">.</span>
             </span>
           </div>
           
@@ -126,12 +132,13 @@ export default function Home() {
           pagination={{ clickable: true, renderBullet: (index, className) => `<span class="${className} custom-bullet"></span>` }}
           className="h-full w-full custom-swiper"
         >
-          {/* POSTER 1: Massive Typography & Glass */}
+          {/* POSTER 1: Massive Typography & Glass Dashboard (Right Fill) */}
           <SwiperSlide>
-            <div className="relative w-full h-full flex flex-col justify-center px-6 lg:px-20 overflow-hidden">
+            <div className="relative w-full h-full flex flex-col md:flex-row items-center justify-between px-6 lg:px-20 overflow-hidden">
               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[50vw] h-[100vh] bg-gradient-to-l from-cyan-900/20 to-transparent blur-3xl pointer-events-none"></div>
               
-              <motion.div initial="hidden" whileInView="show" variants={staggerContainer} className="max-w-6xl z-10 mt-20">
+              {/* Left Content */}
+              <motion.div initial="hidden" whileInView="show" variants={staggerContainer} className="w-full md:w-[55%] z-10 mt-20 md:mt-0">
                 <div className="overflow-hidden mb-4">
                   <motion.div variants={textReveal} className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-cyan-500/30 text-cyan-400 text-xs font-black uppercase tracking-[0.3em] bg-cyan-950/30 backdrop-blur-md">
                     <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse shadow-[0_0_10px_#22d3ee]"></span>
@@ -139,7 +146,7 @@ export default function Home() {
                   </motion.div>
                 </div>
                 
-                <h1 className="text-6xl sm:text-8xl md:text-[140px] font-black tracking-tighter leading-[0.85] mb-8" data-swiper-parallax="-300">
+                <h1 className="text-6xl sm:text-7xl lg:text-[120px] xl:text-[140px] font-black tracking-tighter leading-[0.85] mb-8" data-swiper-parallax="-300">
                   <div className="overflow-hidden py-2"><motion.div variants={textReveal}>ENTERPRISE</motion.div></div>
                   <div className="overflow-hidden py-2">
                     <motion.div variants={textReveal} className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-white to-fuchsia-500">
@@ -148,32 +155,64 @@ export default function Home() {
                   </div>
                 </h1>
                 
-                <motion.p variants={fadeUpVariant} className="text-lg md:text-3xl text-white/50 font-light max-w-3xl mb-12 leading-tight" data-swiper-parallax="-200">
+                <motion.p variants={fadeUpVariant} className="text-lg md:text-2xl lg:text-3xl text-white/50 font-light max-w-2xl mb-12 leading-tight" data-swiper-parallax="-200">
                   Deploy a highly secure 4-Tier RBAC architecture instantly. Experience full white-label scaling with military-grade Multi-Tenancy.
                 </motion.p>
                 
                 <motion.div variants={fadeUpVariant} className="flex gap-4" data-swiper-parallax="-100">
-                  <button onClick={() => setDemoOpen(true)} className="h-16 px-10 rounded-full bg-cyan-500 text-black font-black uppercase tracking-widest flex items-center gap-3 hover:bg-cyan-400 hover:shadow-[0_0_40px_rgba(34,211,238,0.5)] transition-all">
+                  <button onClick={() => setDemoOpen(true)} className="h-14 md:h-16 px-8 md:px-10 rounded-full bg-cyan-500 text-black font-black uppercase tracking-widest flex items-center gap-3 hover:bg-cyan-400 hover:shadow-[0_0_40px_rgba(34,211,238,0.5)] transition-all">
                     Initialize Demo <ArrowRight size={20} />
                   </button>
+                </motion.div>
+              </motion.div>
+
+              {/* Right Content - Floating Glass Dashboard */}
+              <motion.div initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }} className="hidden md:flex w-full md:w-[45%] justify-center items-center z-10 relative perspective-1000">
+                <motion.div variants={floatAnim} animate="animate" className="relative w-full max-w-md aspect-square preserve-3d" style={{ rotateY: -15, rotateX: 5 }}>
+                  {/* Glass Card */}
+                  <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_0_80px_rgba(34,211,238,0.15)] flex flex-col p-6 overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-fuchsia-500"></div>
+                    <div className="flex justify-between items-center border-b border-white/5 pb-4 mb-6">
+                      <div className="flex gap-2">
+                        <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+                      </div>
+                      <div className="text-xs font-mono text-cyan-400 font-bold bg-cyan-500/10 px-3 py-1 rounded-full">RBAC_NODE: ACTIVE</div>
+                    </div>
+                    {/* Mock Data Bars */}
+                    <div className="flex-1 flex flex-col gap-5 justify-center">
+                      <div className="w-full h-10 bg-white/[0.03] rounded-lg relative overflow-hidden"><motion.div initial={{ width: 0 }} whileInView={{ width: "85%" }} transition={{ duration: 1.5, delay: 0.5 }} className="absolute left-0 top-0 h-full bg-gradient-to-r from-cyan-500/40 to-cyan-400/80"></motion.div></div>
+                      <div className="w-full h-10 bg-white/[0.03] rounded-lg relative overflow-hidden"><motion.div initial={{ width: 0 }} whileInView={{ width: "45%" }} transition={{ duration: 1.5, delay: 0.7 }} className="absolute left-0 top-0 h-full bg-gradient-to-r from-fuchsia-500/40 to-fuchsia-400/80"></motion.div></div>
+                      <div className="w-full h-10 bg-white/[0.03] rounded-lg relative overflow-hidden"><motion.div initial={{ width: 0 }} whileInView={{ width: "92%" }} transition={{ duration: 1.5, delay: 0.9 }} className="absolute left-0 top-0 h-full bg-gradient-to-r from-blue-500/40 to-blue-400/80"></motion.div></div>
+                    </div>
+                  </div>
+                  {/* Floating Badge */}
+                  <motion.div variants={floatVariantReverse} animate="animate" className="absolute -bottom-8 -left-12 bg-black/80 backdrop-blur-xl border border-cyan-500/30 p-5 rounded-2xl flex items-center gap-4 shadow-2xl">
+                    <div className="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30"><Activity className="text-cyan-400 animate-pulse" size={24} /></div>
+                    <div>
+                      <div className="text-[10px] text-white/50 uppercase tracking-widest font-bold">System Uptime</div>
+                      <div className="text-2xl font-black text-white">99.99%</div>
+                    </div>
+                  </motion.div>
                 </motion.div>
               </motion.div>
             </div>
           </SwiperSlide>
 
-          {/* POSTER 2: AI Gemini */}
+          {/* POSTER 2: AI Gemini (Right Fill - Terminal) */}
           <SwiperSlide>
-            <div className="relative w-full h-full flex flex-col justify-center px-6 lg:px-20 overflow-hidden">
+            <div className="relative w-full h-full flex flex-col md:flex-row items-center justify-between px-6 lg:px-20 overflow-hidden">
               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[50vw] h-[100vh] bg-gradient-to-l from-fuchsia-900/20 to-transparent blur-3xl pointer-events-none"></div>
               
-              <motion.div initial="hidden" whileInView="show" variants={staggerContainer} className="max-w-6xl z-10 mt-20">
+              <motion.div initial="hidden" whileInView="show" variants={staggerContainer} className="w-full md:w-[55%] z-10 mt-20 md:mt-0">
                 <div className="overflow-hidden mb-4">
                   <motion.div variants={textReveal} className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-fuchsia-500/30 text-fuchsia-400 text-xs font-black uppercase tracking-[0.3em] bg-fuchsia-950/30 backdrop-blur-md">
                     <Cpu size={14} /> Autonomous Workflow
                   </motion.div>
                 </div>
                 
-                <h1 className="text-6xl sm:text-8xl md:text-[140px] font-black tracking-tighter leading-[0.85] mb-8" data-swiper-parallax="-300">
+                <h1 className="text-6xl sm:text-7xl lg:text-[120px] xl:text-[140px] font-black tracking-tighter leading-[0.85] mb-8" data-swiper-parallax="-300">
                   <div className="overflow-hidden py-2"><motion.div variants={textReveal}>GEMINI NLP</motion.div></div>
                   <div className="overflow-hidden py-2">
                     <motion.div variants={textReveal} className="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 via-pink-200 to-orange-400">
@@ -182,24 +221,48 @@ export default function Home() {
                   </div>
                 </h1>
                 
-                <motion.p variants={fadeUpVariant} className="text-lg md:text-3xl text-white/50 font-light max-w-3xl mb-12 leading-tight" data-swiper-parallax="-200">
+                <motion.p variants={fadeUpVariant} className="text-lg md:text-2xl lg:text-3xl text-white/50 font-light max-w-2xl mb-12 leading-tight" data-swiper-parallax="-200">
                   Embedded natural language bots resolve support queries and optimize pipelines with absolute zero human oversight.
                 </motion.p>
                 
                 <motion.div variants={fadeUpVariant} className="flex gap-4" data-swiper-parallax="-100">
-                  <button onClick={() => setDemoOpen(true)} className="h-16 px-10 rounded-full bg-fuchsia-500 text-white font-black uppercase tracking-widest flex items-center gap-3 hover:bg-fuchsia-400 hover:shadow-[0_0_40px_rgba(217,70,239,0.5)] transition-all">
+                  <button onClick={() => setDemoOpen(true)} className="h-14 md:h-16 px-8 md:px-10 rounded-full bg-fuchsia-500 text-white font-black uppercase tracking-widest flex items-center gap-3 hover:bg-fuchsia-400 hover:shadow-[0_0_40px_rgba(217,70,239,0.5)] transition-all">
                     Launch AI Core <ArrowRight size={20} />
                   </button>
+                </motion.div>
+              </motion.div>
+
+              {/* Right Content - Floating AI Terminal */}
+              <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 1 }} className="hidden md:flex w-full md:w-[45%] justify-center items-center z-10 relative">
+                <motion.div variants={floatAnim} animate="animate" className="w-full max-w-lg bg-[#0A0A0A] rounded-2xl border border-white/10 shadow-[0_0_100px_rgba(217,70,239,0.15)] overflow-hidden">
+                  <div className="bg-white/5 px-4 py-3 flex items-center gap-3 border-b border-white/10">
+                    <Terminal size={16} className="text-fuchsia-400" />
+                    <span className="text-xs font-mono text-white/50">gemini_core_engine.sh</span>
+                  </div>
+                  <div className="p-6 font-mono text-sm leading-relaxed text-white/70 h-[300px] flex flex-col justify-end overflow-hidden">
+                    <p className="text-green-400 mb-2">{">"} System initializing...</p>
+                    <p className="text-white/50 mb-2">{">"} Connecting to Google Gemini NLP...</p>
+                    <p className="text-cyan-400 mb-2">{">"} Connection established (99.9% stable).</p>
+                    <p className="text-white/50 mb-4">{">"} Parsing user intent payload:</p>
+                    <div className="pl-4 border-l-2 border-fuchsia-500/30 text-fuchsia-300">
+                      {"{"}<br/>
+                      &nbsp;&nbsp;"action": "resolve_order",<br/>
+                      &nbsp;&nbsp;"confidence": 0.98,<br/>
+                      &nbsp;&nbsp;"status": "autonomous_override_engaged"<br/>
+                      {"}"}
+                    </div>
+                    <motion.div animate={{ opacity: [0, 1, 0] }} transition={{ duration: 1, repeat: Infinity }} className="w-3 h-5 bg-fuchsia-500 mt-4"></motion.div>
+                  </div>
                 </motion.div>
               </motion.div>
             </div>
           </SwiperSlide>
 
-          {/* POSTER 3: Strict Sandbox */}
+          {/* POSTER 3: Strict Sandbox (Right Fill - Holographic Rings) */}
           <SwiperSlide>
-            <div className="relative w-full h-full flex flex-col justify-center px-6 lg:px-20 overflow-hidden text-center sm:text-left items-center sm:items-start">
-              <motion.div initial="hidden" whileInView="show" variants={staggerContainer} className="max-w-6xl z-10 mt-20">
-                <h1 className="text-6xl sm:text-8xl md:text-[140px] font-black tracking-tighter leading-[0.85] mb-8">
+            <div className="relative w-full h-full flex flex-col md:flex-row items-center justify-between px-6 lg:px-20 overflow-hidden">
+              <motion.div initial="hidden" whileInView="show" variants={staggerContainer} className="w-full md:w-[55%] z-10 mt-20 md:mt-0">
+                <h1 className="text-6xl sm:text-7xl lg:text-[120px] xl:text-[140px] font-black tracking-tighter leading-[0.85] mb-8">
                   <div className="overflow-hidden py-2"><motion.div variants={textReveal}>ISOLATED</motion.div></div>
                   <div className="overflow-hidden py-2">
                     <motion.div variants={textReveal} className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-500">
@@ -207,12 +270,31 @@ export default function Home() {
                     </motion.div>
                   </div>
                 </h1>
-                <motion.p variants={fadeUpVariant} className="text-lg md:text-3xl text-white/50 font-light max-w-3xl mb-12 leading-tight">
+                <motion.p variants={fadeUpVariant} className="text-lg md:text-2xl lg:text-3xl text-white/50 font-light max-w-2xl mb-12 leading-tight">
                   Never leak test actions into live production. Our Multi-Tenancy firewall ensures complete parallel database isolation.
                 </motion.p>
-                <motion.button variants={fadeUpVariant} onClick={() => setDemoOpen(true)} className="h-16 px-10 rounded-full bg-white text-black font-black uppercase tracking-widest flex items-center gap-3 hover:bg-gray-200 transition-all mx-auto sm:mx-0">
+                <motion.button variants={fadeUpVariant} onClick={() => setDemoOpen(true)} className="h-14 md:h-16 px-8 md:px-10 rounded-full bg-white text-black font-black uppercase tracking-widest flex items-center gap-3 hover:bg-gray-200 transition-all">
                   Test Firewall <Shield size={20} />
                 </motion.button>
+              </motion.div>
+
+              {/* Right Content - Rotating Hologram */}
+              <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 1.5 }} className="hidden md:flex w-full md:w-[45%] justify-center items-center z-10 relative">
+                <div className="relative w-[300px] h-[300px] flex items-center justify-center">
+                  {/* Outer Ring */}
+                  <motion.div animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className="absolute inset-0 rounded-full border border-dashed border-purple-500/50"></motion.div>
+                  {/* Middle Ring */}
+                  <motion.div animate={{ rotate: -360 }} transition={{ duration: 15, repeat: Infinity, ease: "linear" }} className="absolute inset-4 rounded-full border-2 border-indigo-500/30 shadow-[0_0_30px_rgba(99,102,241,0.2)]"></motion.div>
+                  {/* Inner Core */}
+                  <div className="w-24 h-24 bg-purple-500/20 rounded-full flex items-center justify-center border border-purple-400 shadow-[0_0_50px_rgba(168,85,247,0.6)] backdrop-blur-md">
+                    <Database size={32} className="text-white" />
+                  </div>
+                  {/* Security Lock Badge */}
+                  <div className="absolute top-0 right-0 bg-black border border-white/10 p-3 rounded-xl shadow-xl flex items-center gap-2">
+                    <ShieldCheck className="text-green-400" size={16} />
+                    <span className="text-xs font-bold uppercase">Encrypted</span>
+                  </div>
+                </div>
               </motion.div>
             </div>
           </SwiperSlide>
@@ -348,6 +430,8 @@ export default function Home() {
         .swiper-pagination-bullet-active.custom-bullet { background: #22d3ee; box-shadow: 0 0 10px #22d3ee; }
         @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
         .animate-marquee { animation: marquee 15s linear infinite; }
+        .preserve-3d { transform-style: preserve-3d; }
+        .perspective-1000 { perspective: 1000px; }
       `}} />
     </div>
   );
