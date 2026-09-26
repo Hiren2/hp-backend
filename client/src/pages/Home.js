@@ -41,13 +41,14 @@ const staggerContainer = {
   show: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2 } }
 };
 
-const floatAnim = {
-  y: [0, -20, 0],
-  transition: { duration: 6, repeat: Infinity, ease: "easeInOut" }
-};
 const fadeUpVariant = {
   hidden: { opacity: 0, y: 30 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 50, damping: 15 } }
+};
+
+const floatAnim = {
+  y: [0, -20, 0],
+  transition: { duration: 6, repeat: Infinity, ease: "easeInOut" }
 };
 
 export default function Home() {
