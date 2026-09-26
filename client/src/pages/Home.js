@@ -45,6 +45,10 @@ const floatAnim = {
   y: [0, -20, 0],
   transition: { duration: 6, repeat: Infinity, ease: "easeInOut" }
 };
+const fadeUpVariant = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 50, damping: 15 } }
+};
 
 export default function Home() {
   const [privacyOpen, setPrivacyOpen] = useState(false);
